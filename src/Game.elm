@@ -1,8 +1,7 @@
 module Game exposing (..)
-import Card
 import Deck
-import Hand
 import Player
+import Html exposing (s)
 
 type SurrenderRules = No | Early | Late
 type alias BlackJackPayout = {numerator: Int, denominator: Int}
@@ -19,12 +18,10 @@ type alias Game = {
     players: List Player.Player,
     deck: Deck.Deck,
     discard: Deck.Deck,
-    state: GameState
+    state: GameState,
     rules: Rules
     }
 
-dealCard -> Deck.Deck -> Deck.Deck -> Deck.Deck -> (Deck.Deck, Deck.Deck, Deck.Deck)
-dealCard deck to discard =
-    case (deck, discard) of
-        ((card:rest), _) -> (rest, card :: to, discard)
-        (_, (card:rest)) -> (rest, card :: to, [])
+    
+
+
