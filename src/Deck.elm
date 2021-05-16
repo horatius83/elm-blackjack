@@ -1,11 +1,25 @@
 module Deck exposing (Deck, deal, values)
 
 import Array
-import Random   
+import Random
 import Set
 import Card
+import Random.List
+import Random
 
 type alias Deck = List Card.Card
+
+new : Int -> Deck
+new numberOfDecks =
+    let
+        generateDeck = List.map 
+            (\r -> List.map 
+                (\s -> Card.Card r s) Card.getAllSuits) 
+            Card.getAllRanks |> List.concat
+    in
+    if numberOfDecks < 1 then []
+    else
+        List.map (\_ -> generateDeck) (List.range 0 numberOfDecks) |> List.concat
 
 deal : Deck -> Deck -> Maybe (Deck, Deck, Card.Card)
 deal deck discard =
@@ -30,3 +44,7 @@ values deck =
             in
             allCardValues
         _ -> Set.empty
+
+shuffle : Deck -> Random.Generator Deck
+shuffle deck = 
+    Random.List.shuffle deck 
