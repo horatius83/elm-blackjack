@@ -1,37 +1,40 @@
-module Main exposing (Msg(..), main, update, view)
+module Main exposing (main)
 
 import Browser
 import Html exposing (..)
-import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
+import Random
 
+type alias Model = Int
+
+init : () -> (Model, Cmd Msg)
+init _ = (0, Cmd.none)
+
+view : Model -> Html Msg
+view model =
+    div []
+        [ button [ onClick GenerateRandomNumber ]
+            [text "Generate Random Number" ]
+        , text (String.fromInt model)
+        ]
+
+type Msg = GenerateRandomNumber | NewRandomNumber Int
+
+update : Msg -> Model -> (Model, Cmd Msg)
+update msg model =
+    case msg of
+        GenerateRandomNumber -> (model, Random.generate NewRandomNumber (Random.int 0 100)) 
+        NewRandomNumber number -> (number, Cmd.none)
 
 main : Program () Int Msg
 main =
-    Browser.sandbox { init = 0, update = update, view = view }
+    Browser.element
+    {
+        init = init,
+        view = view,
+        update = update,
+        subscriptions = \_ -> Sub.none
+    }
 
 
-type Msg
-    = Increment
-    | Decrement
 
-
-update : Msg -> number -> number
-update msg model =
-    case msg of
-        Increment ->
-            model + 1
-
-        Decrement ->
-            model - 1
-
-
-view : Int -> Html Msg
-view model =
-    div [class "jumbotron"]
-    [ 
-        h1 [] [text "Welcome!"]
-        ,  button [ onClick Decrement ] [ text "-" ]
-        , div [] [ text (String.fromInt model) ]
-        , button [ onClick Increment ] [ text "+" ]
-    ]
