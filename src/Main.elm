@@ -4,29 +4,34 @@ import Browser
 import Html exposing (..)
 import Html.Events exposing (onClick)
 import Random
+import Random.List
+import List
 
-type alias Model = Int
+type alias Model = List Int
 
 init : () -> (Model, Cmd Msg)
-init _ = (0, Cmd.none)
+init _ = ([1, 2, 3, 4, 5, 6], Cmd.none)
+
+displayNumber : Int -> Html Msg
+displayNumber number = li [] [text (String.fromInt number)]
 
 view : Model -> Html Msg
 view model =
     div []
-        [ button [ onClick GenerateRandomNumber ]
-            [text "Generate Random Number" ]
-        , text (String.fromInt model)
+        [ button [ onClick (ShuffleNumbers model) ]
+            [text "Shuffle List" ]
+        , ul [] (List.map displayNumber model)
         ]
 
-type Msg = GenerateRandomNumber | NewRandomNumber Int
+type Msg = ShuffleNumbers (List Int) | NewList (List Int)
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
     case msg of
-        GenerateRandomNumber -> (model, Random.generate NewRandomNumber (Random.int 0 100)) 
-        NewRandomNumber number -> (number, Cmd.none)
+        ShuffleNumbers numbers -> (model, Random.generate NewList (Random.List.shuffle model))
+        NewList numbers -> (numbers, Cmd.none)
 
-main : Program () Int Msg
+main : Program () Model Msg
 main =
     Browser.element
     {

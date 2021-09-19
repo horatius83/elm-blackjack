@@ -5230,12 +5230,15 @@ var $elm$browser$Browser$element = _Browser_element;
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$Main$init = function (_v0) {
-	return _Utils_Tuple2(0, $elm$core$Platform$Cmd$none);
+	return _Utils_Tuple2(
+		_List_fromArray(
+			[1, 2, 3, 4, 5, 6]),
+		$elm$core$Platform$Cmd$none);
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
-var $author$project$Main$NewRandomNumber = function (a) {
-	return {$: 'NewRandomNumber', a: a};
+var $author$project$Main$NewList = function (a) {
+	return {$: 'NewList', a: a};
 };
 var $elm$random$Random$Generate = function (a) {
 	return {$: 'Generate', a: a};
@@ -5386,22 +5389,112 @@ var $elm$random$Random$int = F2(
 				}
 			});
 	});
+var $elm$random$Random$maxInt = 2147483647;
+var $elm$random$Random$minInt = -2147483648;
+var $elm_community$random_extra$Random$List$anyInt = A2($elm$random$Random$int, $elm$random$Random$minInt, $elm$random$Random$maxInt);
+var $elm$random$Random$map3 = F4(
+	function (func, _v0, _v1, _v2) {
+		var genA = _v0.a;
+		var genB = _v1.a;
+		var genC = _v2.a;
+		return $elm$random$Random$Generator(
+			function (seed0) {
+				var _v3 = genA(seed0);
+				var a = _v3.a;
+				var seed1 = _v3.b;
+				var _v4 = genB(seed1);
+				var b = _v4.a;
+				var seed2 = _v4.b;
+				var _v5 = genC(seed2);
+				var c = _v5.a;
+				var seed3 = _v5.b;
+				return _Utils_Tuple2(
+					A3(func, a, b, c),
+					seed3);
+			});
+	});
+var $elm$core$Bitwise$or = _Bitwise_or;
+var $elm$random$Random$independentSeed = $elm$random$Random$Generator(
+	function (seed0) {
+		var makeIndependentSeed = F3(
+			function (state, b, c) {
+				return $elm$random$Random$next(
+					A2($elm$random$Random$Seed, state, (1 | (b ^ c)) >>> 0));
+			});
+		var gen = A2($elm$random$Random$int, 0, 4294967295);
+		return A2(
+			$elm$random$Random$step,
+			A4($elm$random$Random$map3, makeIndependentSeed, gen, gen, gen),
+			seed0);
+	});
+var $elm$core$Tuple$second = function (_v0) {
+	var y = _v0.b;
+	return y;
+};
+var $elm$core$List$sortBy = _List_sortBy;
+var $elm_community$random_extra$Random$List$shuffle = function (list) {
+	return A2(
+		$elm$random$Random$map,
+		function (independentSeed) {
+			return A2(
+				$elm$core$List$map,
+				$elm$core$Tuple$first,
+				A2(
+					$elm$core$List$sortBy,
+					$elm$core$Tuple$second,
+					A3(
+						$elm$core$List$foldl,
+						F2(
+							function (item, _v0) {
+								var acc = _v0.a;
+								var seed = _v0.b;
+								var _v1 = A2($elm$random$Random$step, $elm_community$random_extra$Random$List$anyInt, seed);
+								var tag = _v1.a;
+								var nextSeed = _v1.b;
+								return _Utils_Tuple2(
+									A2(
+										$elm$core$List$cons,
+										_Utils_Tuple2(item, tag),
+										acc),
+									nextSeed);
+							}),
+						_Utils_Tuple2(_List_Nil, independentSeed),
+						list).a));
+		},
+		$elm$random$Random$independentSeed);
+};
 var $author$project$Main$update = F2(
 	function (msg, model) {
-		if (msg.$ === 'GenerateRandomNumber') {
+		if (msg.$ === 'ShuffleNumbers') {
+			var numbers = msg.a;
 			return _Utils_Tuple2(
 				model,
 				A2(
 					$elm$random$Random$generate,
-					$author$project$Main$NewRandomNumber,
-					A2($elm$random$Random$int, 0, 100)));
+					$author$project$Main$NewList,
+					$elm_community$random_extra$Random$List$shuffle(model)));
 		} else {
-			var number = msg.a;
-			return _Utils_Tuple2(number, $elm$core$Platform$Cmd$none);
+			var numbers = msg.a;
+			return _Utils_Tuple2(numbers, $elm$core$Platform$Cmd$none);
 		}
 	});
-var $author$project$Main$GenerateRandomNumber = {$: 'GenerateRandomNumber'};
+var $author$project$Main$ShuffleNumbers = function (a) {
+	return {$: 'ShuffleNumbers', a: a};
+};
 var $elm$html$Html$button = _VirtualDom_node('button');
+var $elm$html$Html$li = _VirtualDom_node('li');
+var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
+var $author$project$Main$displayNumber = function (number) {
+	return A2(
+		$elm$html$Html$li,
+		_List_Nil,
+		_List_fromArray(
+			[
+				$elm$html$Html$text(
+				$elm$core$String$fromInt(number))
+			]));
+};
 var $elm$html$Html$div = _VirtualDom_node('div');
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
@@ -5420,8 +5513,7 @@ var $elm$html$Html$Events$onClick = function (msg) {
 		'click',
 		$elm$json$Json$Decode$succeed(msg));
 };
-var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
+var $elm$html$Html$ul = _VirtualDom_node('ul');
 var $author$project$Main$view = function (model) {
 	return A2(
 		$elm$html$Html$div,
@@ -5432,14 +5524,17 @@ var $author$project$Main$view = function (model) {
 				$elm$html$Html$button,
 				_List_fromArray(
 					[
-						$elm$html$Html$Events$onClick($author$project$Main$GenerateRandomNumber)
+						$elm$html$Html$Events$onClick(
+						$author$project$Main$ShuffleNumbers(model))
 					]),
 				_List_fromArray(
 					[
-						$elm$html$Html$text('Generate Random Number')
+						$elm$html$Html$text('Shuffle List')
 					])),
-				$elm$html$Html$text(
-				$elm$core$String$fromInt(model))
+				A2(
+				$elm$html$Html$ul,
+				_List_Nil,
+				A2($elm$core$List$map, $author$project$Main$displayNumber, model))
 			]));
 };
 var $author$project$Main$main = $elm$browser$Browser$element(
