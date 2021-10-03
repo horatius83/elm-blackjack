@@ -5491,14 +5491,14 @@ var $author$project$Main$update = F2(
 			return _Utils_Tuple2(numbers, $elm$core$Platform$Cmd$none);
 		}
 	});
-var $author$project$Main$ShuffleNumbers = {$: 'ShuffleNumbers'};
-var $elm$html$Html$button = _VirtualDom_node('button');
 var $author$project$Card$Ace = {$: 'Ace'};
 var $author$project$Card$Card = F2(
 	function (rank, suit) {
 		return {rank: rank, suit: suit};
 	});
+var $author$project$Main$ShuffleNumbers = {$: 'ShuffleNumbers'};
 var $author$project$Card$Spades = {$: 'Spades'};
+var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$core$String$cons = _String_cons;
 var $elm$core$String$fromChar = function (_char) {
 	return A2($elm$core$String$cons, _char, '');
@@ -5574,9 +5574,48 @@ var $author$project$Main$cardBack = $author$project$Card$getCardFrontHex(
 var $author$project$Card$cardBackHex = $zwilias$elm_utf_tools$String$UTF32$toString(
 	_List_fromArray(
 		[127136]));
-var $elm$html$Html$li = _VirtualDom_node('li');
+var $elm$virtual_dom$VirtualDom$attribute = F2(
+	function (key, value) {
+		return A2(
+			_VirtualDom_attribute,
+			_VirtualDom_noOnOrFormAction(key),
+			_VirtualDom_noJavaScriptOrHtmlUri(value));
+	});
+var $elm$html$Html$Attributes$attribute = $elm$virtual_dom$VirtualDom$attribute;
+var $elm$html$Html$div = _VirtualDom_node('div');
+var $author$project$Card$getColor = function (suit) {
+	switch (suit.$) {
+		case 'Spades':
+			return 'black';
+		case 'Hearts':
+			return 'red';
+		case 'Diamonds':
+			return 'red';
+		default:
+			return 'black';
+	}
+};
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
+var $author$project$Main$displayCard = function (_v0) {
+	var rank = _v0.rank;
+	var suit = _v0.suit;
+	var color = $author$project$Card$getColor(suit);
+	var cardClass = 'card' + color;
+	var card = A2($author$project$Card$Card, rank, suit);
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				A2($elm$html$Html$Attributes$attribute, 'class', cardClass)
+			]),
+		_List_fromArray(
+			[
+				$elm$html$Html$text(
+				$author$project$Card$getCardFrontHex(card))
+			]));
+};
+var $elm$html$Html$li = _VirtualDom_node('li');
 var $author$project$Main$displayNumber = function (number) {
 	return A2(
 		$elm$html$Html$li,
@@ -5587,7 +5626,6 @@ var $author$project$Main$displayNumber = function (number) {
 				$elm$core$String$fromInt(number))
 			]));
 };
-var $elm$html$Html$div = _VirtualDom_node('div');
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
 };
@@ -5605,9 +5643,6 @@ var $elm$html$Html$Events$onClick = function (msg) {
 		'click',
 		$elm$json$Json$Decode$succeed(msg));
 };
-var $author$project$Main$test = $zwilias$elm_utf_tools$String$UTF32$toString(
-	_List_fromArray(
-		[127137]));
 var $elm$html$Html$ul = _VirtualDom_node('ul');
 var $author$project$Main$view = function (model) {
 	return A2(
@@ -5643,20 +5678,8 @@ var $author$project$Main$view = function (model) {
 					[
 						$elm$html$Html$text($author$project$Card$cardBackHex)
 					])),
-				A2(
-				$elm$html$Html$div,
-				_List_Nil,
-				_List_fromArray(
-					[
-						$elm$html$Html$text($author$project$Main$test)
-					])),
-				A2(
-				$elm$html$Html$div,
-				_List_Nil,
-				_List_fromArray(
-					[
-						$elm$html$Html$text('Hello World')
-					]))
+				$author$project$Main$displayCard(
+				A2($author$project$Card$Card, $author$project$Card$Ace, $author$project$Card$Spades))
 			]));
 };
 var $author$project$Main$main = $elm$browser$Browser$element(

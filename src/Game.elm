@@ -11,7 +11,9 @@ type alias Rules = {
     blackJackPayout: BlackJackPayout, 
     numberOfSplits: Int, 
     numberOfDecks: Int, 
-    surrenderRules: SurrenderRules}
+    surrenderRules: SurrenderRules
+}
+
 type GameState = Init | PlaceBets | Round | RoundEnd | GameOver
 type alias Game = {
     dealer: {cards: Deck.Deck},
@@ -20,7 +22,7 @@ type alias Game = {
     discard: Deck.Deck,
     state: GameState,
     rules: Rules
-    }
+}
 
     
 

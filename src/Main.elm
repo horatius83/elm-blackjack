@@ -1,10 +1,11 @@
 module Main exposing (main)
-import Card exposing (Rank(..), Suit(..), Card, getCardFrontHex, cardBackHex)
+import Card exposing (Rank(..), Suit(..), Card, getCardFrontHex, cardBackHex, getColor)
 import String.UTF32 as UTF32
 
 import Browser
 import Html exposing (..)
 import Html.Events exposing (onClick)
+import Html.Attributes exposing (attribute)
 import Random
 import Random.List
 import List
@@ -12,13 +13,21 @@ import List
 type alias Model = List Int
 
 cardBack = getCardFrontHex (Card Ace Spades)
-test = UTF32.toString [ 0x1f0a1 ]
 
 init : () -> (Model, Cmd Msg)
 init _ = ([1, 2, 3, 4, 5, 6], Cmd.none)
 
 displayNumber : Int -> Html Msg
 displayNumber number = li [] [text (String.fromInt number)]
+
+displayCard : Card -> Html Msg
+displayCard {rank, suit} = 
+    let 
+        color = getColor suit
+        cardClass = "card" ++ color
+        card = Card rank suit
+    in
+        div [attribute "class" cardClass] [text (getCardFrontHex card)]
 
 view : Model -> Html Msg
 view model =
@@ -28,8 +37,7 @@ view model =
         , ul [] (List.map displayNumber model)
         , div [] [text cardBack]
         , div [] [text cardBackHex]
-        , div [] [text test]
-        , div [] [text "Hello World"]
+        , displayCard (Card Ace Spades)
         ]
 
 type Msg = ShuffleNumbers | NewList Model
@@ -49,6 +57,3 @@ main =
         update = update,
         subscriptions = \_ -> Sub.none
     }
-
-
-
