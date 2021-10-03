@@ -1,4 +1,6 @@
 module Main exposing (main)
+import Card exposing (Rank(..), Suit(..), Card, getCardFrontHex, cardBackHex)
+import String.UTF32 as UTF32
 
 import Browser
 import Html exposing (..)
@@ -9,6 +11,9 @@ import List
 
 type alias Model = List Int
 
+cardBack = getCardFrontHex (Card Ace Spades)
+test = UTF32.toString [ 0x1f0a1 ]
+
 init : () -> (Model, Cmd Msg)
 init _ = ([1, 2, 3, 4, 5, 6], Cmd.none)
 
@@ -18,17 +23,21 @@ displayNumber number = li [] [text (String.fromInt number)]
 view : Model -> Html Msg
 view model =
     div []
-        [ button [ onClick (ShuffleNumbers model) ]
+        [ button [ onClick ShuffleNumbers ]
             [text "Shuffle List" ]
         , ul [] (List.map displayNumber model)
+        , div [] [text cardBack]
+        , div [] [text cardBackHex]
+        , div [] [text test]
+        , div [] [text "Hello World"]
         ]
 
-type Msg = ShuffleNumbers (List Int) | NewList (List Int)
+type Msg = ShuffleNumbers | NewList Model
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
     case msg of
-        ShuffleNumbers numbers -> (model, Random.generate NewList (Random.List.shuffle model))
+        ShuffleNumbers -> (model, Random.generate NewList (Random.List.shuffle model))
         NewList numbers -> (numbers, Cmd.none)
 
 main : Program () Model Msg

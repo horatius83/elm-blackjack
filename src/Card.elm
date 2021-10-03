@@ -1,6 +1,6 @@
 module Card exposing (
-    Rank,
-    Suit,
+    Rank(..),
+    Suit(..),
     Card,
     values, 
     getAllRanks, 
@@ -60,15 +60,15 @@ getCardFrontHex {rank, suit} =
                 King -> 0xe
         suitHex =
             case suit of
-                Spades -> 0xa
-                Hearts -> 0xb
-                Diamonds -> 0xc
-                Clubs -> 0xd
+                Spades -> 0xa0
+                Hearts -> 0xb0
+                Diamonds -> 0xc0
+                Clubs -> 0xd0
     in
-        UTF32.toString [0x1, 0xf, 0x0, suitHex, rankHex]
+        UTF32.toString [0x1f000 + suitHex + rankHex]
 
 cardBackHex : String
-cardBackHex = UTF32.toString[0x1, 0xf, 0x0, 0xa, 0x0]
+cardBackHex = UTF32.toString [0x1f0a0]
 
 getColor : Suit -> String
 getColor suit =
