@@ -24,7 +24,7 @@ displayCard : Card -> Html Msg
 displayCard {rank, suit} = 
     let 
         color = getColor suit
-        cardClass = "card" ++ color
+        cardClass = "card " ++ color
         card = Card rank suit
     in
         div [attribute "class" cardClass] [text (getCardFrontHex card)]
@@ -38,6 +38,7 @@ view model =
         , div [] [text cardBack]
         , div [] [text cardBackHex]
         , displayCard (Card Ace Spades)
+        , displayCard (Card Queen Hearts)
         ]
 
 type Msg = ShuffleNumbers | NewList Model
