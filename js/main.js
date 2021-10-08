@@ -5227,12 +5227,23 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$element = _Browser_element;
+var $author$project$Card$Ace = {$: 'Ace'};
+var $author$project$Card$Card = F2(
+	function (rank, suit) {
+		return {rank: rank, suit: suit};
+	});
+var $author$project$Card$Hearts = {$: 'Hearts'};
+var $author$project$Card$Queen = {$: 'Queen'};
+var $author$project$Card$Spades = {$: 'Spades'};
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$Main$init = function (_v0) {
 	return _Utils_Tuple2(
 		_List_fromArray(
-			[1, 2, 3, 4, 5, 6]),
+			[
+				A2($author$project$Card$Card, $author$project$Card$Ace, $author$project$Card$Spades),
+				A2($author$project$Card$Card, $author$project$Card$Queen, $author$project$Card$Hearts)
+			]),
 		$elm$core$Platform$Cmd$none);
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
@@ -5477,15 +5488,7 @@ var $author$project$Main$update = F2(
 			return _Utils_Tuple2(numbers, $elm$core$Platform$Cmd$none);
 		}
 	});
-var $author$project$Card$Ace = {$: 'Ace'};
-var $author$project$Card$Card = F2(
-	function (rank, suit) {
-		return {rank: rank, suit: suit};
-	});
-var $author$project$Card$Hearts = {$: 'Hearts'};
-var $author$project$Card$Queen = {$: 'Queen'};
 var $author$project$Main$ShuffleNumbers = {$: 'ShuffleNumbers'};
-var $author$project$Card$Spades = {$: 'Spades'};
 var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$core$String$cons = _String_cons;
 var $elm$core$String$fromChar = function (_char) {
@@ -5508,6 +5511,17 @@ var $zwilias$elm_utf_tools$String$UTF32$toString = function (bytes) {
 		'',
 		bytes);
 };
+var $author$project$Card$cardBackHex = $zwilias$elm_utf_tools$String$UTF32$toString(
+	_List_fromArray(
+		[127136]));
+var $elm$virtual_dom$VirtualDom$attribute = F2(
+	function (key, value) {
+		return A2(
+			_VirtualDom_attribute,
+			_VirtualDom_noOnOrFormAction(key),
+			_VirtualDom_noJavaScriptOrHtmlUri(value));
+	});
+var $elm$html$Html$Attributes$attribute = $elm$virtual_dom$VirtualDom$attribute;
 var $author$project$Card$getCardFrontHex = function (_v0) {
 	var rank = _v0.rank;
 	var suit = _v0.suit;
@@ -5557,20 +5571,6 @@ var $author$project$Card$getCardFrontHex = function (_v0) {
 		_List_fromArray(
 			[(126976 + suitHex) + rankHex]));
 };
-var $author$project$Main$cardBack = $author$project$Card$getCardFrontHex(
-	A2($author$project$Card$Card, $author$project$Card$Ace, $author$project$Card$Spades));
-var $author$project$Card$cardBackHex = $zwilias$elm_utf_tools$String$UTF32$toString(
-	_List_fromArray(
-		[127136]));
-var $elm$virtual_dom$VirtualDom$attribute = F2(
-	function (key, value) {
-		return A2(
-			_VirtualDom_attribute,
-			_VirtualDom_noOnOrFormAction(key),
-			_VirtualDom_noJavaScriptOrHtmlUri(value));
-	});
-var $elm$html$Html$Attributes$attribute = $elm$virtual_dom$VirtualDom$attribute;
-var $elm$html$Html$div = _VirtualDom_node('div');
 var $author$project$Card$getColor = function (suit) {
 	switch (suit.$) {
 		case 'Spades':
@@ -5583,6 +5583,7 @@ var $author$project$Card$getColor = function (suit) {
 			return 'black';
 	}
 };
+var $elm$html$Html$span = _VirtualDom_node('span');
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $author$project$Main$displayCard = function (_v0) {
@@ -5592,7 +5593,7 @@ var $author$project$Main$displayCard = function (_v0) {
 	var cardClass = 'card ' + color;
 	var card = A2($author$project$Card$Card, rank, suit);
 	return A2(
-		$elm$html$Html$div,
+		$elm$html$Html$span,
 		_List_fromArray(
 			[
 				A2($elm$html$Html$Attributes$attribute, 'class', cardClass)
@@ -5603,17 +5604,7 @@ var $author$project$Main$displayCard = function (_v0) {
 				$author$project$Card$getCardFrontHex(card))
 			]));
 };
-var $elm$html$Html$li = _VirtualDom_node('li');
-var $author$project$Main$displayNumber = function (number) {
-	return A2(
-		$elm$html$Html$li,
-		_List_Nil,
-		_List_fromArray(
-			[
-				$elm$html$Html$text(
-				$elm$core$String$fromInt(number))
-			]));
-};
+var $elm$html$Html$div = _VirtualDom_node('div');
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
 };
@@ -5651,25 +5642,14 @@ var $author$project$Main$view = function (model) {
 				A2(
 				$elm$html$Html$ul,
 				_List_Nil,
-				A2($elm$core$List$map, $author$project$Main$displayNumber, model)),
-				A2(
-				$elm$html$Html$div,
-				_List_Nil,
-				_List_fromArray(
-					[
-						$elm$html$Html$text($author$project$Main$cardBack)
-					])),
+				A2($elm$core$List$map, $author$project$Main$displayCard, model)),
 				A2(
 				$elm$html$Html$div,
 				_List_Nil,
 				_List_fromArray(
 					[
 						$elm$html$Html$text($author$project$Card$cardBackHex)
-					])),
-				$author$project$Main$displayCard(
-				A2($author$project$Card$Card, $author$project$Card$Ace, $author$project$Card$Spades)),
-				$author$project$Main$displayCard(
-				A2($author$project$Card$Card, $author$project$Card$Queen, $author$project$Card$Hearts))
+					]))
 			]));
 };
 var $author$project$Main$main = $elm$browser$Browser$element(

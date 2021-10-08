@@ -10,15 +10,10 @@ import Random
 import Random.List
 import List
 
-type alias Model = List Int
-
-cardBack = getCardFrontHex (Card Ace Spades)
+type alias Model = List Card
 
 init : () -> (Model, Cmd Msg)
-init _ = ([1, 2, 3, 4, 5, 6], Cmd.none)
-
-displayNumber : Int -> Html Msg
-displayNumber number = li [] [text (String.fromInt number)]
+init _ = ([(Card Ace Spades), (Card Queen Hearts)], Cmd.none)
 
 displayCard : Card -> Html Msg
 displayCard {rank, suit} = 
@@ -27,18 +22,15 @@ displayCard {rank, suit} =
         cardClass = "card " ++ color
         card = Card rank suit
     in
-        div [attribute "class" cardClass] [text (getCardFrontHex card)]
+        span [attribute "class" cardClass] [text (getCardFrontHex card)]
 
 view : Model -> Html Msg
 view model =
     div []
         [ button [ onClick ShuffleNumbers ]
             [text "Shuffle List" ]
-        , ul [] (List.map displayNumber model)
-        , div [] [text cardBack]
+        , ul [] (List.map displayCard model)
         , div [] [text cardBackHex]
-        , displayCard (Card Ace Spades)
-        , displayCard (Card Queen Hearts)
         ]
 
 type Msg = ShuffleNumbers | NewList Model
