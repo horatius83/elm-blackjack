@@ -1,4 +1,4 @@
-module Deck exposing (Deck, deal, values)
+module Deck exposing (Deck, deal, new, values)
 
 import Array
 import Card

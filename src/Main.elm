@@ -2,6 +2,7 @@ module Main exposing (main)
 
 import Browser
 import Card exposing (Card, Rank(..), Suit(..), cardBackHex, getCardFrontHex, getColor)
+import Deck
 import Html exposing (..)
 import Html.Attributes exposing (attribute)
 import Html.Events exposing (onClick)
@@ -12,18 +13,18 @@ import String.UTF32 as UTF32
 
 
 type alias Model =
-    { cards : List Card
+    { cards : Deck.Deck
     }
 
 
 type Msg
-    = ShuffleNumbers
-    | NewList (List Card)
+    = ShuffleDeck
+    | NewDeck Deck.Deck
 
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( { cards = [ Card Ace Spades, Card Queen Hearts ] }, Cmd.none )
+    ( { cards = Deck.new 1 }, Cmd.none )
 
 
 displayCard : Card -> Html Msg
@@ -44,7 +45,7 @@ displayCard { rank, suit } =
 view : Model -> Html Msg
 view model =
     div []
-        [ button [ onClick ShuffleNumbers ]
+        [ button [ onClick ShuffleDeck ]
             [ text "Shuffle List" ]
         , ul [] (List.map displayCard model.cards)
         , div [] [ text cardBackHex ]
@@ -54,10 +55,10 @@ view model =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        ShuffleNumbers ->
-            ( model, Random.generate NewList (Random.List.shuffle model.cards) )
+        ShuffleDeck ->
+            ( model, Random.generate NewDeck (Random.List.shuffle model.cards) )
 
-        NewList cards ->
+        NewDeck cards ->
             ( { model | cards = cards }, Cmd.none )
 
 

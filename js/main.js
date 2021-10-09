@@ -5227,31 +5227,76 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$element = _Browser_element;
-var $author$project$Card$Ace = {$: 'Ace'};
 var $author$project$Card$Card = F2(
 	function (rank, suit) {
 		return {rank: rank, suit: suit};
 	});
-var $author$project$Card$Hearts = {$: 'Hearts'};
+var $elm$core$List$append = F2(
+	function (xs, ys) {
+		if (!ys.b) {
+			return xs;
+		} else {
+			return A3($elm$core$List$foldr, $elm$core$List$cons, ys, xs);
+		}
+	});
+var $elm$core$List$concat = function (lists) {
+	return A3($elm$core$List$foldr, $elm$core$List$append, _List_Nil, lists);
+};
+var $author$project$Card$Ace = {$: 'Ace'};
+var $author$project$Card$Eight = {$: 'Eight'};
+var $author$project$Card$Five = {$: 'Five'};
+var $author$project$Card$Four = {$: 'Four'};
+var $author$project$Card$Jack = {$: 'Jack'};
+var $author$project$Card$King = {$: 'King'};
+var $author$project$Card$Nine = {$: 'Nine'};
 var $author$project$Card$Queen = {$: 'Queen'};
+var $author$project$Card$Seven = {$: 'Seven'};
+var $author$project$Card$Six = {$: 'Six'};
+var $author$project$Card$Ten = {$: 'Ten'};
+var $author$project$Card$Three = {$: 'Three'};
+var $author$project$Card$Two = {$: 'Two'};
+var $author$project$Card$getAllRanks = _List_fromArray(
+	[$author$project$Card$Two, $author$project$Card$Three, $author$project$Card$Four, $author$project$Card$Five, $author$project$Card$Six, $author$project$Card$Seven, $author$project$Card$Eight, $author$project$Card$Nine, $author$project$Card$Ten, $author$project$Card$Jack, $author$project$Card$Queen, $author$project$Card$King, $author$project$Card$Ace]);
+var $author$project$Card$Clubs = {$: 'Clubs'};
+var $author$project$Card$Diamonds = {$: 'Diamonds'};
+var $author$project$Card$Hearts = {$: 'Hearts'};
 var $author$project$Card$Spades = {$: 'Spades'};
+var $author$project$Card$getAllSuits = _List_fromArray(
+	[$author$project$Card$Clubs, $author$project$Card$Diamonds, $author$project$Card$Hearts, $author$project$Card$Spades]);
+var $author$project$Deck$new = function (numberOfDecks) {
+	var generateDeck = $elm$core$List$concat(
+		A2(
+			$elm$core$List$map,
+			function (r) {
+				return A2(
+					$elm$core$List$map,
+					function (s) {
+						return A2($author$project$Card$Card, r, s);
+					},
+					$author$project$Card$getAllSuits);
+			},
+			$author$project$Card$getAllRanks));
+	return (numberOfDecks < 1) ? _List_Nil : $elm$core$List$concat(
+		A2(
+			$elm$core$List$map,
+			function (_v0) {
+				return generateDeck;
+			},
+			A2($elm$core$List$range, 0, numberOfDecks)));
+};
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$Main$init = function (_v0) {
 	return _Utils_Tuple2(
 		{
-			cards: _List_fromArray(
-				[
-					A2($author$project$Card$Card, $author$project$Card$Ace, $author$project$Card$Spades),
-					A2($author$project$Card$Card, $author$project$Card$Queen, $author$project$Card$Hearts)
-				])
+			cards: $author$project$Deck$new(1)
 		},
 		$elm$core$Platform$Cmd$none);
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
-var $author$project$Main$NewList = function (a) {
-	return {$: 'NewList', a: a};
+var $author$project$Main$NewDeck = function (a) {
+	return {$: 'NewDeck', a: a};
 };
 var $elm$random$Random$Generate = function (a) {
 	return {$: 'Generate', a: a};
@@ -5478,12 +5523,12 @@ var $elm_community$random_extra$Random$List$shuffle = function (list) {
 };
 var $author$project$Main$update = F2(
 	function (msg, model) {
-		if (msg.$ === 'ShuffleNumbers') {
+		if (msg.$ === 'ShuffleDeck') {
 			return _Utils_Tuple2(
 				model,
 				A2(
 					$elm$random$Random$generate,
-					$author$project$Main$NewList,
+					$author$project$Main$NewDeck,
 					$elm_community$random_extra$Random$List$shuffle(model.cards)));
 		} else {
 			var cards = msg.a;
@@ -5494,7 +5539,7 @@ var $author$project$Main$update = F2(
 				$elm$core$Platform$Cmd$none);
 		}
 	});
-var $author$project$Main$ShuffleNumbers = {$: 'ShuffleNumbers'};
+var $author$project$Main$ShuffleDeck = {$: 'ShuffleDeck'};
 var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$core$String$cons = _String_cons;
 var $elm$core$String$fromChar = function (_char) {
@@ -5639,7 +5684,7 @@ var $author$project$Main$view = function (model) {
 				$elm$html$Html$button,
 				_List_fromArray(
 					[
-						$elm$html$Html$Events$onClick($author$project$Main$ShuffleNumbers)
+						$elm$html$Html$Events$onClick($author$project$Main$ShuffleDeck)
 					]),
 				_List_fromArray(
 					[
