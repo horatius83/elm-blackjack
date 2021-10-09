@@ -12,17 +12,18 @@ import String.UTF32 as UTF32
 
 
 type alias Model =
-    List Card
+    { cards : List Card
+    }
 
 
 type Msg
     = ShuffleNumbers
-    | NewList Model
+    | NewList (List Card)
 
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( [ Card Ace Spades, Card Queen Hearts ], Cmd.none )
+    ( { cards = [ Card Ace Spades, Card Queen Hearts ] }, Cmd.none )
 
 
 displayCard : Card -> Html Msg
@@ -45,7 +46,7 @@ view model =
     div []
         [ button [ onClick ShuffleNumbers ]
             [ text "Shuffle List" ]
-        , ul [] (List.map displayCard model)
+        , ul [] (List.map displayCard model.cards)
         , div [] [ text cardBackHex ]
         ]
 
@@ -54,10 +55,10 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         ShuffleNumbers ->
-            ( model, Random.generate NewList (Random.List.shuffle model) )
+            ( model, Random.generate NewList (Random.List.shuffle model.cards) )
 
-        NewList numbers ->
-            ( numbers, Cmd.none )
+        NewList cards ->
+            ( { model | cards = cards }, Cmd.none )
 
 
 main : Program () Model Msg

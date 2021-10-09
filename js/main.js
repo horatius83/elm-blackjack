@@ -5239,11 +5239,13 @@ var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$Main$init = function (_v0) {
 	return _Utils_Tuple2(
-		_List_fromArray(
-			[
-				A2($author$project$Card$Card, $author$project$Card$Ace, $author$project$Card$Spades),
-				A2($author$project$Card$Card, $author$project$Card$Queen, $author$project$Card$Hearts)
-			]),
+		{
+			cards: _List_fromArray(
+				[
+					A2($author$project$Card$Card, $author$project$Card$Ace, $author$project$Card$Spades),
+					A2($author$project$Card$Card, $author$project$Card$Queen, $author$project$Card$Hearts)
+				])
+		},
 		$elm$core$Platform$Cmd$none);
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
@@ -5482,10 +5484,14 @@ var $author$project$Main$update = F2(
 				A2(
 					$elm$random$Random$generate,
 					$author$project$Main$NewList,
-					$elm_community$random_extra$Random$List$shuffle(model)));
+					$elm_community$random_extra$Random$List$shuffle(model.cards)));
 		} else {
-			var numbers = msg.a;
-			return _Utils_Tuple2(numbers, $elm$core$Platform$Cmd$none);
+			var cards = msg.a;
+			return _Utils_Tuple2(
+				_Utils_update(
+					model,
+					{cards: cards}),
+				$elm$core$Platform$Cmd$none);
 		}
 	});
 var $author$project$Main$ShuffleNumbers = {$: 'ShuffleNumbers'};
@@ -5642,7 +5648,7 @@ var $author$project$Main$view = function (model) {
 				A2(
 				$elm$html$Html$ul,
 				_List_Nil,
-				A2($elm$core$List$map, $author$project$Main$displayCard, model)),
+				A2($elm$core$List$map, $author$project$Main$displayCard, model.cards)),
 				A2(
 				$elm$html$Html$div,
 				_List_Nil,
