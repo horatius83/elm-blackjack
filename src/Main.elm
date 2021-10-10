@@ -9,11 +9,10 @@ import Html.Events exposing (onClick)
 import List
 import Random
 import Random.List
-import String.UTF32 as UTF32
 
 
 type alias Model =
-    { cards : Deck.Deck
+    { deck : Deck.Deck
     }
 
 
@@ -24,7 +23,7 @@ type Msg
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( { cards = Deck.new 1 }, Cmd.none )
+    ( { deck = Deck.new 1 }, Cmd.none )
 
 
 displayCard : Card -> Html Msg
@@ -47,7 +46,7 @@ view model =
     div []
         [ button [ onClick ShuffleDeck ]
             [ text "Shuffle List" ]
-        , ul [] (List.map displayCard model.cards)
+        , ul [] (List.map displayCard model.deck)
         , div [] [ text cardBackHex ]
         ]
 
@@ -56,10 +55,10 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         ShuffleDeck ->
-            ( model, Random.generate NewDeck (Random.List.shuffle model.cards) )
+            ( model, Random.generate NewDeck (Random.List.shuffle model.deck) )
 
         NewDeck cards ->
-            ( { model | cards = cards }, Cmd.none )
+            ( { model | deck = cards }, Cmd.none )
 
 
 main : Program () Model Msg

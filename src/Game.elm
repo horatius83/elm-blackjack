@@ -1,7 +1,6 @@
 module Game exposing (..)
 
 import Deck
-import Html exposing (s)
 import Player
 
 

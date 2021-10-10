@@ -5289,7 +5289,7 @@ var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$Main$init = function (_v0) {
 	return _Utils_Tuple2(
 		{
-			cards: $author$project$Deck$new(1)
+			deck: $author$project$Deck$new(1)
 		},
 		$elm$core$Platform$Cmd$none);
 };
@@ -5529,13 +5529,13 @@ var $author$project$Main$update = F2(
 				A2(
 					$elm$random$Random$generate,
 					$author$project$Main$NewDeck,
-					$elm_community$random_extra$Random$List$shuffle(model.cards)));
+					$elm_community$random_extra$Random$List$shuffle(model.deck)));
 		} else {
 			var cards = msg.a;
 			return _Utils_Tuple2(
 				_Utils_update(
 					model,
-					{cards: cards}),
+					{deck: cards}),
 				$elm$core$Platform$Cmd$none);
 		}
 	});
@@ -5693,7 +5693,7 @@ var $author$project$Main$view = function (model) {
 				A2(
 				$elm$html$Html$ul,
 				_List_Nil,
-				A2($elm$core$List$map, $author$project$Main$displayCard, model.cards)),
+				A2($elm$core$List$map, $author$project$Main$displayCard, model.deck)),
 				A2(
 				$elm$html$Html$div,
 				_List_Nil,
