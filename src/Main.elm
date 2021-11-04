@@ -23,7 +23,7 @@ type Msg
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( { deck = Deck.new 1 }, Cmd.none )
+    ( { deck = [] }, Random.generate NewDeck (Random.List.shuffle (Deck.new 1)) )
 
 
 displayCard : Card -> Html Msg
@@ -47,7 +47,7 @@ view model =
         [ button [ onClick ShuffleDeck ]
             [ text "Shuffle List" ]
         , ul [] (List.map displayCard model.deck)
-        , div [] [ text cardBackHex ]
+        , div [ attribute "class" "card" ] [ text cardBackHex ]
         ]
 
 

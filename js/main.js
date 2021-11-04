@@ -5227,74 +5227,6 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$element = _Browser_element;
-var $author$project$Card$Card = F2(
-	function (rank, suit) {
-		return {rank: rank, suit: suit};
-	});
-var $elm$core$List$append = F2(
-	function (xs, ys) {
-		if (!ys.b) {
-			return xs;
-		} else {
-			return A3($elm$core$List$foldr, $elm$core$List$cons, ys, xs);
-		}
-	});
-var $elm$core$List$concat = function (lists) {
-	return A3($elm$core$List$foldr, $elm$core$List$append, _List_Nil, lists);
-};
-var $author$project$Card$Ace = {$: 'Ace'};
-var $author$project$Card$Eight = {$: 'Eight'};
-var $author$project$Card$Five = {$: 'Five'};
-var $author$project$Card$Four = {$: 'Four'};
-var $author$project$Card$Jack = {$: 'Jack'};
-var $author$project$Card$King = {$: 'King'};
-var $author$project$Card$Nine = {$: 'Nine'};
-var $author$project$Card$Queen = {$: 'Queen'};
-var $author$project$Card$Seven = {$: 'Seven'};
-var $author$project$Card$Six = {$: 'Six'};
-var $author$project$Card$Ten = {$: 'Ten'};
-var $author$project$Card$Three = {$: 'Three'};
-var $author$project$Card$Two = {$: 'Two'};
-var $author$project$Card$getAllRanks = _List_fromArray(
-	[$author$project$Card$Two, $author$project$Card$Three, $author$project$Card$Four, $author$project$Card$Five, $author$project$Card$Six, $author$project$Card$Seven, $author$project$Card$Eight, $author$project$Card$Nine, $author$project$Card$Ten, $author$project$Card$Jack, $author$project$Card$Queen, $author$project$Card$King, $author$project$Card$Ace]);
-var $author$project$Card$Clubs = {$: 'Clubs'};
-var $author$project$Card$Diamonds = {$: 'Diamonds'};
-var $author$project$Card$Hearts = {$: 'Hearts'};
-var $author$project$Card$Spades = {$: 'Spades'};
-var $author$project$Card$getAllSuits = _List_fromArray(
-	[$author$project$Card$Clubs, $author$project$Card$Diamonds, $author$project$Card$Hearts, $author$project$Card$Spades]);
-var $author$project$Deck$new = function (numberOfDecks) {
-	var generateDeck = $elm$core$List$concat(
-		A2(
-			$elm$core$List$map,
-			function (r) {
-				return A2(
-					$elm$core$List$map,
-					function (s) {
-						return A2($author$project$Card$Card, r, s);
-					},
-					$author$project$Card$getAllSuits);
-			},
-			$author$project$Card$getAllRanks));
-	return (numberOfDecks < 1) ? _List_Nil : $elm$core$List$concat(
-		A2(
-			$elm$core$List$map,
-			function (_v0) {
-				return generateDeck;
-			},
-			A2($elm$core$List$range, 0, numberOfDecks)));
-};
-var $elm$core$Platform$Cmd$batch = _Platform_batch;
-var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
-var $author$project$Main$init = function (_v0) {
-	return _Utils_Tuple2(
-		{
-			deck: $author$project$Deck$new(1)
-		},
-		$elm$core$Platform$Cmd$none);
-};
-var $elm$core$Platform$Sub$batch = _Platform_batch;
-var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
 var $author$project$Main$NewDeck = function (a) {
 	return {$: 'NewDeck', a: a};
 };
@@ -5405,6 +5337,63 @@ var $elm$random$Random$generate = F2(
 			$elm$random$Random$Generate(
 				A2($elm$random$Random$map, tagger, generator)));
 	});
+var $author$project$Card$Card = F2(
+	function (rank, suit) {
+		return {rank: rank, suit: suit};
+	});
+var $elm$core$List$append = F2(
+	function (xs, ys) {
+		if (!ys.b) {
+			return xs;
+		} else {
+			return A3($elm$core$List$foldr, $elm$core$List$cons, ys, xs);
+		}
+	});
+var $elm$core$List$concat = function (lists) {
+	return A3($elm$core$List$foldr, $elm$core$List$append, _List_Nil, lists);
+};
+var $author$project$Card$Ace = {$: 'Ace'};
+var $author$project$Card$Eight = {$: 'Eight'};
+var $author$project$Card$Five = {$: 'Five'};
+var $author$project$Card$Four = {$: 'Four'};
+var $author$project$Card$Jack = {$: 'Jack'};
+var $author$project$Card$King = {$: 'King'};
+var $author$project$Card$Nine = {$: 'Nine'};
+var $author$project$Card$Queen = {$: 'Queen'};
+var $author$project$Card$Seven = {$: 'Seven'};
+var $author$project$Card$Six = {$: 'Six'};
+var $author$project$Card$Ten = {$: 'Ten'};
+var $author$project$Card$Three = {$: 'Three'};
+var $author$project$Card$Two = {$: 'Two'};
+var $author$project$Card$getAllRanks = _List_fromArray(
+	[$author$project$Card$Two, $author$project$Card$Three, $author$project$Card$Four, $author$project$Card$Five, $author$project$Card$Six, $author$project$Card$Seven, $author$project$Card$Eight, $author$project$Card$Nine, $author$project$Card$Ten, $author$project$Card$Jack, $author$project$Card$Queen, $author$project$Card$King, $author$project$Card$Ace]);
+var $author$project$Card$Clubs = {$: 'Clubs'};
+var $author$project$Card$Diamonds = {$: 'Diamonds'};
+var $author$project$Card$Hearts = {$: 'Hearts'};
+var $author$project$Card$Spades = {$: 'Spades'};
+var $author$project$Card$getAllSuits = _List_fromArray(
+	[$author$project$Card$Clubs, $author$project$Card$Diamonds, $author$project$Card$Hearts, $author$project$Card$Spades]);
+var $author$project$Deck$new = function (numberOfDecks) {
+	var generateDeck = $elm$core$List$concat(
+		A2(
+			$elm$core$List$map,
+			function (r) {
+				return A2(
+					$elm$core$List$map,
+					function (s) {
+						return A2($author$project$Card$Card, r, s);
+					},
+					$author$project$Card$getAllSuits);
+			},
+			$author$project$Card$getAllRanks));
+	return (numberOfDecks < 1) ? _List_Nil : $elm$core$List$concat(
+		A2(
+			$elm$core$List$map,
+			function (_v0) {
+				return generateDeck;
+			},
+			A2($elm$core$List$range, 0, numberOfDecks)));
+};
 var $elm$core$Bitwise$and = _Bitwise_and;
 var $elm$core$Basics$negate = function (n) {
 	return -n;
@@ -5521,6 +5510,19 @@ var $elm_community$random_extra$Random$List$shuffle = function (list) {
 		},
 		$elm$random$Random$independentSeed);
 };
+var $author$project$Main$init = function (_v0) {
+	return _Utils_Tuple2(
+		{deck: _List_Nil},
+		A2(
+			$elm$random$Random$generate,
+			$author$project$Main$NewDeck,
+			$elm_community$random_extra$Random$List$shuffle(
+				$author$project$Deck$new(1))));
+};
+var $elm$core$Platform$Sub$batch = _Platform_batch;
+var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
+var $elm$core$Platform$Cmd$batch = _Platform_batch;
+var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$Main$update = F2(
 	function (msg, model) {
 		if (msg.$ === 'ShuffleDeck') {
@@ -5540,6 +5542,14 @@ var $author$project$Main$update = F2(
 		}
 	});
 var $author$project$Main$ShuffleDeck = {$: 'ShuffleDeck'};
+var $elm$virtual_dom$VirtualDom$attribute = F2(
+	function (key, value) {
+		return A2(
+			_VirtualDom_attribute,
+			_VirtualDom_noOnOrFormAction(key),
+			_VirtualDom_noJavaScriptOrHtmlUri(value));
+	});
+var $elm$html$Html$Attributes$attribute = $elm$virtual_dom$VirtualDom$attribute;
 var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$core$String$cons = _String_cons;
 var $elm$core$String$fromChar = function (_char) {
@@ -5565,14 +5575,6 @@ var $zwilias$elm_utf_tools$String$UTF32$toString = function (bytes) {
 var $author$project$Card$cardBackHex = $zwilias$elm_utf_tools$String$UTF32$toString(
 	_List_fromArray(
 		[127136]));
-var $elm$virtual_dom$VirtualDom$attribute = F2(
-	function (key, value) {
-		return A2(
-			_VirtualDom_attribute,
-			_VirtualDom_noOnOrFormAction(key),
-			_VirtualDom_noJavaScriptOrHtmlUri(value));
-	});
-var $elm$html$Html$Attributes$attribute = $elm$virtual_dom$VirtualDom$attribute;
 var $author$project$Card$getCardFrontHex = function (_v0) {
 	var rank = _v0.rank;
 	var suit = _v0.suit;
@@ -5696,7 +5698,10 @@ var $author$project$Main$view = function (model) {
 				A2($elm$core$List$map, $author$project$Main$displayCard, model.deck)),
 				A2(
 				$elm$html$Html$div,
-				_List_Nil,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$attribute, 'class', 'card')
+					]),
 				_List_fromArray(
 					[
 						$elm$html$Html$text($author$project$Card$cardBackHex)
