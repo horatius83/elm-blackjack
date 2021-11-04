@@ -3,6 +3,7 @@ module Main exposing (main)
 import Browser
 import Card exposing (Card, Rank(..), Suit(..), cardBackHex, getCardFrontHex, getColor)
 import Deck
+import Game
 import Html exposing (..)
 import Html.Attributes exposing (attribute)
 import Html.Events exposing (onClick)

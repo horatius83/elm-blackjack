@@ -34,9 +34,19 @@ type GameState
 
 type alias Game =
     { dealer : { cards : Deck.Deck }
-    , players : List Player.Player
+    , player : Player.Player
     , deck : Deck.Deck
     , discard : Deck.Deck
     , state : GameState
     , rules : Rules
     }
+
+
+default : Rules
+default =
+    Rules 100 1000 (BlackJackPayout 3 2) 1 2 No
+
+
+new : String -> Int -> Rules -> Game
+new playerName startingMoney rules =
+    Game { cards = [] } (Player.new playerName startingMoney) (Deck.new rules.numberOfDecks) [] Init rules
