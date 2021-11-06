@@ -3,7 +3,7 @@ module Main exposing (main)
 import Browser
 import Card exposing (Card, Rank(..), Suit(..), cardBackHex, getCardFrontHex, getColor)
 import Deck
-import Game
+import Game exposing (Game, default, new)
 import Html exposing (..)
 import Html.Attributes exposing (attribute)
 import Html.Events exposing (onClick)
@@ -13,8 +13,7 @@ import Random.List
 
 
 type alias Model =
-    { deck : Deck.Deck
-    }
+    Game
 
 
 type Msg
@@ -24,7 +23,11 @@ type Msg
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( { deck = [] }, Random.generate NewDeck (Random.List.shuffle (Deck.new 1)) )
+    let
+        model =
+            new "Max" 1000 default
+    in
+    ( model, Random.generate NewDeck (Random.List.shuffle model.deck) )
 
 
 displayCard : Card -> Html Msg

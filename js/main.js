@@ -5230,6 +5230,23 @@ var $elm$browser$Browser$element = _Browser_element;
 var $author$project$Main$NewDeck = function (a) {
 	return {$: 'NewDeck', a: a};
 };
+var $author$project$Game$BlackJackPayout = F2(
+	function (numerator, denominator) {
+		return {denominator: denominator, numerator: numerator};
+	});
+var $author$project$Game$No = {$: 'No'};
+var $author$project$Game$Rules = F6(
+	function (minimumBet, maximumBet, blackJackPayout, numberOfSplits, numberOfDecks, surrenderRules) {
+		return {blackJackPayout: blackJackPayout, maximumBet: maximumBet, minimumBet: minimumBet, numberOfDecks: numberOfDecks, numberOfSplits: numberOfSplits, surrenderRules: surrenderRules};
+	});
+var $author$project$Game$default = A6(
+	$author$project$Game$Rules,
+	100,
+	1000,
+	A2($author$project$Game$BlackJackPayout, 3, 2),
+	1,
+	2,
+	$author$project$Game$No);
 var $elm$random$Random$Generate = function (a) {
 	return {$: 'Generate', a: a};
 };
@@ -5337,6 +5354,11 @@ var $elm$random$Random$generate = F2(
 			$elm$random$Random$Generate(
 				A2($elm$random$Random$map, tagger, generator)));
 	});
+var $author$project$Game$Game = F6(
+	function (dealer, player, deck, discard, state, rules) {
+		return {dealer: dealer, deck: deck, discard: discard, player: player, rules: rules, state: state};
+	});
+var $author$project$Game$Init = {$: 'Init'};
 var $author$project$Card$Card = F2(
 	function (rank, suit) {
 		return {rank: rank, suit: suit};
@@ -5394,6 +5416,25 @@ var $author$project$Deck$new = function (numberOfDecks) {
 			},
 			A2($elm$core$List$range, 0, numberOfDecks)));
 };
+var $author$project$Player$Player = F3(
+	function (name, hands, money) {
+		return {hands: hands, money: money, name: name};
+	});
+var $author$project$Player$new = F2(
+	function (name, money) {
+		return A3($author$project$Player$Player, name, _List_Nil, money);
+	});
+var $author$project$Game$new = F3(
+	function (playerName, startingMoney, rules) {
+		return A6(
+			$author$project$Game$Game,
+			{cards: _List_Nil},
+			A2($author$project$Player$new, playerName, startingMoney),
+			$author$project$Deck$new(rules.numberOfDecks),
+			_List_Nil,
+			$author$project$Game$Init,
+			rules);
+	});
 var $elm$core$Bitwise$and = _Bitwise_and;
 var $elm$core$Basics$negate = function (n) {
 	return -n;
@@ -5511,13 +5552,13 @@ var $elm_community$random_extra$Random$List$shuffle = function (list) {
 		$elm$random$Random$independentSeed);
 };
 var $author$project$Main$init = function (_v0) {
+	var model = A3($author$project$Game$new, 'Max', 1000, $author$project$Game$default);
 	return _Utils_Tuple2(
-		{deck: _List_Nil},
+		model,
 		A2(
 			$elm$random$Random$generate,
 			$author$project$Main$NewDeck,
-			$elm_community$random_extra$Random$List$shuffle(
-				$author$project$Deck$new(1))));
+			$elm_community$random_extra$Random$List$shuffle(model.deck)));
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
