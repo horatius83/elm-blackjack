@@ -5733,38 +5733,141 @@ var $elm$html$Html$Events$onClick = function (msg) {
 		'click',
 		$elm$json$Json$Decode$succeed(msg));
 };
-var $elm$html$Html$ul = _VirtualDom_node('ul');
-var $author$project$Main$view = function (model) {
+var $author$project$Main$ChangePlayerName = function (a) {
+	return {$: 'ChangePlayerName', a: a};
+};
+var $elm$html$Html$form = _VirtualDom_node('form');
+var $elm$html$Html$h1 = _VirtualDom_node('h1');
+var $elm$html$Html$input = _VirtualDom_node('input');
+var $elm$html$Html$label = _VirtualDom_node('label');
+var $elm$html$Html$Events$alwaysStop = function (x) {
+	return _Utils_Tuple2(x, true);
+};
+var $elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
+	return {$: 'MayStopPropagation', a: a};
+};
+var $elm$html$Html$Events$stopPropagationOn = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
+	});
+var $elm$json$Json$Decode$field = _Json_decodeField;
+var $elm$json$Json$Decode$at = F2(
+	function (fields, decoder) {
+		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
+	});
+var $elm$json$Json$Decode$string = _Json_decodeString;
+var $elm$html$Html$Events$targetValue = A2(
+	$elm$json$Json$Decode$at,
+	_List_fromArray(
+		['target', 'value']),
+	$elm$json$Json$Decode$string);
+var $elm$html$Html$Events$onInput = function (tagger) {
+	return A2(
+		$elm$html$Html$Events$stopPropagationOn,
+		'input',
+		A2(
+			$elm$json$Json$Decode$map,
+			$elm$html$Html$Events$alwaysStop,
+			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
+};
+var $author$project$Main$viewInput = F5(
+	function (label_, id_, value_, type_, toMsg) {
+		return A2(
+			$elm$html$Html$span,
+			_List_Nil,
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$label,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$attribute, 'for', id_)
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(label_)
+						])),
+					A2(
+					$elm$html$Html$input,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$attribute, 'value', value_),
+							$elm$html$Html$Events$onInput(toMsg),
+							A2($elm$html$Html$Attributes$attribute, 'id', id_),
+							A2($elm$html$Html$Attributes$attribute, 'name', id_),
+							A2($elm$html$Html$Attributes$attribute, 'type', type_)
+						]),
+					_List_Nil)
+				]));
+	});
+var $author$project$Main$rulesView = function (model) {
 	return A2(
 		$elm$html$Html$div,
 		_List_Nil,
 		_List_fromArray(
 			[
 				A2(
-				$elm$html$Html$button,
+				$elm$html$Html$h1,
+				_List_Nil,
 				_List_fromArray(
 					[
-						$elm$html$Html$Events$onClick($author$project$Main$ShuffleDeck)
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text('Shuffle List')
+						$elm$html$Html$text('Game Rules')
 					])),
 				A2(
-				$elm$html$Html$ul,
+				$elm$html$Html$form,
 				_List_Nil,
-				A2($elm$core$List$map, $author$project$Main$displayCard, model.deck)),
-				A2(
-				$elm$html$Html$div,
 				_List_fromArray(
 					[
-						A2($elm$html$Html$Attributes$attribute, 'class', 'card')
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text($author$project$Card$cardBackHex)
+						A2(
+						$elm$html$Html$div,
+						_List_Nil,
+						_List_fromArray(
+							[
+								A5($author$project$Main$viewInput, 'Player Name: ', 'player_name', model.player.name, 'text', $author$project$Main$ChangePlayerName)
+							]))
 					]))
 			]));
+};
+var $elm$html$Html$ul = _VirtualDom_node('ul');
+var $author$project$Main$view = function (model) {
+	var _v0 = model.state;
+	if (_v0.$ === 'Init') {
+		return $author$project$Main$rulesView(model);
+	} else {
+		return A2(
+			$elm$html$Html$div,
+			_List_Nil,
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$button,
+					_List_fromArray(
+						[
+							$elm$html$Html$Events$onClick($author$project$Main$ShuffleDeck)
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Shuffle List')
+						])),
+					A2(
+					$elm$html$Html$ul,
+					_List_Nil,
+					A2($elm$core$List$map, $author$project$Main$displayCard, model.deck)),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$attribute, 'class', 'card')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text($author$project$Card$cardBackHex)
+						]))
+				]));
+	}
 };
 var $author$project$Main$main = $elm$browser$Browser$element(
 	{

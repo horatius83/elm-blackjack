@@ -3,7 +3,7 @@ module Main exposing (main)
 import Browser
 import Card exposing (Card, Rank(..), Suit(..), cardBackHex, getCardFrontHex, getColor)
 import Deck
-import Game exposing (Game, default, new)
+import Game exposing (Game, GameState, default, new)
 import Html exposing (..)
 import Html.Attributes exposing (attribute)
 import Html.Events exposing (onClick, onInput)
@@ -48,8 +48,8 @@ displayCard { rank, suit } =
     span [ attribute "class" cardClass ] [ text (getCardFrontHex card) ]
 
 
-viewInput : String -> String -> String -> (String -> Msg) -> Html Msg
-viewInput label_ id_ value_ toMsg =
+viewInput : String -> String -> String -> String -> (String -> Msg) -> Html Msg
+viewInput label_ id_ value_ type_ toMsg =
     span []
         [ label [ attribute "for" id_ ] [ text label_ ]
         , input
@@ -57,6 +57,7 @@ viewInput label_ id_ value_ toMsg =
             , onInput toMsg
             , attribute "id" id_
             , attribute "name" id_
+            , attribute "type" type_
             ]
             []
         ]
@@ -68,7 +69,7 @@ rulesView model =
         [ h1 [] [ text "Game Rules" ]
         , form []
             [ div []
-                [ viewInput "Player Name: " "player_name" model.player.name ChangePlayerName
+                [ viewInput "Player Name: " "player_name" model.player.name "text" ChangePlayerName
                 ]
             ]
         ]
@@ -76,12 +77,23 @@ rulesView model =
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ button [ onClick ShuffleDeck ]
-            [ text "Shuffle List" ]
-        , ul [] (List.map displayCard model.deck)
-        , div [ attribute "class" "card" ] [ text cardBackHex ]
-        ]
+    case model.state of
+        Game.Init ->
+            rulesView model
+
+        _ ->
+            div []
+                [ button [ onClick ShuffleDeck ]
+                    [ text "Shuffle List" ]
+                , ul [] (List.map displayCard model.deck)
+                , div [ attribute "class" "card" ] [ text cardBackHex ]
+                ]
+
+
+
+-- Round ->
+-- RoundEnd ->
+-- GameOver ->
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
