@@ -6,7 +6,7 @@ import Deck
 import Game exposing (Game, default, new)
 import Html exposing (..)
 import Html.Attributes exposing (attribute)
-import Html.Events exposing (onClick)
+import Html.Events exposing (onClick, onInput)
 import List
 import Random
 import Random.List
@@ -18,7 +18,10 @@ type alias Model =
 
 type Msg
     = ShuffleDeck
+    | ChangePlayerName String
+    | SubmitRules
     | NewDeck Deck.Deck
+    | StartGame
 
 
 init : () -> ( Model, Cmd Msg )
@@ -45,6 +48,32 @@ displayCard { rank, suit } =
     span [ attribute "class" cardClass ] [ text (getCardFrontHex card) ]
 
 
+viewInput : String -> String -> String -> (String -> Msg) -> Html Msg
+viewInput label_ id_ value_ toMsg =
+    span []
+        [ label [ attribute "for" id_ ] [ text label_ ]
+        , input
+            [ attribute "value" value_
+            , onInput toMsg
+            , attribute "id" id_
+            , attribute "name" id_
+            ]
+            []
+        ]
+
+
+rulesView : Model -> Html Msg
+rulesView model =
+    div []
+        [ h1 [] [ text "Game Rules" ]
+        , form []
+            [ div []
+                [ viewInput "Player Name: " "player_name" model.player.name ChangePlayerName
+                ]
+            ]
+        ]
+
+
 view : Model -> Html Msg
 view model =
     div []
@@ -63,6 +92,26 @@ update msg model =
 
         NewDeck cards ->
             ( { model | deck = cards }, Cmd.none )
+
+        ChangePlayerName name ->
+            let
+                player_ =
+                    model.player
+            in
+            ( { model
+                | player =
+                    { player_
+                        | name = name
+                    }
+              }
+            , Cmd.none
+            )
+
+        SubmitRules ->
+            ( model, Cmd.none )
+
+        StartGame ->
+            ( model, Cmd.none )
 
 
 main : Program () Model Msg

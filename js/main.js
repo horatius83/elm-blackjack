@@ -5566,20 +5566,37 @@ var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$Main$update = F2(
 	function (msg, model) {
-		if (msg.$ === 'ShuffleDeck') {
-			return _Utils_Tuple2(
-				model,
-				A2(
-					$elm$random$Random$generate,
-					$author$project$Main$NewDeck,
-					$elm_community$random_extra$Random$List$shuffle(model.deck)));
-		} else {
-			var cards = msg.a;
-			return _Utils_Tuple2(
-				_Utils_update(
+		switch (msg.$) {
+			case 'ShuffleDeck':
+				return _Utils_Tuple2(
 					model,
-					{deck: cards}),
-				$elm$core$Platform$Cmd$none);
+					A2(
+						$elm$random$Random$generate,
+						$author$project$Main$NewDeck,
+						$elm_community$random_extra$Random$List$shuffle(model.deck)));
+			case 'NewDeck':
+				var cards = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{deck: cards}),
+					$elm$core$Platform$Cmd$none);
+			case 'ChangePlayerName':
+				var name = msg.a;
+				var player_ = model.player;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							player: _Utils_update(
+								player_,
+								{name: name})
+						}),
+					$elm$core$Platform$Cmd$none);
+			case 'SubmitRules':
+				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+			default:
+				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 		}
 	});
 var $author$project$Main$ShuffleDeck = {$: 'ShuffleDeck'};
