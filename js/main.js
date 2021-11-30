@@ -5613,38 +5613,41 @@ var $author$project$Main$update = F2(
 					$elm$core$Platform$Cmd$none);
 			case 'ChangeMinimumBet':
 				var bet = msg.a;
-				var betAsInt = A2(sToI, $author$project$Game$default.minimumBet, bet);
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{
 							rules: _Utils_update(
 								rules_,
-								{minimumBet: betAsInt})
+								{
+									minimumBet: A2(sToI, $author$project$Game$default.minimumBet, bet)
+								})
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 'ChangeMaximumBet':
 				var bet = msg.a;
-				var betAsInt = A2(sToI, $author$project$Game$default.maximumBet, bet);
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{
 							rules: _Utils_update(
 								rules_,
-								{maximumBet: betAsInt})
+								{
+									maximumBet: A2(sToI, $author$project$Game$default.maximumBet, bet)
+								})
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 'ChangeNumberOfDecks':
 				var decks = msg.a;
-				var decksAsInt = A2(sToI, $author$project$Game$default.numberOfDecks, decks);
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{
 							rules: _Utils_update(
 								rules_,
-								{numberOfDecks: decksAsInt})
+								{
+									numberOfDecks: A2(sToI, $author$project$Game$default.numberOfDecks, decks)
+								})
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 'ChangePayoutNumerator':

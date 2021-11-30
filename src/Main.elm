@@ -161,25 +161,13 @@ update msg model =
             )
 
         ChangeMinimumBet bet ->
-            let
-                betAsInt =
-                    sToI Game.default.minimumBet bet
-            in
-            ( { model | rules = { rules_ | minimumBet = betAsInt } }, Cmd.none )
+            ( { model | rules = { rules_ | minimumBet = sToI Game.default.minimumBet bet } }, Cmd.none )
 
         ChangeMaximumBet bet ->
-            let
-                betAsInt =
-                    sToI Game.default.maximumBet bet
-            in
-            ( { model | rules = { rules_ | maximumBet = betAsInt } }, Cmd.none )
+            ( { model | rules = { rules_ | maximumBet = sToI Game.default.maximumBet bet } }, Cmd.none )
 
         ChangeNumberOfDecks decks ->
-            let
-                decksAsInt =
-                    sToI Game.default.numberOfDecks decks
-            in
-            ( { model | rules = { rules_ | numberOfDecks = decksAsInt } }, Cmd.none )
+            ( { model | rules = { rules_ | numberOfDecks = sToI Game.default.numberOfDecks decks } }, Cmd.none )
 
         ChangePayoutNumerator numerator ->
             let
