@@ -5564,6 +5564,15 @@ var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
+var $elm$core$Maybe$withDefault = F2(
+	function (_default, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return value;
+		} else {
+			return _default;
+		}
+	});
 var $author$project$Main$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
@@ -5591,6 +5600,23 @@ var $author$project$Main$update = F2(
 							player: _Utils_update(
 								player_,
 								{name: name})
+						}),
+					$elm$core$Platform$Cmd$none);
+			case 'ChangeMinimumBet':
+				var bet = msg.a;
+				var rules_ = model.rules;
+				var d = $author$project$Game$default;
+				var betAsInt = A2(
+					$elm$core$Maybe$withDefault,
+					d.minimumBet,
+					$elm$core$String$toInt(bet));
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							rules: _Utils_update(
+								rules_,
+								{minimumBet: betAsInt})
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 'SubmitRules':
@@ -5733,6 +5759,9 @@ var $elm$html$Html$Events$onClick = function (msg) {
 		'click',
 		$elm$json$Json$Decode$succeed(msg));
 };
+var $author$project$Main$ChangeMinimumBet = function (a) {
+	return {$: 'ChangeMinimumBet', a: a};
+};
 var $author$project$Main$ChangePlayerName = function (a) {
 	return {$: 'ChangePlayerName', a: a};
 };
@@ -5826,7 +5855,14 @@ var $author$project$Main$rulesView = function (model) {
 						_List_Nil,
 						_List_fromArray(
 							[
-								A5($author$project$Main$viewInput, 'Player Name: ', 'player_name', model.player.name, 'text', $author$project$Main$ChangePlayerName)
+								A5($author$project$Main$viewInput, 'Player Name: ', 'player_name', model.player.name, 'text', $author$project$Main$ChangePlayerName),
+								A5(
+								$author$project$Main$viewInput,
+								'Minimum Bet: ',
+								'minimum_bet',
+								$elm$core$String$fromInt(model.rules.minimumBet),
+								'number',
+								$author$project$Main$ChangeMinimumBet)
 							]))
 					]))
 			]));

@@ -19,6 +19,7 @@ type alias Model =
 type Msg
     = ShuffleDeck
     | ChangePlayerName String
+    | ChangeMinimumBet String
     | SubmitRules
     | NewDeck Deck.Deck
     | StartGame
@@ -70,6 +71,7 @@ rulesView model =
         , form []
             [ div []
                 [ viewInput "Player Name: " "player_name" model.player.name "text" ChangePlayerName
+                , viewInput "Minimum Bet: " "minimum_bet" (String.fromInt model.rules.minimumBet) "number" ChangeMinimumBet
                 ]
             ]
         ]
@@ -118,6 +120,19 @@ update msg model =
               }
             , Cmd.none
             )
+
+        ChangeMinimumBet bet ->
+            let
+                rules_ =
+                    model.rules
+
+                d =
+                    Game.default
+
+                betAsInt =
+                    Maybe.withDefault d.minimumBet (String.toInt bet)
+            in
+            ( { model | rules = { rules_ | minimumBet = betAsInt } }, Cmd.none )
 
         SubmitRules ->
             ( model, Cmd.none )
