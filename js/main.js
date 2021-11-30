@@ -5619,6 +5619,23 @@ var $author$project$Main$update = F2(
 								{minimumBet: betAsInt})
 						}),
 					$elm$core$Platform$Cmd$none);
+			case 'ChangeMaximumBet':
+				var bet = msg.a;
+				var rules_ = model.rules;
+				var d = $author$project$Game$default;
+				var betAsInt = A2(
+					$elm$core$Maybe$withDefault,
+					d.maximumBet,
+					$elm$core$String$toInt(bet));
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							rules: _Utils_update(
+								rules_,
+								{maximumBet: betAsInt})
+						}),
+					$elm$core$Platform$Cmd$none);
 			case 'SubmitRules':
 				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 			default:
@@ -5759,6 +5776,9 @@ var $elm$html$Html$Events$onClick = function (msg) {
 		'click',
 		$elm$json$Json$Decode$succeed(msg));
 };
+var $author$project$Main$ChangeMaximumBet = function (a) {
+	return {$: 'ChangeMaximumBet', a: a};
+};
 var $author$project$Main$ChangeMinimumBet = function (a) {
 	return {$: 'ChangeMinimumBet', a: a};
 };
@@ -5855,7 +5875,13 @@ var $author$project$Main$rulesView = function (model) {
 						_List_Nil,
 						_List_fromArray(
 							[
-								A5($author$project$Main$viewInput, 'Player Name: ', 'player_name', model.player.name, 'text', $author$project$Main$ChangePlayerName),
+								A5($author$project$Main$viewInput, 'Player Name: ', 'player_name', model.player.name, 'text', $author$project$Main$ChangePlayerName)
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_Nil,
+						_List_fromArray(
+							[
 								A5(
 								$author$project$Main$viewInput,
 								'Minimum Bet: ',
@@ -5863,6 +5889,19 @@ var $author$project$Main$rulesView = function (model) {
 								$elm$core$String$fromInt(model.rules.minimumBet),
 								'number',
 								$author$project$Main$ChangeMinimumBet)
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_Nil,
+						_List_fromArray(
+							[
+								A5(
+								$author$project$Main$viewInput,
+								'Maximum Bet: ',
+								'maximum_bet',
+								$elm$core$String$fromInt(model.rules.maximumBet),
+								'number',
+								$author$project$Main$ChangeMaximumBet)
 							]))
 					]))
 			]));

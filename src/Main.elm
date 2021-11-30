@@ -20,6 +20,7 @@ type Msg
     = ShuffleDeck
     | ChangePlayerName String
     | ChangeMinimumBet String
+    | ChangeMaximumBet String
     | SubmitRules
     | NewDeck Deck.Deck
     | StartGame
@@ -70,9 +71,11 @@ rulesView model =
         [ h1 [] [ text "Game Rules" ]
         , form []
             [ div []
-                [ viewInput "Player Name: " "player_name" model.player.name "text" ChangePlayerName
-                , viewInput "Minimum Bet: " "minimum_bet" (String.fromInt model.rules.minimumBet) "number" ChangeMinimumBet
-                ]
+                [ viewInput "Player Name: " "player_name" model.player.name "text" ChangePlayerName ]
+            , div []
+                [ viewInput "Minimum Bet: " "minimum_bet" (String.fromInt model.rules.minimumBet) "number" ChangeMinimumBet ]
+            , div []
+                [ viewInput "Maximum Bet: " "maximum_bet" (String.fromInt model.rules.maximumBet) "number" ChangeMaximumBet ]
             ]
         ]
 
@@ -133,6 +136,19 @@ update msg model =
                     Maybe.withDefault d.minimumBet (String.toInt bet)
             in
             ( { model | rules = { rules_ | minimumBet = betAsInt } }, Cmd.none )
+
+        ChangeMaximumBet bet ->
+            let
+                rules_ =
+                    model.rules
+
+                d =
+                    Game.default
+
+                betAsInt =
+                    Maybe.withDefault d.maximumBet (String.toInt bet)
+            in
+            ( { model | rules = { rules_ | maximumBet = betAsInt } }, Cmd.none )
 
         SubmitRules ->
             ( model, Cmd.none )
