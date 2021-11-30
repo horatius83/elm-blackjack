@@ -21,6 +21,9 @@ type Msg
     | ChangePlayerName String
     | ChangeMinimumBet String
     | ChangeMaximumBet String
+    | ChangeNumberOfDecks String
+    | ChangePayoutNumerator String
+    | ChangePayoutDenominator String
     | SubmitRules
     | NewDeck Deck.Deck
     | StartGame
@@ -65,6 +68,26 @@ viewInput label_ id_ value_ type_ toMsg =
         ]
 
 
+payoutInput : Int -> Int -> Html Msg
+payoutInput numerator denominator =
+    span []
+        [ label [] [ text "BlackJack Payout: " ]
+        , input
+            [ attribute "value" (String.fromInt numerator)
+            , attribute "type" "number"
+            , onInput ChangePayoutNumerator
+            ]
+            []
+        , text " to "
+        , input
+            [ attribute "value" (String.fromInt denominator)
+            , attribute "type" "number"
+            , onInput ChangePayoutDenominator
+            ]
+            []
+        ]
+
+
 rulesView : Model -> Html Msg
 rulesView model =
     div []
@@ -76,6 +99,10 @@ rulesView model =
                 [ viewInput "Minimum Bet: " "minimum_bet" (String.fromInt model.rules.minimumBet) "number" ChangeMinimumBet ]
             , div []
                 [ viewInput "Maximum Bet: " "maximum_bet" (String.fromInt model.rules.maximumBet) "number" ChangeMaximumBet ]
+            , div []
+                [ viewInput "Number of decks: " "number_of_Decks" (String.fromInt model.rules.numberOfDecks) "number" ChangeNumberOfDecks ]
+            , div []
+                [ payoutInput model.rules.blackJackPayout.numerator model.rules.blackJackPayout.denominator ]
             ]
         ]
 
@@ -103,6 +130,19 @@ view model =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
+    let
+        sToI d v =
+            Maybe.withDefault d (String.toInt v)
+
+        rules_ =
+            model.rules
+
+        player_ =
+            model.player
+
+        blackJackPayout_ =
+            rules_.blackJackPayout
+    in
     case msg of
         ShuffleDeck ->
             ( model, Random.generate NewDeck (Random.List.shuffle model.deck) )
@@ -111,10 +151,6 @@ update msg model =
             ( { model | deck = cards }, Cmd.none )
 
         ChangePlayerName name ->
-            let
-                player_ =
-                    model.player
-            in
             ( { model
                 | player =
                     { player_
@@ -126,29 +162,38 @@ update msg model =
 
         ChangeMinimumBet bet ->
             let
-                rules_ =
-                    model.rules
-
-                d =
-                    Game.default
-
                 betAsInt =
-                    Maybe.withDefault d.minimumBet (String.toInt bet)
+                    sToI Game.default.minimumBet bet
             in
             ( { model | rules = { rules_ | minimumBet = betAsInt } }, Cmd.none )
 
         ChangeMaximumBet bet ->
             let
-                rules_ =
-                    model.rules
-
-                d =
-                    Game.default
-
                 betAsInt =
-                    Maybe.withDefault d.maximumBet (String.toInt bet)
+                    sToI Game.default.maximumBet bet
             in
             ( { model | rules = { rules_ | maximumBet = betAsInt } }, Cmd.none )
+
+        ChangeNumberOfDecks decks ->
+            let
+                decksAsInt =
+                    sToI Game.default.numberOfDecks decks
+            in
+            ( { model | rules = { rules_ | numberOfDecks = decksAsInt } }, Cmd.none )
+
+        ChangePayoutNumerator numerator ->
+            let
+                numeratorAsInt =
+                    sToI Game.default.blackJackPayout.numerator numerator
+            in
+            ( { model | rules = { rules_ | blackJackPayout = { blackJackPayout_ | numerator = numeratorAsInt } } }, Cmd.none )
+
+        ChangePayoutDenominator denominator ->
+            let
+                denominatorAsInt =
+                    sToI Game.default.blackJackPayout.denominator denominator
+            in
+            ( { model | rules = { rules_ | blackJackPayout = { blackJackPayout_ | denominator = denominatorAsInt } } }, Cmd.none )
 
         SubmitRules ->
             ( model, Cmd.none )

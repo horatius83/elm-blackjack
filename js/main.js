@@ -5575,6 +5575,16 @@ var $elm$core$Maybe$withDefault = F2(
 	});
 var $author$project$Main$update = F2(
 	function (msg, model) {
+		var sToI = F2(
+			function (d, v) {
+				return A2(
+					$elm$core$Maybe$withDefault,
+					d,
+					$elm$core$String$toInt(v));
+			});
+		var rules_ = model.rules;
+		var player_ = model.player;
+		var blackJackPayout_ = rules_.blackJackPayout;
 		switch (msg.$) {
 			case 'ShuffleDeck':
 				return _Utils_Tuple2(
@@ -5592,7 +5602,6 @@ var $author$project$Main$update = F2(
 					$elm$core$Platform$Cmd$none);
 			case 'ChangePlayerName':
 				var name = msg.a;
-				var player_ = model.player;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
@@ -5604,12 +5613,7 @@ var $author$project$Main$update = F2(
 					$elm$core$Platform$Cmd$none);
 			case 'ChangeMinimumBet':
 				var bet = msg.a;
-				var rules_ = model.rules;
-				var d = $author$project$Game$default;
-				var betAsInt = A2(
-					$elm$core$Maybe$withDefault,
-					d.minimumBet,
-					$elm$core$String$toInt(bet));
+				var betAsInt = A2(sToI, $author$project$Game$default.minimumBet, bet);
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
@@ -5621,12 +5625,7 @@ var $author$project$Main$update = F2(
 					$elm$core$Platform$Cmd$none);
 			case 'ChangeMaximumBet':
 				var bet = msg.a;
-				var rules_ = model.rules;
-				var d = $author$project$Game$default;
-				var betAsInt = A2(
-					$elm$core$Maybe$withDefault,
-					d.maximumBet,
-					$elm$core$String$toInt(bet));
+				var betAsInt = A2(sToI, $author$project$Game$default.maximumBet, bet);
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
@@ -5634,6 +5633,50 @@ var $author$project$Main$update = F2(
 							rules: _Utils_update(
 								rules_,
 								{maximumBet: betAsInt})
+						}),
+					$elm$core$Platform$Cmd$none);
+			case 'ChangeNumberOfDecks':
+				var decks = msg.a;
+				var decksAsInt = A2(sToI, $author$project$Game$default.numberOfDecks, decks);
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							rules: _Utils_update(
+								rules_,
+								{numberOfDecks: decksAsInt})
+						}),
+					$elm$core$Platform$Cmd$none);
+			case 'ChangePayoutNumerator':
+				var numerator = msg.a;
+				var numeratorAsInt = A2(sToI, $author$project$Game$default.blackJackPayout.numerator, numerator);
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							rules: _Utils_update(
+								rules_,
+								{
+									blackJackPayout: _Utils_update(
+										blackJackPayout_,
+										{numerator: numeratorAsInt})
+								})
+						}),
+					$elm$core$Platform$Cmd$none);
+			case 'ChangePayoutDenominator':
+				var denominator = msg.a;
+				var denominatorAsInt = A2(sToI, $author$project$Game$default.blackJackPayout.denominator, denominator);
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							rules: _Utils_update(
+								rules_,
+								{
+									blackJackPayout: _Utils_update(
+										blackJackPayout_,
+										{denominator: denominatorAsInt})
+								})
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 'SubmitRules':
@@ -5782,11 +5825,20 @@ var $author$project$Main$ChangeMaximumBet = function (a) {
 var $author$project$Main$ChangeMinimumBet = function (a) {
 	return {$: 'ChangeMinimumBet', a: a};
 };
+var $author$project$Main$ChangeNumberOfDecks = function (a) {
+	return {$: 'ChangeNumberOfDecks', a: a};
+};
 var $author$project$Main$ChangePlayerName = function (a) {
 	return {$: 'ChangePlayerName', a: a};
 };
 var $elm$html$Html$form = _VirtualDom_node('form');
 var $elm$html$Html$h1 = _VirtualDom_node('h1');
+var $author$project$Main$ChangePayoutDenominator = function (a) {
+	return {$: 'ChangePayoutDenominator', a: a};
+};
+var $author$project$Main$ChangePayoutNumerator = function (a) {
+	return {$: 'ChangePayoutNumerator', a: a};
+};
 var $elm$html$Html$input = _VirtualDom_node('input');
 var $elm$html$Html$label = _VirtualDom_node('label');
 var $elm$html$Html$Events$alwaysStop = function (x) {
@@ -5822,6 +5874,47 @@ var $elm$html$Html$Events$onInput = function (tagger) {
 			$elm$html$Html$Events$alwaysStop,
 			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
 };
+var $author$project$Main$payoutInput = F2(
+	function (numerator, denominator) {
+		return A2(
+			$elm$html$Html$span,
+			_List_Nil,
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$label,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$elm$html$Html$text('BlackJack Payout: ')
+						])),
+					A2(
+					$elm$html$Html$input,
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$Attributes$attribute,
+							'value',
+							$elm$core$String$fromInt(numerator)),
+							A2($elm$html$Html$Attributes$attribute, 'type', 'number'),
+							$elm$html$Html$Events$onInput($author$project$Main$ChangePayoutNumerator)
+						]),
+					_List_Nil),
+					$elm$html$Html$text(' to '),
+					A2(
+					$elm$html$Html$input,
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$Attributes$attribute,
+							'value',
+							$elm$core$String$fromInt(denominator)),
+							A2($elm$html$Html$Attributes$attribute, 'type', 'number'),
+							$elm$html$Html$Events$onInput($author$project$Main$ChangePayoutDenominator)
+						]),
+					_List_Nil)
+				]));
+	});
 var $author$project$Main$viewInput = F5(
 	function (label_, id_, value_, type_, toMsg) {
 		return A2(
@@ -5902,6 +5995,26 @@ var $author$project$Main$rulesView = function (model) {
 								$elm$core$String$fromInt(model.rules.maximumBet),
 								'number',
 								$author$project$Main$ChangeMaximumBet)
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_Nil,
+						_List_fromArray(
+							[
+								A5(
+								$author$project$Main$viewInput,
+								'Number of decks: ',
+								'number_of_Decks',
+								$elm$core$String$fromInt(model.rules.numberOfDecks),
+								'number',
+								$author$project$Main$ChangeNumberOfDecks)
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_Nil,
+						_List_fromArray(
+							[
+								A2($author$project$Main$payoutInput, model.rules.blackJackPayout.numerator, model.rules.blackJackPayout.denominator)
 							]))
 					]))
 			]));
