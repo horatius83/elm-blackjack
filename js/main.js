@@ -5682,6 +5682,19 @@ var $author$project$Main$update = F2(
 								})
 						}),
 					$elm$core$Platform$Cmd$none);
+			case 'ChangeNumberOfSplits':
+				var splits = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							rules: _Utils_update(
+								rules_,
+								{
+									numberOfSplits: A2(sToI, $author$project$Game$default.numberOfSplits, splits)
+								})
+						}),
+					$elm$core$Platform$Cmd$none);
 			case 'SubmitRules':
 				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 			default:
@@ -5831,17 +5844,14 @@ var $author$project$Main$ChangeMinimumBet = function (a) {
 var $author$project$Main$ChangeNumberOfDecks = function (a) {
 	return {$: 'ChangeNumberOfDecks', a: a};
 };
+var $author$project$Main$ChangeNumberOfSplits = function (a) {
+	return {$: 'ChangeNumberOfSplits', a: a};
+};
 var $author$project$Main$ChangePlayerName = function (a) {
 	return {$: 'ChangePlayerName', a: a};
 };
 var $elm$html$Html$form = _VirtualDom_node('form');
 var $elm$html$Html$h1 = _VirtualDom_node('h1');
-var $author$project$Main$ChangePayoutDenominator = function (a) {
-	return {$: 'ChangePayoutDenominator', a: a};
-};
-var $author$project$Main$ChangePayoutNumerator = function (a) {
-	return {$: 'ChangePayoutNumerator', a: a};
-};
 var $elm$html$Html$input = _VirtualDom_node('input');
 var $elm$html$Html$label = _VirtualDom_node('label');
 var $elm$html$Html$Events$alwaysStop = function (x) {
@@ -5876,6 +5886,66 @@ var $elm$html$Html$Events$onInput = function (tagger) {
 			$elm$json$Json$Decode$map,
 			$elm$html$Html$Events$alwaysStop,
 			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
+};
+var $author$project$Main$numericInput = F7(
+	function (label_, id_, value_, min_, max_, step_, toMsg) {
+		var toAttributeList = F2(
+			function (attributeName, maybeValue) {
+				if (maybeValue.$ === 'Just') {
+					var x = maybeValue.a;
+					return _List_fromArray(
+						[
+							A2(
+							$elm$html$Html$Attributes$attribute,
+							attributeName,
+							$elm$core$String$fromInt(x))
+						]);
+				} else {
+					return _List_Nil;
+				}
+			});
+		var stepAttribute = A2(toAttributeList, 'step', step_);
+		var minAttribute = A2(toAttributeList, 'min', min_);
+		var maxAttribute = A2(toAttributeList, 'max', max_);
+		var defaultAttributes = _List_fromArray(
+			[
+				A2(
+				$elm$html$Html$Attributes$attribute,
+				'value',
+				$elm$core$String$fromInt(value_)),
+				A2($elm$html$Html$Attributes$attribute, 'id', id_),
+				A2($elm$html$Html$Attributes$attribute, 'name', id_),
+				A2($elm$html$Html$Attributes$attribute, 'type', 'number'),
+				$elm$html$Html$Events$onInput(toMsg)
+			]);
+		var attributes = _Utils_ap(
+			defaultAttributes,
+			_Utils_ap(
+				minAttribute,
+				_Utils_ap(maxAttribute, stepAttribute)));
+		return A2(
+			$elm$html$Html$span,
+			_List_Nil,
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$label,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$attribute, 'for', id_)
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(label_)
+						])),
+					A2($elm$html$Html$input, attributes, _List_Nil)
+				]));
+	});
+var $author$project$Main$ChangePayoutDenominator = function (a) {
+	return {$: 'ChangePayoutDenominator', a: a};
+};
+var $author$project$Main$ChangePayoutNumerator = function (a) {
+	return {$: 'ChangePayoutNumerator', a: a};
 };
 var $author$project$Main$payoutInput = F2(
 	function (numerator, denominator) {
@@ -5978,12 +6048,14 @@ var $author$project$Main$rulesView = function (model) {
 						_List_Nil,
 						_List_fromArray(
 							[
-								A5(
-								$author$project$Main$viewInput,
+								A7(
+								$author$project$Main$numericInput,
 								'Minimum Bet: ',
 								'minimum_bet',
-								$elm$core$String$fromInt(model.rules.minimumBet),
-								'number',
+								model.rules.minimumBet,
+								$elm$core$Maybe$Just(10),
+								$elm$core$Maybe$Just(model.rules.maximumBet),
+								$elm$core$Maybe$Just(10),
 								$author$project$Main$ChangeMinimumBet)
 							])),
 						A2(
@@ -5991,12 +6063,14 @@ var $author$project$Main$rulesView = function (model) {
 						_List_Nil,
 						_List_fromArray(
 							[
-								A5(
-								$author$project$Main$viewInput,
-								'Maximum Bet: ',
+								A7(
+								$author$project$Main$numericInput,
+								'Maximum bet: ',
 								'maximum_bet',
-								$elm$core$String$fromInt(model.rules.maximumBet),
-								'number',
+								model.rules.maximumBet,
+								$elm$core$Maybe$Just(model.rules.minimumBet),
+								$elm$core$Maybe$Nothing,
+								$elm$core$Maybe$Just(10),
 								$author$project$Main$ChangeMaximumBet)
 							])),
 						A2(
@@ -6004,12 +6078,14 @@ var $author$project$Main$rulesView = function (model) {
 						_List_Nil,
 						_List_fromArray(
 							[
-								A5(
-								$author$project$Main$viewInput,
+								A7(
+								$author$project$Main$numericInput,
 								'Number of decks: ',
-								'number_of_Decks',
-								$elm$core$String$fromInt(model.rules.numberOfDecks),
-								'number',
+								'number_of_decks',
+								model.rules.numberOfDecks,
+								$elm$core$Maybe$Just(1),
+								$elm$core$Maybe$Nothing,
+								$elm$core$Maybe$Nothing,
 								$author$project$Main$ChangeNumberOfDecks)
 							])),
 						A2(
@@ -6018,6 +6094,21 @@ var $author$project$Main$rulesView = function (model) {
 						_List_fromArray(
 							[
 								A2($author$project$Main$payoutInput, model.rules.blackJackPayout.numerator, model.rules.blackJackPayout.denominator)
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_Nil,
+						_List_fromArray(
+							[
+								A7(
+								$author$project$Main$numericInput,
+								'Number of Splits: ',
+								'number_of_splits',
+								model.rules.numberOfSplits,
+								$elm$core$Maybe$Just(1),
+								$elm$core$Maybe$Nothing,
+								$elm$core$Maybe$Nothing,
+								$author$project$Main$ChangeNumberOfSplits)
 							]))
 					]))
 			]));

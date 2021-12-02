@@ -24,6 +24,7 @@ type Msg
     | ChangeNumberOfDecks String
     | ChangePayoutNumerator String
     | ChangePayoutDenominator String
+    | ChangeNumberOfSplits String
     | SubmitRules
     | NewDeck Deck.Deck
     | StartGame
@@ -68,6 +69,43 @@ viewInput label_ id_ value_ type_ toMsg =
         ]
 
 
+numericInput : String -> String -> Int -> Maybe Int -> Maybe Int -> Maybe Int -> (String -> Msg) -> Html Msg
+numericInput label_ id_ value_ min_ max_ step_ toMsg =
+    let
+        defaultAttributes =
+            [ attribute "value" <| String.fromInt value_
+            , attribute "id" id_
+            , attribute "name" id_
+            , attribute "type" "number"
+            , onInput toMsg
+            ]
+
+        toAttributeList attributeName maybeValue =
+            case maybeValue of
+                Just x ->
+                    [ attribute attributeName (String.fromInt x) ]
+
+                Nothing ->
+                    []
+
+        minAttribute =
+            toAttributeList "min" min_
+
+        maxAttribute =
+            toAttributeList "max" max_
+
+        stepAttribute =
+            toAttributeList "step" step_
+
+        attributes =
+            defaultAttributes ++ minAttribute ++ maxAttribute ++ stepAttribute
+    in
+    span []
+        [ label [ attribute "for" id_ ] [ text label_ ]
+        , input attributes []
+        ]
+
+
 payoutInput : Int -> Int -> Html Msg
 payoutInput numerator denominator =
     span []
@@ -93,16 +131,12 @@ rulesView model =
     div []
         [ h1 [] [ text "Game Rules" ]
         , form []
-            [ div []
-                [ viewInput "Player Name: " "player_name" model.player.name "text" ChangePlayerName ]
-            , div []
-                [ viewInput "Minimum Bet: " "minimum_bet" (String.fromInt model.rules.minimumBet) "number" ChangeMinimumBet ]
-            , div []
-                [ viewInput "Maximum Bet: " "maximum_bet" (String.fromInt model.rules.maximumBet) "number" ChangeMaximumBet ]
-            , div []
-                [ viewInput "Number of decks: " "number_of_Decks" (String.fromInt model.rules.numberOfDecks) "number" ChangeNumberOfDecks ]
-            , div []
-                [ payoutInput model.rules.blackJackPayout.numerator model.rules.blackJackPayout.denominator ]
+            [ div [] [ viewInput "Player Name: " "player_name" model.player.name "text" ChangePlayerName ]
+            , div [] [ numericInput "Minimum Bet: " "minimum_bet" model.rules.minimumBet (Just 10) (Just model.rules.maximumBet) (Just 10) ChangeMinimumBet ]
+            , div [] [ numericInput "Maximum bet: " "maximum_bet" model.rules.maximumBet (Just model.rules.minimumBet) Nothing (Just 10) ChangeMaximumBet ]
+            , div [] [ numericInput "Number of decks: " "number_of_decks" model.rules.numberOfDecks (Just 1) Nothing Nothing ChangeNumberOfDecks ]
+            , div [] [ payoutInput model.rules.blackJackPayout.numerator model.rules.blackJackPayout.denominator ]
+            , div [] [ numericInput "Number of Splits: " "number_of_splits" model.rules.numberOfSplits (Just 1) Nothing Nothing ChangeNumberOfSplits ]
             ]
         ]
 
@@ -182,6 +216,9 @@ update msg model =
                     sToI Game.default.blackJackPayout.denominator denominator
             in
             ( { model | rules = { rules_ | blackJackPayout = { blackJackPayout_ | denominator = denominatorAsInt } } }, Cmd.none )
+
+        ChangeNumberOfSplits splits ->
+            ( { model | rules = { rules_ | numberOfSplits = sToI Game.default.numberOfSplits splits } }, Cmd.none )
 
         SubmitRules ->
             ( model, Cmd.none )
