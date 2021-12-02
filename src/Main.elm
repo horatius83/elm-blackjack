@@ -3,7 +3,7 @@ module Main exposing (main)
 import Browser
 import Card exposing (Card, Rank(..), Suit(..), cardBackHex, getCardFrontHex, getColor)
 import Deck
-import Game exposing (Game, GameState, default, new)
+import Game exposing (Game, GameState, default, defaultPlayer, new)
 import Html exposing (..)
 import Html.Attributes exposing (attribute)
 import Html.Events exposing (onClick, onInput)
@@ -19,6 +19,7 @@ type alias Model =
 type Msg
     = ShuffleDeck
     | ChangePlayerName String
+    | ChangePlayerMoney String
     | ChangeMinimumBet String
     | ChangeMaximumBet String
     | ChangeNumberOfDecks String
@@ -33,8 +34,11 @@ type Msg
 init : () -> ( Model, Cmd Msg )
 init _ =
     let
+        startingMoney =
+            1000
+
         model =
-            new "Max" 1000 default
+            Game.new defaultPlayer default
     in
     ( model, Random.generate NewDeck (Random.List.shuffle model.deck) )
 
@@ -128,15 +132,20 @@ payoutInput numerator denominator =
 
 rulesView : Model -> Html Msg
 rulesView model =
+    let
+        stepValue =
+            Just 10
+    in
     div []
         [ h1 [] [ text "Game Rules" ]
         , form []
             [ div [] [ viewInput "Player Name: " "player_name" model.player.name "text" ChangePlayerName ]
-            , div [] [ numericInput "Minimum Bet: " "minimum_bet" model.rules.minimumBet (Just 10) (Just model.rules.maximumBet) (Just 10) ChangeMinimumBet ]
-            , div [] [ numericInput "Maximum bet: " "maximum_bet" model.rules.maximumBet (Just model.rules.minimumBet) Nothing (Just 10) ChangeMaximumBet ]
+            , div [] [ numericInput "Minimum Bet: " "minimum_bet" model.rules.minimumBet stepValue (Just model.rules.maximumBet) stepValue ChangeMinimumBet ]
+            , div [] [ numericInput "Maximum bet: " "maximum_bet" model.rules.maximumBet (Just model.rules.minimumBet) Nothing stepValue ChangeMaximumBet ]
             , div [] [ numericInput "Number of decks: " "number_of_decks" model.rules.numberOfDecks (Just 1) Nothing Nothing ChangeNumberOfDecks ]
             , div [] [ payoutInput model.rules.blackJackPayout.numerator model.rules.blackJackPayout.denominator ]
             , div [] [ numericInput "Number of Splits: " "number_of_splits" model.rules.numberOfSplits (Just 1) Nothing Nothing ChangeNumberOfSplits ]
+            , div [] [ numericInput "Starting money: " "money" model.player.money stepValue Nothing stepValue ChangePlayerMoney ]
             ]
         ]
 
@@ -193,6 +202,9 @@ update msg model =
               }
             , Cmd.none
             )
+
+        ChangePlayerMoney money ->
+            ( { model | player = { player_ | money = sToI defaultPlayer.money money } }, Cmd.none )
 
         ChangeMinimumBet bet ->
             ( { model | rules = { rules_ | minimumBet = sToI Game.default.minimumBet bet } }, Cmd.none )

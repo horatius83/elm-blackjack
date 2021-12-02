@@ -5247,6 +5247,15 @@ var $author$project$Game$default = A6(
 	1,
 	2,
 	$author$project$Game$No);
+var $author$project$Player$Player = F3(
+	function (name, hands, money) {
+		return {hands: hands, money: money, name: name};
+	});
+var $author$project$Player$new = F2(
+	function (name, money) {
+		return A3($author$project$Player$Player, name, _List_Nil, money);
+	});
+var $author$project$Game$defaultPlayer = A2($author$project$Player$new, 'Max', 1000);
 var $elm$random$Random$Generate = function (a) {
 	return {$: 'Generate', a: a};
 };
@@ -5416,20 +5425,12 @@ var $author$project$Deck$new = function (numberOfDecks) {
 			},
 			A2($elm$core$List$range, 0, numberOfDecks)));
 };
-var $author$project$Player$Player = F3(
-	function (name, hands, money) {
-		return {hands: hands, money: money, name: name};
-	});
-var $author$project$Player$new = F2(
-	function (name, money) {
-		return A3($author$project$Player$Player, name, _List_Nil, money);
-	});
-var $author$project$Game$new = F3(
-	function (playerName, startingMoney, rules) {
+var $author$project$Game$new = F2(
+	function (player, rules) {
 		return A6(
 			$author$project$Game$Game,
 			{cards: _List_Nil},
-			A2($author$project$Player$new, playerName, startingMoney),
+			player,
 			$author$project$Deck$new(rules.numberOfDecks),
 			_List_Nil,
 			$author$project$Game$Init,
@@ -5552,7 +5553,8 @@ var $elm_community$random_extra$Random$List$shuffle = function (list) {
 		$elm$random$Random$independentSeed);
 };
 var $author$project$Main$init = function (_v0) {
-	var model = A3($author$project$Game$new, 'Max', 1000, $author$project$Game$default);
+	var startingMoney = 1000;
+	var model = A2($author$project$Game$new, $author$project$Game$defaultPlayer, $author$project$Game$default);
 	return _Utils_Tuple2(
 		model,
 		A2(
@@ -5609,6 +5611,19 @@ var $author$project$Main$update = F2(
 							player: _Utils_update(
 								player_,
 								{name: name})
+						}),
+					$elm$core$Platform$Cmd$none);
+			case 'ChangePlayerMoney':
+				var money = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							player: _Utils_update(
+								player_,
+								{
+									money: A2(sToI, $author$project$Game$defaultPlayer.money, money)
+								})
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 'ChangeMinimumBet':
@@ -5847,6 +5862,9 @@ var $author$project$Main$ChangeNumberOfDecks = function (a) {
 var $author$project$Main$ChangeNumberOfSplits = function (a) {
 	return {$: 'ChangeNumberOfSplits', a: a};
 };
+var $author$project$Main$ChangePlayerMoney = function (a) {
+	return {$: 'ChangePlayerMoney', a: a};
+};
 var $author$project$Main$ChangePlayerName = function (a) {
 	return {$: 'ChangePlayerName', a: a};
 };
@@ -6019,6 +6037,7 @@ var $author$project$Main$viewInput = F5(
 				]));
 	});
 var $author$project$Main$rulesView = function (model) {
+	var stepValue = $elm$core$Maybe$Just(10);
 	return A2(
 		$elm$html$Html$div,
 		_List_Nil,
@@ -6053,9 +6072,9 @@ var $author$project$Main$rulesView = function (model) {
 								'Minimum Bet: ',
 								'minimum_bet',
 								model.rules.minimumBet,
-								$elm$core$Maybe$Just(10),
+								stepValue,
 								$elm$core$Maybe$Just(model.rules.maximumBet),
-								$elm$core$Maybe$Just(10),
+								stepValue,
 								$author$project$Main$ChangeMinimumBet)
 							])),
 						A2(
@@ -6070,7 +6089,7 @@ var $author$project$Main$rulesView = function (model) {
 								model.rules.maximumBet,
 								$elm$core$Maybe$Just(model.rules.minimumBet),
 								$elm$core$Maybe$Nothing,
-								$elm$core$Maybe$Just(10),
+								stepValue,
 								$author$project$Main$ChangeMaximumBet)
 							])),
 						A2(
@@ -6109,6 +6128,13 @@ var $author$project$Main$rulesView = function (model) {
 								$elm$core$Maybe$Nothing,
 								$elm$core$Maybe$Nothing,
 								$author$project$Main$ChangeNumberOfSplits)
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_Nil,
+						_List_fromArray(
+							[
+								A7($author$project$Main$numericInput, 'Starting money: ', 'money', model.player.money, stepValue, $elm$core$Maybe$Nothing, stepValue, $author$project$Main$ChangePlayerMoney)
 							]))
 					]))
 			]));

@@ -47,6 +47,11 @@ default =
     Rules 100 1000 (BlackJackPayout 3 2) 1 2 No
 
 
-new : String -> Int -> Rules -> Game
-new playerName startingMoney rules =
-    Game { cards = [] } (Player.new playerName startingMoney) (Deck.new rules.numberOfDecks) [] Init rules
+defaultPlayer : Player.Player
+defaultPlayer =
+    Player.new "Max" 1000
+
+
+new : Player.Player -> Rules -> Game
+new player rules =
+    Game { cards = [] } player (Deck.new rules.numberOfDecks) [] Init rules
