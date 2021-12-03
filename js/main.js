@@ -5569,8 +5569,6 @@ var $author$project$Main$init = function (_v0) {
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
-var $author$project$Game$PlaceBets = {$: 'PlaceBets'};
-var $author$project$Game$Round = {$: 'Round'};
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $elm$core$Maybe$withDefault = F2(
@@ -5726,19 +5724,12 @@ var $author$project$Main$update = F2(
 							bet: A2(sToI, $author$project$Game$default.minimumBet, bet)
 						}),
 					$elm$core$Platform$Cmd$none);
-			case 'SubmitRules':
-				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
-			case 'StartGame':
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{state: $author$project$Game$PlaceBets}),
-					$elm$core$Platform$Cmd$none);
 			default:
+				var state = msg.a;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{state: $author$project$Game$Round}),
+						{state: state}),
 					$elm$core$Platform$Cmd$none);
 		}
 	});
@@ -5879,7 +5870,10 @@ var $elm$html$Html$Events$onClick = function (msg) {
 var $author$project$Main$ChangeBet = function (a) {
 	return {$: 'ChangeBet', a: a};
 };
-var $author$project$Main$StartRound = {$: 'StartRound'};
+var $author$project$Main$ChangeGameState = function (a) {
+	return {$: 'ChangeGameState', a: a};
+};
+var $author$project$Game$Round = {$: 'Round'};
 var $elm$html$Html$h1 = _VirtualDom_node('h1');
 var $elm$html$Html$input = _VirtualDom_node('input');
 var $elm$html$Html$label = _VirtualDom_node('label');
@@ -6002,7 +5996,8 @@ var $author$project$Main$placeBetsView = function (model) {
 								$elm$html$Html$button,
 								_List_fromArray(
 									[
-										$elm$html$Html$Events$onClick($author$project$Main$StartRound)
+										$elm$html$Html$Events$onClick(
+										$author$project$Main$ChangeGameState($author$project$Game$Round))
 									]),
 								_List_fromArray(
 									[
@@ -6030,7 +6025,7 @@ var $author$project$Main$ChangePlayerMoney = function (a) {
 var $author$project$Main$ChangePlayerName = function (a) {
 	return {$: 'ChangePlayerName', a: a};
 };
-var $author$project$Main$StartGame = {$: 'StartGame'};
+var $author$project$Game$PlaceBets = {$: 'PlaceBets'};
 var $author$project$Main$ChangePayoutDenominator = function (a) {
 	return {$: 'ChangePayoutDenominator', a: a};
 };
@@ -6217,7 +6212,8 @@ var $author$project$Main$rulesView = function (model) {
 								$elm$html$Html$button,
 								_List_fromArray(
 									[
-										$elm$html$Html$Events$onClick($author$project$Main$StartGame)
+										$elm$html$Html$Events$onClick(
+										$author$project$Main$ChangeGameState($author$project$Game$PlaceBets))
 									]),
 								_List_fromArray(
 									[

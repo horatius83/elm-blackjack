@@ -27,10 +27,8 @@ type Msg
     | ChangePayoutDenominator String
     | ChangeNumberOfSplits String
     | ChangeBet String
-    | SubmitRules
     | NewDeck Deck.Deck
-    | StartGame
-    | StartRound
+    | ChangeGameState GameState
 
 
 init : () -> ( Model, Cmd Msg )
@@ -148,7 +146,7 @@ rulesView model =
             , div [] [ payoutInput model.rules.blackJackPayout.numerator model.rules.blackJackPayout.denominator ]
             , div [] [ numericInput "Number of Splits: " "number_of_splits" model.rules.numberOfSplits (Just 1) Nothing Nothing ChangeNumberOfSplits ]
             , div [] [ numericInput "Starting money: " "money" model.player.money stepValue Nothing stepValue ChangePlayerMoney ]
-            , div [] [ button [ onClick StartGame ] [ text "Start Game" ] ]
+            , div [] [ button [ onClick (ChangeGameState Game.PlaceBets) ] [ text "Start Game" ] ]
             ]
         ]
 
@@ -174,7 +172,7 @@ placeBetsView model =
         [ h1 [] [ text "Place Bets" ]
         , div []
             [ numericInput "Bet: " "bet" model.bet minimumBet maximumBet stepValue ChangeBet
-            , div [] [ button [ onClick StartRound ] [ text "PlaceBet" ] ]
+            , div [] [ button [ onClick (ChangeGameState Game.Round) ] [ text "PlaceBet" ] ]
             ]
         ]
 
@@ -195,12 +193,6 @@ view model =
                 , ul [] (List.map displayCard model.deck)
                 , div [ attribute "class" "card" ] [ text cardBackHex ]
                 ]
-
-
-
--- Round ->
--- RoundEnd ->
--- GameOver ->
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -267,14 +259,8 @@ update msg model =
         ChangeBet bet ->
             ( { model | bet = sToI Game.default.minimumBet bet }, Cmd.none )
 
-        SubmitRules ->
-            ( model, Cmd.none )
-
-        StartGame ->
-            ( { model | state = Game.PlaceBets }, Cmd.none )
-
-        StartRound ->
-            ( { model | state = Game.Round }, Cmd.none )
+        ChangeGameState state ->
+            ( { model | state = state }, Cmd.none )
 
 
 main : Program () Model Msg
