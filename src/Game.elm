@@ -35,6 +35,7 @@ type GameState
 type alias Game =
     { dealer : { cards : Deck.Deck }
     , player : Player.Player
+    , bet : Int
     , deck : Deck.Deck
     , discard : Deck.Deck
     , state : GameState
@@ -54,4 +55,11 @@ defaultPlayer =
 
 new : Player.Player -> Rules -> Game
 new player rules =
-    Game { cards = [] } player (Deck.new rules.numberOfDecks) [] Init rules
+    let
+        bet =
+            default.minimumBet
+
+        player_ =
+            { player | money = player.money - bet }
+    in
+    Game { cards = [] } player_ bet (Deck.new rules.numberOfDecks) [] Init rules

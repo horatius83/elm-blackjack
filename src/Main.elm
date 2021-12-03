@@ -26,9 +26,11 @@ type Msg
     | ChangePayoutNumerator String
     | ChangePayoutDenominator String
     | ChangeNumberOfSplits String
+    | ChangeBet String
     | SubmitRules
     | NewDeck Deck.Deck
     | StartGame
+    | StartRound
 
 
 init : () -> ( Model, Cmd Msg )
@@ -138,7 +140,7 @@ rulesView model =
     in
     div []
         [ h1 [] [ text "Game Rules" ]
-        , form []
+        , div []
             [ div [] [ viewInput "Player Name: " "player_name" model.player.name "text" ChangePlayerName ]
             , div [] [ numericInput "Minimum Bet: " "minimum_bet" model.rules.minimumBet stepValue (Just model.rules.maximumBet) stepValue ChangeMinimumBet ]
             , div [] [ numericInput "Maximum bet: " "maximum_bet" model.rules.maximumBet (Just model.rules.minimumBet) Nothing stepValue ChangeMaximumBet ]
@@ -146,6 +148,33 @@ rulesView model =
             , div [] [ payoutInput model.rules.blackJackPayout.numerator model.rules.blackJackPayout.denominator ]
             , div [] [ numericInput "Number of Splits: " "number_of_splits" model.rules.numberOfSplits (Just 1) Nothing Nothing ChangeNumberOfSplits ]
             , div [] [ numericInput "Starting money: " "money" model.player.money stepValue Nothing stepValue ChangePlayerMoney ]
+            , div [] [ button [ onClick StartGame ] [ text "Start Game" ] ]
+            ]
+        ]
+
+
+placeBetsView : Model -> Html Msg
+placeBetsView model =
+    let
+        stepValue =
+            Just 10
+
+        minimumBet =
+            Just model.rules.minimumBet
+
+        maximumBet =
+            Just <|
+                if model.rules.maximumBet < model.player.money then
+                    model.rules.maximumBet
+
+                else
+                    model.player.money
+    in
+    div []
+        [ h1 [] [ text "Place Bets" ]
+        , div []
+            [ numericInput "Bet: " "bet" model.bet minimumBet maximumBet stepValue ChangeBet
+            , div [] [ button [ onClick StartRound ] [ text "PlaceBet" ] ]
             ]
         ]
 
@@ -155,6 +184,9 @@ view model =
     case model.state of
         Game.Init ->
             rulesView model
+
+        Game.PlaceBets ->
+            placeBetsView model
 
         _ ->
             div []
@@ -232,11 +264,17 @@ update msg model =
         ChangeNumberOfSplits splits ->
             ( { model | rules = { rules_ | numberOfSplits = sToI Game.default.numberOfSplits splits } }, Cmd.none )
 
+        ChangeBet bet ->
+            ( { model | bet = sToI Game.default.minimumBet bet }, Cmd.none )
+
         SubmitRules ->
             ( model, Cmd.none )
 
         StartGame ->
-            ( model, Cmd.none )
+            ( { model | state = Game.PlaceBets }, Cmd.none )
+
+        StartRound ->
+            ( { model | state = Game.Round }, Cmd.none )
 
 
 main : Program () Model Msg

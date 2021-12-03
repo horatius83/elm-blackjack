@@ -5363,9 +5363,9 @@ var $elm$random$Random$generate = F2(
 			$elm$random$Random$Generate(
 				A2($elm$random$Random$map, tagger, generator)));
 	});
-var $author$project$Game$Game = F6(
-	function (dealer, player, deck, discard, state, rules) {
-		return {dealer: dealer, deck: deck, discard: discard, player: player, rules: rules, state: state};
+var $author$project$Game$Game = F7(
+	function (dealer, player, bet, deck, discard, state, rules) {
+		return {bet: bet, dealer: dealer, deck: deck, discard: discard, player: player, rules: rules, state: state};
 	});
 var $author$project$Game$Init = {$: 'Init'};
 var $author$project$Card$Card = F2(
@@ -5427,10 +5427,15 @@ var $author$project$Deck$new = function (numberOfDecks) {
 };
 var $author$project$Game$new = F2(
 	function (player, rules) {
-		return A6(
+		var bet = $author$project$Game$default.minimumBet;
+		var player_ = _Utils_update(
+			player,
+			{money: player.money - bet});
+		return A7(
 			$author$project$Game$Game,
 			{cards: _List_Nil},
-			player,
+			player_,
+			bet,
 			$author$project$Deck$new(rules.numberOfDecks),
 			_List_Nil,
 			$author$project$Game$Init,
@@ -5564,6 +5569,8 @@ var $author$project$Main$init = function (_v0) {
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
+var $author$project$Game$PlaceBets = {$: 'PlaceBets'};
+var $author$project$Game$Round = {$: 'Round'};
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $elm$core$Maybe$withDefault = F2(
@@ -5710,10 +5717,29 @@ var $author$project$Main$update = F2(
 								})
 						}),
 					$elm$core$Platform$Cmd$none);
+			case 'ChangeBet':
+				var bet = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							bet: A2(sToI, $author$project$Game$default.minimumBet, bet)
+						}),
+					$elm$core$Platform$Cmd$none);
 			case 'SubmitRules':
 				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+			case 'StartGame':
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{state: $author$project$Game$PlaceBets}),
+					$elm$core$Platform$Cmd$none);
 			default:
-				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{state: $author$project$Game$Round}),
+					$elm$core$Platform$Cmd$none);
 		}
 	});
 var $author$project$Main$ShuffleDeck = {$: 'ShuffleDeck'};
@@ -5850,25 +5876,10 @@ var $elm$html$Html$Events$onClick = function (msg) {
 		'click',
 		$elm$json$Json$Decode$succeed(msg));
 };
-var $author$project$Main$ChangeMaximumBet = function (a) {
-	return {$: 'ChangeMaximumBet', a: a};
+var $author$project$Main$ChangeBet = function (a) {
+	return {$: 'ChangeBet', a: a};
 };
-var $author$project$Main$ChangeMinimumBet = function (a) {
-	return {$: 'ChangeMinimumBet', a: a};
-};
-var $author$project$Main$ChangeNumberOfDecks = function (a) {
-	return {$: 'ChangeNumberOfDecks', a: a};
-};
-var $author$project$Main$ChangeNumberOfSplits = function (a) {
-	return {$: 'ChangeNumberOfSplits', a: a};
-};
-var $author$project$Main$ChangePlayerMoney = function (a) {
-	return {$: 'ChangePlayerMoney', a: a};
-};
-var $author$project$Main$ChangePlayerName = function (a) {
-	return {$: 'ChangePlayerName', a: a};
-};
-var $elm$html$Html$form = _VirtualDom_node('form');
+var $author$project$Main$StartRound = {$: 'StartRound'};
 var $elm$html$Html$h1 = _VirtualDom_node('h1');
 var $elm$html$Html$input = _VirtualDom_node('input');
 var $elm$html$Html$label = _VirtualDom_node('label');
@@ -5959,6 +5970,67 @@ var $author$project$Main$numericInput = F7(
 					A2($elm$html$Html$input, attributes, _List_Nil)
 				]));
 	});
+var $author$project$Main$placeBetsView = function (model) {
+	var stepValue = $elm$core$Maybe$Just(10);
+	var minimumBet = $elm$core$Maybe$Just(model.rules.minimumBet);
+	var maximumBet = $elm$core$Maybe$Just(
+		(_Utils_cmp(model.rules.maximumBet, model.player.money) < 0) ? model.rules.maximumBet : model.player.money);
+	return A2(
+		$elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$h1,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Place Bets')
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A7($author$project$Main$numericInput, 'Bet: ', 'bet', model.bet, minimumBet, maximumBet, stepValue, $author$project$Main$ChangeBet),
+						A2(
+						$elm$html$Html$div,
+						_List_Nil,
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$button,
+								_List_fromArray(
+									[
+										$elm$html$Html$Events$onClick($author$project$Main$StartRound)
+									]),
+								_List_fromArray(
+									[
+										$elm$html$Html$text('PlaceBet')
+									]))
+							]))
+					]))
+			]));
+};
+var $author$project$Main$ChangeMaximumBet = function (a) {
+	return {$: 'ChangeMaximumBet', a: a};
+};
+var $author$project$Main$ChangeMinimumBet = function (a) {
+	return {$: 'ChangeMinimumBet', a: a};
+};
+var $author$project$Main$ChangeNumberOfDecks = function (a) {
+	return {$: 'ChangeNumberOfDecks', a: a};
+};
+var $author$project$Main$ChangeNumberOfSplits = function (a) {
+	return {$: 'ChangeNumberOfSplits', a: a};
+};
+var $author$project$Main$ChangePlayerMoney = function (a) {
+	return {$: 'ChangePlayerMoney', a: a};
+};
+var $author$project$Main$ChangePlayerName = function (a) {
+	return {$: 'ChangePlayerName', a: a};
+};
+var $author$project$Main$StartGame = {$: 'StartGame'};
 var $author$project$Main$ChangePayoutDenominator = function (a) {
 	return {$: 'ChangePayoutDenominator', a: a};
 };
@@ -6051,7 +6123,7 @@ var $author$project$Main$rulesView = function (model) {
 						$elm$html$Html$text('Game Rules')
 					])),
 				A2(
-				$elm$html$Html$form,
+				$elm$html$Html$div,
 				_List_Nil,
 				_List_fromArray(
 					[
@@ -6135,6 +6207,22 @@ var $author$project$Main$rulesView = function (model) {
 						_List_fromArray(
 							[
 								A7($author$project$Main$numericInput, 'Starting money: ', 'money', model.player.money, stepValue, $elm$core$Maybe$Nothing, stepValue, $author$project$Main$ChangePlayerMoney)
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_Nil,
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$button,
+								_List_fromArray(
+									[
+										$elm$html$Html$Events$onClick($author$project$Main$StartGame)
+									]),
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Start Game')
+									]))
 							]))
 					]))
 			]));
@@ -6142,39 +6230,42 @@ var $author$project$Main$rulesView = function (model) {
 var $elm$html$Html$ul = _VirtualDom_node('ul');
 var $author$project$Main$view = function (model) {
 	var _v0 = model.state;
-	if (_v0.$ === 'Init') {
-		return $author$project$Main$rulesView(model);
-	} else {
-		return A2(
-			$elm$html$Html$div,
-			_List_Nil,
-			_List_fromArray(
-				[
-					A2(
-					$elm$html$Html$button,
-					_List_fromArray(
-						[
-							$elm$html$Html$Events$onClick($author$project$Main$ShuffleDeck)
-						]),
-					_List_fromArray(
-						[
-							$elm$html$Html$text('Shuffle List')
-						])),
-					A2(
-					$elm$html$Html$ul,
-					_List_Nil,
-					A2($elm$core$List$map, $author$project$Main$displayCard, model.deck)),
-					A2(
-					$elm$html$Html$div,
-					_List_fromArray(
-						[
-							A2($elm$html$Html$Attributes$attribute, 'class', 'card')
-						]),
-					_List_fromArray(
-						[
-							$elm$html$Html$text($author$project$Card$cardBackHex)
-						]))
-				]));
+	switch (_v0.$) {
+		case 'Init':
+			return $author$project$Main$rulesView(model);
+		case 'PlaceBets':
+			return $author$project$Main$placeBetsView(model);
+		default:
+			return A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$button,
+						_List_fromArray(
+							[
+								$elm$html$Html$Events$onClick($author$project$Main$ShuffleDeck)
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Shuffle List')
+							])),
+						A2(
+						$elm$html$Html$ul,
+						_List_Nil,
+						A2($elm$core$List$map, $author$project$Main$displayCard, model.deck)),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								A2($elm$html$Html$Attributes$attribute, 'class', 'card')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text($author$project$Card$cardBackHex)
+							]))
+					]));
 	}
 };
 var $author$project$Main$main = $elm$browser$Browser$element(
