@@ -10,25 +10,8 @@ import Html.Events exposing (onClick, onInput)
 import List
 import Random
 import Random.List
-
-
-type alias Model =
-    Game
-
-
-type Msg
-    = ShuffleDeck
-    | ChangePlayerName String
-    | ChangePlayerMoney String
-    | ChangeMinimumBet String
-    | ChangeMaximumBet String
-    | ChangeNumberOfDecks String
-    | ChangePayoutNumerator String
-    | ChangePayoutDenominator String
-    | ChangeNumberOfSplits String
-    | ChangeBet String
-    | NewDeck Deck.Deck
-    | ChangeGameState GameState
+import State exposing (Model, Msg(..))
+import Views.Round exposing (defaultStepValue)
 
 
 init : () -> ( Model, Cmd Msg )
@@ -134,7 +117,7 @@ rulesView : Model -> Html Msg
 rulesView model =
     let
         stepValue =
-            Just 10
+            Just defaultStepValue
     in
     div []
         [ h1 [] [ text "Game Rules" ]

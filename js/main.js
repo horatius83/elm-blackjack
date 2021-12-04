@@ -5227,7 +5227,7 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$element = _Browser_element;
-var $author$project$Main$NewDeck = function (a) {
+var $author$project$State$NewDeck = function (a) {
 	return {$: 'NewDeck', a: a};
 };
 var $author$project$Game$BlackJackPayout = F2(
@@ -5564,7 +5564,7 @@ var $author$project$Main$init = function (_v0) {
 		model,
 		A2(
 			$elm$random$Random$generate,
-			$author$project$Main$NewDeck,
+			$author$project$State$NewDeck,
 			$elm_community$random_extra$Random$List$shuffle(model.deck)));
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
@@ -5598,7 +5598,7 @@ var $author$project$Main$update = F2(
 					model,
 					A2(
 						$elm$random$Random$generate,
-						$author$project$Main$NewDeck,
+						$author$project$State$NewDeck,
 						$elm_community$random_extra$Random$List$shuffle(model.deck)));
 			case 'NewDeck':
 				var cards = msg.a;
@@ -5733,7 +5733,7 @@ var $author$project$Main$update = F2(
 					$elm$core$Platform$Cmd$none);
 		}
 	});
-var $author$project$Main$ShuffleDeck = {$: 'ShuffleDeck'};
+var $author$project$State$ShuffleDeck = {$: 'ShuffleDeck'};
 var $elm$virtual_dom$VirtualDom$attribute = F2(
 	function (key, value) {
 		return A2(
@@ -5867,10 +5867,10 @@ var $elm$html$Html$Events$onClick = function (msg) {
 		'click',
 		$elm$json$Json$Decode$succeed(msg));
 };
-var $author$project$Main$ChangeBet = function (a) {
+var $author$project$State$ChangeBet = function (a) {
 	return {$: 'ChangeBet', a: a};
 };
-var $author$project$Main$ChangeGameState = function (a) {
+var $author$project$State$ChangeGameState = function (a) {
 	return {$: 'ChangeGameState', a: a};
 };
 var $author$project$Game$Round = {$: 'Round'};
@@ -5986,7 +5986,7 @@ var $author$project$Main$placeBetsView = function (model) {
 				_List_Nil,
 				_List_fromArray(
 					[
-						A7($author$project$Main$numericInput, 'Bet: ', 'bet', model.bet, minimumBet, maximumBet, stepValue, $author$project$Main$ChangeBet),
+						A7($author$project$Main$numericInput, 'Bet: ', 'bet', model.bet, minimumBet, maximumBet, stepValue, $author$project$State$ChangeBet),
 						A2(
 						$elm$html$Html$div,
 						_List_Nil,
@@ -5997,7 +5997,7 @@ var $author$project$Main$placeBetsView = function (model) {
 								_List_fromArray(
 									[
 										$elm$html$Html$Events$onClick(
-										$author$project$Main$ChangeGameState($author$project$Game$Round))
+										$author$project$State$ChangeGameState($author$project$Game$Round))
 									]),
 								_List_fromArray(
 									[
@@ -6007,29 +6007,30 @@ var $author$project$Main$placeBetsView = function (model) {
 					]))
 			]));
 };
-var $author$project$Main$ChangeMaximumBet = function (a) {
+var $author$project$State$ChangeMaximumBet = function (a) {
 	return {$: 'ChangeMaximumBet', a: a};
 };
-var $author$project$Main$ChangeMinimumBet = function (a) {
+var $author$project$State$ChangeMinimumBet = function (a) {
 	return {$: 'ChangeMinimumBet', a: a};
 };
-var $author$project$Main$ChangeNumberOfDecks = function (a) {
+var $author$project$State$ChangeNumberOfDecks = function (a) {
 	return {$: 'ChangeNumberOfDecks', a: a};
 };
-var $author$project$Main$ChangeNumberOfSplits = function (a) {
+var $author$project$State$ChangeNumberOfSplits = function (a) {
 	return {$: 'ChangeNumberOfSplits', a: a};
 };
-var $author$project$Main$ChangePlayerMoney = function (a) {
+var $author$project$State$ChangePlayerMoney = function (a) {
 	return {$: 'ChangePlayerMoney', a: a};
 };
-var $author$project$Main$ChangePlayerName = function (a) {
+var $author$project$State$ChangePlayerName = function (a) {
 	return {$: 'ChangePlayerName', a: a};
 };
 var $author$project$Game$PlaceBets = {$: 'PlaceBets'};
-var $author$project$Main$ChangePayoutDenominator = function (a) {
+var $author$project$Views$Round$defaultStepValue = 10;
+var $author$project$State$ChangePayoutDenominator = function (a) {
 	return {$: 'ChangePayoutDenominator', a: a};
 };
-var $author$project$Main$ChangePayoutNumerator = function (a) {
+var $author$project$State$ChangePayoutNumerator = function (a) {
 	return {$: 'ChangePayoutNumerator', a: a};
 };
 var $author$project$Main$payoutInput = F2(
@@ -6055,7 +6056,7 @@ var $author$project$Main$payoutInput = F2(
 							'value',
 							$elm$core$String$fromInt(numerator)),
 							A2($elm$html$Html$Attributes$attribute, 'type', 'number'),
-							$elm$html$Html$Events$onInput($author$project$Main$ChangePayoutNumerator)
+							$elm$html$Html$Events$onInput($author$project$State$ChangePayoutNumerator)
 						]),
 					_List_Nil),
 					$elm$html$Html$text(' to '),
@@ -6068,7 +6069,7 @@ var $author$project$Main$payoutInput = F2(
 							'value',
 							$elm$core$String$fromInt(denominator)),
 							A2($elm$html$Html$Attributes$attribute, 'type', 'number'),
-							$elm$html$Html$Events$onInput($author$project$Main$ChangePayoutDenominator)
+							$elm$html$Html$Events$onInput($author$project$State$ChangePayoutDenominator)
 						]),
 					_List_Nil)
 				]));
@@ -6104,7 +6105,7 @@ var $author$project$Main$viewInput = F5(
 				]));
 	});
 var $author$project$Main$rulesView = function (model) {
-	var stepValue = $elm$core$Maybe$Just(10);
+	var stepValue = $elm$core$Maybe$Just($author$project$Views$Round$defaultStepValue);
 	return A2(
 		$elm$html$Html$div,
 		_List_Nil,
@@ -6127,7 +6128,7 @@ var $author$project$Main$rulesView = function (model) {
 						_List_Nil,
 						_List_fromArray(
 							[
-								A5($author$project$Main$viewInput, 'Player Name: ', 'player_name', model.player.name, 'text', $author$project$Main$ChangePlayerName)
+								A5($author$project$Main$viewInput, 'Player Name: ', 'player_name', model.player.name, 'text', $author$project$State$ChangePlayerName)
 							])),
 						A2(
 						$elm$html$Html$div,
@@ -6142,7 +6143,7 @@ var $author$project$Main$rulesView = function (model) {
 								stepValue,
 								$elm$core$Maybe$Just(model.rules.maximumBet),
 								stepValue,
-								$author$project$Main$ChangeMinimumBet)
+								$author$project$State$ChangeMinimumBet)
 							])),
 						A2(
 						$elm$html$Html$div,
@@ -6157,7 +6158,7 @@ var $author$project$Main$rulesView = function (model) {
 								$elm$core$Maybe$Just(model.rules.minimumBet),
 								$elm$core$Maybe$Nothing,
 								stepValue,
-								$author$project$Main$ChangeMaximumBet)
+								$author$project$State$ChangeMaximumBet)
 							])),
 						A2(
 						$elm$html$Html$div,
@@ -6172,7 +6173,7 @@ var $author$project$Main$rulesView = function (model) {
 								$elm$core$Maybe$Just(1),
 								$elm$core$Maybe$Nothing,
 								$elm$core$Maybe$Nothing,
-								$author$project$Main$ChangeNumberOfDecks)
+								$author$project$State$ChangeNumberOfDecks)
 							])),
 						A2(
 						$elm$html$Html$div,
@@ -6194,14 +6195,14 @@ var $author$project$Main$rulesView = function (model) {
 								$elm$core$Maybe$Just(1),
 								$elm$core$Maybe$Nothing,
 								$elm$core$Maybe$Nothing,
-								$author$project$Main$ChangeNumberOfSplits)
+								$author$project$State$ChangeNumberOfSplits)
 							])),
 						A2(
 						$elm$html$Html$div,
 						_List_Nil,
 						_List_fromArray(
 							[
-								A7($author$project$Main$numericInput, 'Starting money: ', 'money', model.player.money, stepValue, $elm$core$Maybe$Nothing, stepValue, $author$project$Main$ChangePlayerMoney)
+								A7($author$project$Main$numericInput, 'Starting money: ', 'money', model.player.money, stepValue, $elm$core$Maybe$Nothing, stepValue, $author$project$State$ChangePlayerMoney)
 							])),
 						A2(
 						$elm$html$Html$div,
@@ -6213,7 +6214,7 @@ var $author$project$Main$rulesView = function (model) {
 								_List_fromArray(
 									[
 										$elm$html$Html$Events$onClick(
-										$author$project$Main$ChangeGameState($author$project$Game$PlaceBets))
+										$author$project$State$ChangeGameState($author$project$Game$PlaceBets))
 									]),
 								_List_fromArray(
 									[
@@ -6241,7 +6242,7 @@ var $author$project$Main$view = function (model) {
 						$elm$html$Html$button,
 						_List_fromArray(
 							[
-								$elm$html$Html$Events$onClick($author$project$Main$ShuffleDeck)
+								$elm$html$Html$Events$onClick($author$project$State$ShuffleDeck)
 							]),
 						_List_fromArray(
 							[
