@@ -1,11 +1,13 @@
 module Controls exposing (..)
 
-import Card exposing (Card, getCardFrontHex, getColor)
-import Html exposing (Html, input, label, span, text)
+import Card exposing (Card, cardBackHex, getCardFrontHex, getColor)
+import Game
+import Html exposing (Html, button, div, h1, input, label, span, text)
 import Html.Attributes exposing (attribute)
 import Html.Events exposing (onClick, onInput)
 import List
-import State exposing (Msg)
+import Player exposing (Player)
+import State exposing (Model, Msg(..))
 
 
 viewInput : String -> String -> String -> String -> (String -> Msg) -> Html Msg
@@ -95,6 +97,50 @@ viewCard { rank, suit } =
     span [ attribute "class" cardClass ] [ text (getCardFrontHex card) ]
 
 
+viewCards : List Card -> List (Html Msg)
+viewCards cards =
+    List.map viewCard cards
+
+
 viewCardBack : Html Msg
 viewCardBack =
-    span [ attribute "class" "card" ] [ text <| Card.cardBackHex ]
+    span [ attribute "class" "card" ] [ text <| cardBackHex ]
+
+
+viewDealer : List Card -> Bool -> Html Msg
+viewDealer cards showAll =
+    let
+        cardsAsHtml =
+            case ( cards, showAll ) of
+                ( [], _ ) ->
+                    []
+
+                ( x :: xs, False ) ->
+                    [ viewCardBack ] ++ viewCards xs
+
+                ( x :: xs, True ) ->
+                    [ viewCard x ] ++ viewCards xs
+    in
+    div []
+        [ h1 [] [ text "Dealer" ]
+        , span [] cardsAsHtml
+        , text <| String.fromInt (List.length cards) ++ " cards"
+        ]
+
+
+viewPlayer : Player -> Html Msg
+viewPlayer player =
+    div []
+        [ h1 []
+            [ text "Player" ]
+        ]
+
+
+viewRoundActions : Model -> Html Msg
+viewRoundActions model =
+    div []
+        [ span []
+            [ button [] [ text "Hit" ]
+            , button [ onClick (ChangeGameState Game.RoundEnd) ] [ text "Stay" ]
+            ]
+        ]

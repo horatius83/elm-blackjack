@@ -10,6 +10,7 @@ import Html.Attributes exposing (attribute)
 import Html.Events exposing (onClick, onInput)
 import List
 import Page.Bet
+import Page.Round
 import Page.Rules
 import Random
 import Random.List
@@ -36,6 +37,9 @@ view model =
 
         Game.PlaceBets ->
             Page.Bet.view model
+
+        Game.Round ->
+            Page.Round.view model
 
         _ ->
             div []

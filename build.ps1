@@ -1,2 +1,2 @@
 elm-format .\src --yes
-elm make .\src\Main.elm --output .\js\main.js
+elm make .\src\Main.elm --optimize --output .\js\main.js
