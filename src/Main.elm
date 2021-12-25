@@ -12,6 +12,7 @@ import List
 import Page.Bet
 import Page.Round
 import Page.Rules
+import Player exposing (addCardToHand)
 import Random
 import Random.List
 import State exposing (Model, Msg(..))
@@ -69,6 +70,9 @@ update msg model =
         ShuffleDeck ->
             ( model, Random.generate NewDeck (Random.List.shuffle model.deck) )
 
+        ShuffleDiscard ->
+            ( { model | deck = model.deck ++ model.discard, discard = [] }, Random.generate NewDeck (Random.List.shuffle model.deck) )
+
         NewDeck cards ->
             ( { model | deck = cards }, Cmd.none )
 
@@ -116,6 +120,33 @@ update msg model =
 
         ChangeGameState state ->
             ( { model | state = state }, Cmd.none )
+
+
+dealCardPlayer : Model -> Int -> ( Model, Cmd Msg )
+dealCardPlayer model hand =
+    let
+        addCardToPlayer c =
+            addCardToHand model.player hand c
+    in
+    case model.deck of
+        x :: [] ->
+            case addCardToPlayer x of
+                Just np ->
+                    ( { model | player = np, deck = model.discard, discard = [] }, Random.generate NewDeck (Random.List.shuffle model.deck) )
+
+                Nothing ->
+                    ( model, Cmd.none )
+
+        x :: xs ->
+            case addCardToPlayer x of
+                Just np ->
+                    ( { model | player = np, deck = xs }, Cmd.none )
+
+                Nothing ->
+                    ( model, Cmd.none )
+
+        _ ->
+            ( model, Cmd.none )
 
 
 main : Program () Model Msg

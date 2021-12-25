@@ -8,8 +8,14 @@ type alias Model =
     Game
 
 
+type CardRecipient
+    = Dealer
+    | Player
+
+
 type Msg
     = ShuffleDeck
+    | ShuffleDiscard
     | ChangePlayerName String
     | ChangePlayerMoney String
     | ChangeMinimumBet String
@@ -21,3 +27,7 @@ type Msg
     | ChangeBet String
     | NewDeck Deck.Deck
     | ChangeGameState GameState
+
+
+
+--    | DealCard CardRecipient

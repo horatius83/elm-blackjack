@@ -784,11 +784,11 @@ function _Debug_crash_UNUSED(identifier, fact1, fact2, fact3, fact4)
 
 function _Debug_regionToString(region)
 {
-	if (region.I.y === region.O.y)
+	if (region.J.y === region.P.y)
 	{
-		return 'on line ' + region.I.y;
+		return 'on line ' + region.J.y;
 	}
-	return 'on lines ' + region.I.y + ' through ' + region.O.y;
+	return 'on lines ' + region.J.y + ' through ' + region.P.y;
 }
 
 
@@ -2705,8 +2705,8 @@ var _VirtualDom_mapEventRecord = F2(function(func, record)
 {
 	return {
 		n: func(record.n),
-		J: record.J,
-		F: record.F
+		K: record.K,
+		G: record.G
 	}
 });
 
@@ -2975,10 +2975,10 @@ function _VirtualDom_makeCallback(eventNode, initialHandler)
 
 		var value = result.a;
 		var message = !tag ? value : tag < 3 ? value.a : value.n;
-		var stopPropagation = tag == 1 ? value.b : tag == 3 && value.J;
+		var stopPropagation = tag == 1 ? value.b : tag == 3 && value.K;
 		var currentEventNode = (
 			stopPropagation && event.stopPropagation(),
-			(tag == 2 ? value.b : tag == 3 && value.F) && event.preventDefault(),
+			(tag == 2 ? value.b : tag == 3 && value.G) && event.preventDefault(),
 			eventNode
 		);
 		var tagger;
@@ -3968,7 +3968,7 @@ var _Browser_document = _Debugger_document || F4(function(impl, flagDecoder, deb
 		impl.aX,
 		impl.aU,
 		function(sendToApp, initialModel) {
-			var divertHrefToApp = impl.H && impl.H(sendToApp)
+			var divertHrefToApp = impl.I && impl.I(sendToApp)
 			var view = impl.aY;
 			var title = _VirtualDom_doc.title;
 			var bodyNode = _VirtualDom_doc.body;
@@ -3977,7 +3977,7 @@ var _Browser_document = _Debugger_document || F4(function(impl, flagDecoder, deb
 			{
 				_VirtualDom_divertHrefToApp = divertHrefToApp;
 				var doc = view(model);
-				var nextNode = _VirtualDom_node('body')(_List_Nil)(doc.as);
+				var nextNode = _VirtualDom_node('body')(_List_Nil)(doc.at);
 				var patches = _VirtualDom_diff(currNode, nextNode);
 				bodyNode = _VirtualDom_applyPatches(bodyNode, currNode, patches, sendToApp);
 				currNode = nextNode;
@@ -4043,7 +4043,7 @@ function _Browser_application(impl)
 	var key = function() { key.a(onUrlChange(_Browser_getUrl())); };
 
 	return _Browser_document({
-		H: function(sendToApp)
+		I: function(sendToApp)
 		{
 			key.a = sendToApp;
 			_Browser_window.addEventListener('popstate', key);
@@ -4059,9 +4059,9 @@ function _Browser_application(impl)
 					var next = $elm$url$Url$fromString(href).a;
 					sendToApp(onUrlRequest(
 						(next
-							&& curr.ad === next.ad
-							&& curr.S === next.S
-							&& curr.aa.a === next.aa.a
+							&& curr.ae === next.ae
+							&& curr.T === next.T
+							&& curr.ab.a === next.ab.a
 						)
 							? $elm$browser$Browser$Internal(next)
 							: $elm$browser$Browser$External(href)
@@ -4141,17 +4141,17 @@ var _Browser_decodeEvent = F2(function(decoder, event)
 function _Browser_visibilityInfo()
 {
 	return (typeof _VirtualDom_doc.hidden !== 'undefined')
-		? { aE: 'hidden', au: 'visibilitychange' }
+		? { aE: 'hidden', av: 'visibilitychange' }
 		:
 	(typeof _VirtualDom_doc.mozHidden !== 'undefined')
-		? { aE: 'mozHidden', au: 'mozvisibilitychange' }
+		? { aE: 'mozHidden', av: 'mozvisibilitychange' }
 		:
 	(typeof _VirtualDom_doc.msHidden !== 'undefined')
-		? { aE: 'msHidden', au: 'msvisibilitychange' }
+		? { aE: 'msHidden', av: 'msvisibilitychange' }
 		:
 	(typeof _VirtualDom_doc.webkitHidden !== 'undefined')
-		? { aE: 'webkitHidden', au: 'webkitvisibilitychange' }
-		: { aE: 'hidden', au: 'visibilitychange' };
+		? { aE: 'webkitHidden', av: 'webkitvisibilitychange' }
+		: { aE: 'hidden', av: 'visibilitychange' };
 }
 
 
@@ -4232,12 +4232,12 @@ var _Browser_call = F2(function(functionName, id)
 function _Browser_getViewport()
 {
 	return {
-		ah: _Browser_getScene(),
-		ak: {
-			am: _Browser_window.pageXOffset,
-			an: _Browser_window.pageYOffset,
-			al: _Browser_doc.documentElement.clientWidth,
-			R: _Browser_doc.documentElement.clientHeight
+		ai: _Browser_getScene(),
+		al: {
+			an: _Browser_window.pageXOffset,
+			ao: _Browser_window.pageYOffset,
+			am: _Browser_doc.documentElement.clientWidth,
+			S: _Browser_doc.documentElement.clientHeight
 		}
 	};
 }
@@ -4247,8 +4247,8 @@ function _Browser_getScene()
 	var body = _Browser_doc.body;
 	var elem = _Browser_doc.documentElement;
 	return {
-		al: Math.max(body.scrollWidth, body.offsetWidth, elem.scrollWidth, elem.offsetWidth, elem.clientWidth),
-		R: Math.max(body.scrollHeight, body.offsetHeight, elem.scrollHeight, elem.offsetHeight, elem.clientHeight)
+		am: Math.max(body.scrollWidth, body.offsetWidth, elem.scrollWidth, elem.offsetWidth, elem.clientWidth),
+		S: Math.max(body.scrollHeight, body.offsetHeight, elem.scrollHeight, elem.offsetHeight, elem.clientHeight)
 	};
 }
 
@@ -4271,15 +4271,15 @@ function _Browser_getViewportOf(id)
 	return _Browser_withNode(id, function(node)
 	{
 		return {
-			ah: {
-				al: node.scrollWidth,
-				R: node.scrollHeight
+			ai: {
+				am: node.scrollWidth,
+				S: node.scrollHeight
 			},
-			ak: {
-				am: node.scrollLeft,
-				an: node.scrollTop,
-				al: node.clientWidth,
-				R: node.clientHeight
+			al: {
+				an: node.scrollLeft,
+				ao: node.scrollTop,
+				am: node.clientWidth,
+				S: node.clientHeight
 			}
 		};
 	});
@@ -4309,18 +4309,18 @@ function _Browser_getElement(id)
 		var x = _Browser_window.pageXOffset;
 		var y = _Browser_window.pageYOffset;
 		return {
-			ah: _Browser_getScene(),
-			ak: {
-				am: x,
-				an: y,
-				al: _Browser_doc.documentElement.clientWidth,
-				R: _Browser_doc.documentElement.clientHeight
+			ai: _Browser_getScene(),
+			al: {
+				an: x,
+				ao: y,
+				am: _Browser_doc.documentElement.clientWidth,
+				S: _Browser_doc.documentElement.clientHeight
 			},
-			aB: {
-				am: x + rect.left,
-				an: y + rect.top,
-				al: rect.width,
-				R: rect.height
+			aC: {
+				an: x + rect.left,
+				ao: y + rect.top,
+				am: rect.width,
+				S: rect.height
 			}
 		};
 	});
@@ -4942,7 +4942,7 @@ var $elm$url$Url$Http = 0;
 var $elm$url$Url$Https = 1;
 var $elm$url$Url$Url = F6(
 	function (protocol, host, port_, path, query, fragment) {
-		return {Q: fragment, S: host, Z: path, aa: port_, ad: protocol, ae: query};
+		return {R: fragment, T: host, _: path, ab: port_, ae: protocol, af: query};
 	});
 var $elm$core$String$contains = _String_contains;
 var $elm$core$String$length = _String_length;
@@ -5222,16 +5222,16 @@ var $elm$core$Task$perform = F2(
 	});
 var $elm$browser$Browser$element = _Browser_element;
 var $author$project$State$NewDeck = function (a) {
-	return {$: 10, a: a};
+	return {$: 11, a: a};
 };
 var $author$project$Game$BlackJackPayout = F2(
 	function (numerator, denominator) {
-		return {ax: denominator, aL: numerator};
+		return {ay: denominator, aL: numerator};
 	});
 var $author$project$Game$No = 0;
 var $author$project$Game$Rules = F6(
 	function (minimumBet, maximumBet, blackJackPayout, numberOfSplits, numberOfDecks, surrenderRules) {
-		return {ar: blackJackPayout, aI: maximumBet, U: minimumBet, X: numberOfDecks, aK: numberOfSplits, aV: surrenderRules};
+		return {as: blackJackPayout, aI: maximumBet, V: minimumBet, Y: numberOfDecks, aK: numberOfSplits, aV: surrenderRules};
 	});
 var $author$project$Game$default = A6(
 	$author$project$Game$Rules,
@@ -5243,11 +5243,11 @@ var $author$project$Game$default = A6(
 	0);
 var $author$project$Player$Player = F3(
 	function (name, hands, money) {
-		return {aD: hands, V: money, aJ: name};
+		return {D: hands, W: money, aJ: name};
 	});
 var $author$project$Player$new = F2(
 	function (name, money) {
-		return A3($author$project$Player$Player, name, _List_Nil, money);
+		return A3($author$project$Player$Player, name, $elm$core$Array$empty, money);
 	});
 var $author$project$Game$defaultPlayer = A2($author$project$Player$new, 'Max', 1000);
 var $elm$random$Random$Generate = $elm$core$Basics$identity;
@@ -5350,12 +5350,12 @@ var $elm$random$Random$generate = F2(
 	});
 var $author$project$Game$Game = F7(
 	function (dealer, player, bet, deck, discard, state, rules) {
-		return {aq: bet, av: dealer, aw: deck, ay: discard, aP: player, aR: rules, aS: state};
+		return {ar: bet, aw: dealer, ax: deck, az: discard, aP: player, aR: rules, aS: state};
 	});
 var $author$project$Game$Init = 0;
 var $author$project$Card$Card = F2(
 	function (rank, suit) {
-		return {G: rank, K: suit};
+		return {H: rank, L: suit};
 	});
 var $elm$core$List$append = F2(
 	function (xs, ys) {
@@ -5412,16 +5412,16 @@ var $author$project$Deck$new = function (numberOfDecks) {
 };
 var $author$project$Game$new = F2(
 	function (player, rules) {
-		var bet = $author$project$Game$default.U;
+		var bet = $author$project$Game$default.V;
 		var player_ = _Utils_update(
 			player,
-			{V: player.V - bet});
+			{W: player.W - bet});
 		return A7(
 			$author$project$Game$Game,
-			{at: _List_Nil},
+			{au: _List_Nil},
 			player_,
 			bet,
-			$author$project$Deck$new(rules.X),
+			$author$project$Deck$new(rules.Y),
 			_List_Nil,
 			0,
 			rules);
@@ -5547,7 +5547,7 @@ var $author$project$Main$init = function (_v0) {
 		A2(
 			$elm$random$Random$generate,
 			$author$project$State$NewDeck,
-			$elm_community$random_extra$Random$List$shuffle(model.aw)));
+			$elm_community$random_extra$Random$List$shuffle(model.ax)));
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
@@ -5573,7 +5573,7 @@ var $author$project$Main$update = F2(
 			});
 		var rules_ = model.aR;
 		var player_ = model.aP;
-		var blackJackPayout_ = rules_.ar;
+		var blackJackPayout_ = rules_.as;
 		switch (msg.$) {
 			case 0:
 				return _Utils_Tuple2(
@@ -5581,15 +5581,27 @@ var $author$project$Main$update = F2(
 					A2(
 						$elm$random$Random$generate,
 						$author$project$State$NewDeck,
-						$elm_community$random_extra$Random$List$shuffle(model.aw)));
-			case 10:
+						$elm_community$random_extra$Random$List$shuffle(model.ax)));
+			case 1:
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							ax: _Utils_ap(model.ax, model.az),
+							az: _List_Nil
+						}),
+					A2(
+						$elm$random$Random$generate,
+						$author$project$State$NewDeck,
+						$elm_community$random_extra$Random$List$shuffle(model.ax)));
+			case 11:
 				var cards = msg.a;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{aw: cards}),
+						{ax: cards}),
 					$elm$core$Platform$Cmd$none);
-			case 1:
+			case 2:
 				var name = msg.a;
 				return _Utils_Tuple2(
 					_Utils_update(
@@ -5600,7 +5612,7 @@ var $author$project$Main$update = F2(
 								{aJ: name})
 						}),
 					$elm$core$Platform$Cmd$none);
-			case 2:
+			case 3:
 				var money = msg.a;
 				return _Utils_Tuple2(
 					_Utils_update(
@@ -5609,20 +5621,7 @@ var $author$project$Main$update = F2(
 							aP: _Utils_update(
 								player_,
 								{
-									V: A2(sToI, $author$project$Game$defaultPlayer.V, money)
-								})
-						}),
-					$elm$core$Platform$Cmd$none);
-			case 3:
-				var bet = msg.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{
-							aR: _Utils_update(
-								rules_,
-								{
-									U: A2(sToI, $author$project$Game$default.U, bet)
+									W: A2(sToI, $author$project$Game$defaultPlayer.W, money)
 								})
 						}),
 					$elm$core$Platform$Cmd$none);
@@ -5635,11 +5634,24 @@ var $author$project$Main$update = F2(
 							aR: _Utils_update(
 								rules_,
 								{
-									aI: A2(sToI, $author$project$Game$default.aI, bet)
+									V: A2(sToI, $author$project$Game$default.V, bet)
 								})
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 5:
+				var bet = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							aR: _Utils_update(
+								rules_,
+								{
+									aI: A2(sToI, $author$project$Game$default.aI, bet)
+								})
+						}),
+					$elm$core$Platform$Cmd$none);
+			case 6:
 				var decks = msg.a;
 				return _Utils_Tuple2(
 					_Utils_update(
@@ -5648,13 +5660,13 @@ var $author$project$Main$update = F2(
 							aR: _Utils_update(
 								rules_,
 								{
-									X: A2(sToI, $author$project$Game$default.X, decks)
+									Y: A2(sToI, $author$project$Game$default.Y, decks)
 								})
 						}),
 					$elm$core$Platform$Cmd$none);
-			case 6:
+			case 7:
 				var numerator = msg.a;
-				var numeratorAsInt = A2(sToI, $author$project$Game$default.ar.aL, numerator);
+				var numeratorAsInt = A2(sToI, $author$project$Game$default.as.aL, numerator);
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
@@ -5662,15 +5674,15 @@ var $author$project$Main$update = F2(
 							aR: _Utils_update(
 								rules_,
 								{
-									ar: _Utils_update(
+									as: _Utils_update(
 										blackJackPayout_,
 										{aL: numeratorAsInt})
 								})
 						}),
 					$elm$core$Platform$Cmd$none);
-			case 7:
+			case 8:
 				var denominator = msg.a;
-				var denominatorAsInt = A2(sToI, $author$project$Game$default.ar.ax, denominator);
+				var denominatorAsInt = A2(sToI, $author$project$Game$default.as.ay, denominator);
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
@@ -5678,13 +5690,13 @@ var $author$project$Main$update = F2(
 							aR: _Utils_update(
 								rules_,
 								{
-									ar: _Utils_update(
+									as: _Utils_update(
 										blackJackPayout_,
-										{ax: denominatorAsInt})
+										{ay: denominatorAsInt})
 								})
 						}),
 					$elm$core$Platform$Cmd$none);
-			case 8:
+			case 9:
 				var splits = msg.a;
 				return _Utils_Tuple2(
 					_Utils_update(
@@ -5697,13 +5709,13 @@ var $author$project$Main$update = F2(
 								})
 						}),
 					$elm$core$Platform$Cmd$none);
-			case 9:
+			case 10:
 				var bet = msg.a;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{
-							aq: A2(sToI, $author$project$Game$default.U, bet)
+							ar: A2(sToI, $author$project$Game$default.V, bet)
 						}),
 					$elm$core$Platform$Cmd$none);
 			default:
@@ -5771,10 +5783,10 @@ var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$html$Html$ul = _VirtualDom_node('ul');
 var $author$project$State$ChangeBet = function (a) {
-	return {$: 9, a: a};
+	return {$: 10, a: a};
 };
 var $author$project$State$ChangeGameState = function (a) {
-	return {$: 11, a: a};
+	return {$: 12, a: a};
 };
 var $author$project$Game$Round = 2;
 var $elm$html$Html$h1 = _VirtualDom_node('h1');
@@ -5870,9 +5882,9 @@ var $author$project$Controls$viewNumericInput = F7(
 	});
 var $author$project$Page$Bet$view = function (model) {
 	var stepValue = $elm$core$Maybe$Just(10);
-	var minimumBet = $elm$core$Maybe$Just(model.aR.U);
+	var minimumBet = $elm$core$Maybe$Just(model.aR.V);
 	var maximumBet = $elm$core$Maybe$Just(
-		(_Utils_cmp(model.aR.aI, model.aP.V) < 0) ? model.aR.aI : model.aP.V);
+		(_Utils_cmp(model.aR.aI, model.aP.W) < 0) ? model.aR.aI : model.aP.W);
 	return A2(
 		$elm$html$Html$div,
 		_List_Nil,
@@ -5890,7 +5902,7 @@ var $author$project$Page$Bet$view = function (model) {
 				_List_Nil,
 				_List_fromArray(
 					[
-						A7($author$project$Controls$viewNumericInput, 'Bet: ', 'bet', model.aq, minimumBet, maximumBet, stepValue, $author$project$State$ChangeBet),
+						A7($author$project$Controls$viewNumericInput, 'Bet: ', 'bet', model.ar, minimumBet, maximumBet, stepValue, $author$project$State$ChangeBet),
 						A2(
 						$elm$html$Html$div,
 						_List_Nil,
@@ -5912,8 +5924,8 @@ var $author$project$Page$Bet$view = function (model) {
 			]));
 };
 var $author$project$Card$getCardFrontHex = function (_v0) {
-	var rank = _v0.G;
-	var suit = _v0.K;
+	var rank = _v0.H;
+	var suit = _v0.L;
 	var suitHex = function () {
 		switch (suit) {
 			case 3:
@@ -5973,8 +5985,8 @@ var $author$project$Card$getColor = function (suit) {
 	}
 };
 var $author$project$Controls$viewCard = function (_v0) {
-	var rank = _v0.G;
-	var suit = _v0.K;
+	var rank = _v0.H;
+	var suit = _v0.L;
 	var color = $author$project$Card$getColor(suit);
 	var cardClass = 'card ' + color;
 	var card = A2($author$project$Card$Card, rank, suit);
@@ -6103,28 +6115,28 @@ var $author$project$Page$Round$view = function (model) {
 		_List_Nil,
 		_List_fromArray(
 			[
-				A2($author$project$Controls$viewDealer, model.av.at, false),
+				A2($author$project$Controls$viewDealer, model.aw.au, false),
 				$author$project$Controls$viewPlayer(model.aP),
 				$author$project$Controls$viewRoundActions(model)
 			]));
 };
 var $author$project$State$ChangeMaximumBet = function (a) {
-	return {$: 4, a: a};
-};
-var $author$project$State$ChangeMinimumBet = function (a) {
-	return {$: 3, a: a};
-};
-var $author$project$State$ChangeNumberOfDecks = function (a) {
 	return {$: 5, a: a};
 };
+var $author$project$State$ChangeMinimumBet = function (a) {
+	return {$: 4, a: a};
+};
+var $author$project$State$ChangeNumberOfDecks = function (a) {
+	return {$: 6, a: a};
+};
 var $author$project$State$ChangeNumberOfSplits = function (a) {
-	return {$: 8, a: a};
+	return {$: 9, a: a};
 };
 var $author$project$State$ChangePlayerMoney = function (a) {
-	return {$: 2, a: a};
+	return {$: 3, a: a};
 };
 var $author$project$State$ChangePlayerName = function (a) {
-	return {$: 1, a: a};
+	return {$: 2, a: a};
 };
 var $author$project$Game$PlaceBets = 1;
 var $author$project$Controls$viewInput = F5(
@@ -6158,10 +6170,10 @@ var $author$project$Controls$viewInput = F5(
 				]));
 	});
 var $author$project$State$ChangePayoutDenominator = function (a) {
-	return {$: 7, a: a};
+	return {$: 8, a: a};
 };
 var $author$project$State$ChangePayoutNumerator = function (a) {
-	return {$: 6, a: a};
+	return {$: 7, a: a};
 };
 var $author$project$Controls$viewPayoutInput = F2(
 	function (numerator, denominator) {
@@ -6239,7 +6251,7 @@ var $author$project$Page$Rules$view = function (model) {
 								$author$project$Controls$viewNumericInput,
 								'Minimum Bet: ',
 								'minimum_bet',
-								model.aR.U,
+								model.aR.V,
 								stepValue,
 								$elm$core$Maybe$Just(model.aR.aI),
 								stepValue,
@@ -6255,7 +6267,7 @@ var $author$project$Page$Rules$view = function (model) {
 								'Maximum bet: ',
 								'maximum_bet',
 								model.aR.aI,
-								$elm$core$Maybe$Just(model.aR.U),
+								$elm$core$Maybe$Just(model.aR.V),
 								$elm$core$Maybe$Nothing,
 								stepValue,
 								$author$project$State$ChangeMaximumBet)
@@ -6269,7 +6281,7 @@ var $author$project$Page$Rules$view = function (model) {
 								$author$project$Controls$viewNumericInput,
 								'Number of decks: ',
 								'number_of_decks',
-								model.aR.X,
+								model.aR.Y,
 								$elm$core$Maybe$Just(1),
 								$elm$core$Maybe$Nothing,
 								$elm$core$Maybe$Nothing,
@@ -6280,7 +6292,7 @@ var $author$project$Page$Rules$view = function (model) {
 						_List_Nil,
 						_List_fromArray(
 							[
-								A2($author$project$Controls$viewPayoutInput, model.aR.ar.aL, model.aR.ar.ax)
+								A2($author$project$Controls$viewPayoutInput, model.aR.as.aL, model.aR.as.ay)
 							])),
 						A2(
 						$elm$html$Html$div,
@@ -6302,7 +6314,7 @@ var $author$project$Page$Rules$view = function (model) {
 						_List_Nil,
 						_List_fromArray(
 							[
-								A7($author$project$Controls$viewNumericInput, 'Starting money: ', 'money', model.aP.V, stepValue, $elm$core$Maybe$Nothing, stepValue, $author$project$State$ChangePlayerMoney)
+								A7($author$project$Controls$viewNumericInput, 'Starting money: ', 'money', model.aP.W, stepValue, $elm$core$Maybe$Nothing, stepValue, $author$project$State$ChangePlayerMoney)
 							])),
 						A2(
 						$elm$html$Html$div,
@@ -6352,7 +6364,7 @@ var $author$project$Main$view = function (model) {
 						A2(
 						$elm$html$Html$ul,
 						_List_Nil,
-						A2($elm$core$List$map, $author$project$Controls$viewCard, model.aw)),
+						A2($elm$core$List$map, $author$project$Controls$viewCard, model.ax)),
 						A2(
 						$elm$html$Html$div,
 						_List_fromArray(
