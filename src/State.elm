@@ -27,6 +27,7 @@ type Msg
     | ChangeBet String
     | NewDeck Deck.Deck
     | ChangeGameState GameState
+    | DealCardToDealer
 
 
 

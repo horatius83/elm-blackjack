@@ -5551,8 +5551,22 @@ var $author$project$Main$init = function (_v0) {
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
+var $author$project$State$ChangeGameState = function (a) {
+	return {$: 12, a: a};
+};
+var $author$project$State$DealCardToDealer = {$: 13};
+var $author$project$Game$PlayerStart = 3;
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
+var $author$project$Main$shuffleDeck = F2(
+	function (msg, deck) {
+		return A2(
+			$elm$random$Random$generate,
+			function (_v0) {
+				return msg;
+			},
+			$elm_community$random_extra$Random$List$shuffle(deck));
+	});
 var $elm$core$Maybe$withDefault = F2(
 	function (_default, maybe) {
 		if (!maybe.$) {
@@ -5562,169 +5576,280 @@ var $elm$core$Maybe$withDefault = F2(
 			return _default;
 		}
 	});
+var $author$project$Main$dealCardToDealer = function (model) {
+	dealCardToDealer:
+	while (true) {
+		var dealer_ = model.aw;
+		var addCard = function (card) {
+			return _Utils_update(
+				dealer_,
+				{
+					au: A2($elm$core$List$cons, card, dealer_.au)
+				});
+		};
+		var _v2 = _Utils_Tuple2(model.ax, model.aw.au);
+		if (!_v2.a.b) {
+			return _Utils_Tuple2(
+				model,
+				A2($author$project$Main$shuffleDeck, $author$project$State$DealCardToDealer, model.az));
+		} else {
+			if (!_v2.b.b) {
+				if (!_v2.a.b.b) {
+					var _v3 = _v2.a;
+					var x = _v3.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								aw: addCard(x),
+								ax: model.az,
+								az: _List_Nil
+							}),
+						A2($author$project$Main$shuffleDeck, $author$project$State$DealCardToDealer, model.az));
+				} else {
+					var _v6 = _v2.a;
+					var x = _v6.a;
+					var xs = _v6.b;
+					var $temp$model = _Utils_update(
+						model,
+						{
+							aw: addCard(x),
+							ax: xs
+						});
+					model = $temp$model;
+					continue dealCardToDealer;
+				}
+			} else {
+				if (!_v2.b.b.b) {
+					if (!_v2.a.b.b) {
+						var _v4 = _v2.a;
+						var x = _v4.a;
+						var _v5 = _v2.b;
+						var y = _v5.a;
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{
+									aw: addCard(x),
+									ax: model.az,
+									az: _List_Nil
+								}),
+							A2(
+								$author$project$Main$shuffleDeck,
+								$author$project$State$ChangeGameState(3),
+								model.az));
+					} else {
+						var _v7 = _v2.a;
+						var x = _v7.a;
+						var xs = _v7.b;
+						var _v8 = _v2.b;
+						var y = _v8.a;
+						var $temp$model = _Utils_update(
+							model,
+							{
+								aw: addCard(x),
+								ax: xs
+							});
+						model = $temp$model;
+						continue dealCardToDealer;
+					}
+				} else {
+					if (!_v2.b.b.b.b) {
+						var _v9 = _v2.a;
+						var x = _v9.a;
+						var xs = _v9.b;
+						var _v10 = _v2.b;
+						var y = _v10.a;
+						var _v11 = _v10.b;
+						var z = _v11.a;
+						return A2(
+							$author$project$Main$update,
+							$author$project$State$ChangeGameState(3),
+							model);
+					} else {
+						return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+					}
+				}
+			}
+		}
+	}
+};
 var $author$project$Main$update = F2(
 	function (msg, model) {
-		var sToI = F2(
-			function (d, v) {
-				return A2(
-					$elm$core$Maybe$withDefault,
-					d,
-					$elm$core$String$toInt(v));
-			});
-		var rules_ = model.aR;
-		var player_ = model.aP;
-		var blackJackPayout_ = rules_.as;
-		switch (msg.$) {
-			case 0:
-				return _Utils_Tuple2(
-					model,
-					A2(
-						$elm$random$Random$generate,
-						$author$project$State$NewDeck,
-						$elm_community$random_extra$Random$List$shuffle(model.ax)));
-			case 1:
-				return _Utils_Tuple2(
-					_Utils_update(
+		update:
+		while (true) {
+			var sToI = F2(
+				function (d, v) {
+					return A2(
+						$elm$core$Maybe$withDefault,
+						d,
+						$elm$core$String$toInt(v));
+				});
+			var rules_ = model.aR;
+			var player_ = model.aP;
+			var blackJackPayout_ = rules_.as;
+			switch (msg.$) {
+				case 0:
+					return _Utils_Tuple2(
 						model,
-						{
-							ax: _Utils_ap(model.ax, model.az),
-							az: _List_Nil
-						}),
-					A2(
-						$elm$random$Random$generate,
-						$author$project$State$NewDeck,
-						$elm_community$random_extra$Random$List$shuffle(model.ax)));
-			case 11:
-				var cards = msg.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{ax: cards}),
-					$elm$core$Platform$Cmd$none);
-			case 2:
-				var name = msg.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{
-							aP: _Utils_update(
-								player_,
-								{aJ: name})
-						}),
-					$elm$core$Platform$Cmd$none);
-			case 3:
-				var money = msg.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{
-							aP: _Utils_update(
-								player_,
-								{
-									W: A2(sToI, $author$project$Game$defaultPlayer.W, money)
-								})
-						}),
-					$elm$core$Platform$Cmd$none);
-			case 4:
-				var bet = msg.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{
-							aR: _Utils_update(
-								rules_,
-								{
-									V: A2(sToI, $author$project$Game$default.V, bet)
-								})
-						}),
-					$elm$core$Platform$Cmd$none);
-			case 5:
-				var bet = msg.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{
-							aR: _Utils_update(
-								rules_,
-								{
-									aI: A2(sToI, $author$project$Game$default.aI, bet)
-								})
-						}),
-					$elm$core$Platform$Cmd$none);
-			case 6:
-				var decks = msg.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{
-							aR: _Utils_update(
-								rules_,
-								{
-									Y: A2(sToI, $author$project$Game$default.Y, decks)
-								})
-						}),
-					$elm$core$Platform$Cmd$none);
-			case 7:
-				var numerator = msg.a;
-				var numeratorAsInt = A2(sToI, $author$project$Game$default.as.aL, numerator);
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{
-							aR: _Utils_update(
-								rules_,
-								{
-									as: _Utils_update(
-										blackJackPayout_,
-										{aL: numeratorAsInt})
-								})
-						}),
-					$elm$core$Platform$Cmd$none);
-			case 8:
-				var denominator = msg.a;
-				var denominatorAsInt = A2(sToI, $author$project$Game$default.as.ay, denominator);
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{
-							aR: _Utils_update(
-								rules_,
-								{
-									as: _Utils_update(
-										blackJackPayout_,
-										{ay: denominatorAsInt})
-								})
-						}),
-					$elm$core$Platform$Cmd$none);
-			case 9:
-				var splits = msg.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{
-							aR: _Utils_update(
-								rules_,
-								{
-									aK: A2(sToI, $author$project$Game$default.aK, splits)
-								})
-						}),
-					$elm$core$Platform$Cmd$none);
-			case 10:
-				var bet = msg.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{
-							ar: A2(sToI, $author$project$Game$default.V, bet)
-						}),
-					$elm$core$Platform$Cmd$none);
-			default:
-				var state = msg.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{aS: state}),
-					$elm$core$Platform$Cmd$none);
+						A2(
+							$elm$random$Random$generate,
+							$author$project$State$NewDeck,
+							$elm_community$random_extra$Random$List$shuffle(model.ax)));
+				case 1:
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								ax: _Utils_ap(model.ax, model.az),
+								az: _List_Nil
+							}),
+						A2(
+							$elm$random$Random$generate,
+							$author$project$State$NewDeck,
+							$elm_community$random_extra$Random$List$shuffle(model.ax)));
+				case 11:
+					var cards = msg.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{ax: cards}),
+						$elm$core$Platform$Cmd$none);
+				case 2:
+					var name = msg.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								aP: _Utils_update(
+									player_,
+									{aJ: name})
+							}),
+						$elm$core$Platform$Cmd$none);
+				case 3:
+					var money = msg.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								aP: _Utils_update(
+									player_,
+									{
+										W: A2(sToI, $author$project$Game$defaultPlayer.W, money)
+									})
+							}),
+						$elm$core$Platform$Cmd$none);
+				case 4:
+					var bet = msg.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								aR: _Utils_update(
+									rules_,
+									{
+										V: A2(sToI, $author$project$Game$default.V, bet)
+									})
+							}),
+						$elm$core$Platform$Cmd$none);
+				case 5:
+					var bet = msg.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								aR: _Utils_update(
+									rules_,
+									{
+										aI: A2(sToI, $author$project$Game$default.aI, bet)
+									})
+							}),
+						$elm$core$Platform$Cmd$none);
+				case 6:
+					var decks = msg.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								aR: _Utils_update(
+									rules_,
+									{
+										Y: A2(sToI, $author$project$Game$default.Y, decks)
+									})
+							}),
+						$elm$core$Platform$Cmd$none);
+				case 7:
+					var numerator = msg.a;
+					var numeratorAsInt = A2(sToI, $author$project$Game$default.as.aL, numerator);
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								aR: _Utils_update(
+									rules_,
+									{
+										as: _Utils_update(
+											blackJackPayout_,
+											{aL: numeratorAsInt})
+									})
+							}),
+						$elm$core$Platform$Cmd$none);
+				case 8:
+					var denominator = msg.a;
+					var denominatorAsInt = A2(sToI, $author$project$Game$default.as.ay, denominator);
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								aR: _Utils_update(
+									rules_,
+									{
+										as: _Utils_update(
+											blackJackPayout_,
+											{ay: denominatorAsInt})
+									})
+							}),
+						$elm$core$Platform$Cmd$none);
+				case 9:
+					var splits = msg.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								aR: _Utils_update(
+									rules_,
+									{
+										aK: A2(sToI, $author$project$Game$default.aK, splits)
+									})
+							}),
+						$elm$core$Platform$Cmd$none);
+				case 10:
+					var bet = msg.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								ar: A2(sToI, $author$project$Game$default.V, bet)
+							}),
+						$elm$core$Platform$Cmd$none);
+				case 12:
+					var state = msg.a;
+					if (state === 2) {
+						var $temp$msg = $author$project$State$DealCardToDealer,
+							$temp$model = model;
+						msg = $temp$msg;
+						model = $temp$model;
+						continue update;
+					} else {
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{aS: state}),
+							$elm$core$Platform$Cmd$none);
+					}
+				default:
+					return $author$project$Main$dealCardToDealer(model);
+			}
 		}
 	});
 var $author$project$State$ShuffleDeck = {$: 0};
@@ -5785,10 +5910,7 @@ var $elm$html$Html$ul = _VirtualDom_node('ul');
 var $author$project$State$ChangeBet = function (a) {
 	return {$: 10, a: a};
 };
-var $author$project$State$ChangeGameState = function (a) {
-	return {$: 12, a: a};
-};
-var $author$project$Game$Round = 2;
+var $author$project$Game$RoundStart = 2;
 var $elm$html$Html$h1 = _VirtualDom_node('h1');
 var $elm$html$Html$input = _VirtualDom_node('input');
 var $elm$html$Html$label = _VirtualDom_node('label');
@@ -6076,7 +6198,7 @@ var $author$project$Controls$viewPlayer = function (player) {
 					]))
 			]));
 };
-var $author$project$Game$RoundEnd = 3;
+var $author$project$Game$RoundEnd = 4;
 var $author$project$Controls$viewRoundActions = function (model) {
 	return A2(
 		$elm$html$Html$div,
@@ -6100,7 +6222,7 @@ var $author$project$Controls$viewRoundActions = function (model) {
 						_List_fromArray(
 							[
 								$elm$html$Html$Events$onClick(
-								$author$project$State$ChangeGameState(3))
+								$author$project$State$ChangeGameState(4))
 							]),
 						_List_fromArray(
 							[

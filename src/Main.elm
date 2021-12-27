@@ -3,7 +3,7 @@ module Main exposing (main)
 import Browser
 import Card exposing (Card, Rank(..), Suit(..), cardBackHex, getCardFrontHex, getColor)
 import Controls exposing (viewCard, viewInput, viewNumericInput, viewPayoutInput)
-import Deck
+import Deck exposing (Deck)
 import Game exposing (Game, GameState, default, defaultPlayer, new)
 import Html exposing (..)
 import Html.Attributes exposing (attribute)
@@ -39,7 +39,7 @@ view model =
         Game.PlaceBets ->
             Page.Bet.view model
 
-        Game.Round ->
+        Game.RoundStart ->
             Page.Round.view model
 
         _ ->
@@ -119,34 +119,85 @@ update msg model =
             ( { model | bet = sToI Game.default.minimumBet bet }, Cmd.none )
 
         ChangeGameState state ->
-            ( { model | state = state }, Cmd.none )
+            case state of
+                Game.RoundStart ->
+                    update DealCardToDealer model
+
+                _ ->
+                    ( { model | state = state }, Cmd.none )
+
+        DealCardToDealer ->
+            dealCardToDealer model
 
 
-dealCardPlayer : Model -> Int -> ( Model, Cmd Msg )
-dealCardPlayer model hand =
+shuffleDeck : Msg -> Deck -> Cmd Msg
+shuffleDeck msg deck =
+    Random.generate (\_ -> msg) <| Random.List.shuffle deck
+
+
+dealCardToDealer : Model -> ( Model, Cmd Msg )
+dealCardToDealer model =
     let
-        addCardToPlayer c =
-            addCardToHand model.player hand c
+        dealer_ =
+            model.dealer
+
+        addCard card =
+            { dealer_ | cards = card :: dealer_.cards }
     in
-    case model.deck of
-        x :: [] ->
-            case addCardToPlayer x of
-                Just np ->
-                    ( { model | player = np, deck = model.discard, discard = [] }, Random.generate NewDeck (Random.List.shuffle model.deck) )
+    case ( model.deck, model.dealer.cards ) of
+        ( [], _ ) ->
+            ( model, shuffleDeck DealCardToDealer model.discard )
 
-                Nothing ->
-                    ( model, Cmd.none )
+        ( x :: [], [] ) ->
+            ( { model | dealer = addCard x, deck = model.discard, discard = [] }, shuffleDeck DealCardToDealer model.discard )
 
-        x :: xs ->
-            case addCardToPlayer x of
-                Just np ->
-                    ( { model | player = np, deck = xs }, Cmd.none )
+        ( x :: [], y :: [] ) ->
+            ( { model | dealer = addCard x, deck = model.discard, discard = [] }, shuffleDeck (ChangeGameState Game.PlayerStart) model.discard )
 
-                Nothing ->
-                    ( model, Cmd.none )
+        ( x :: xs, [] ) ->
+            dealCardToDealer { model | dealer = addCard x, deck = xs }
+
+        ( x :: xs, y :: [] ) ->
+            dealCardToDealer { model | dealer = addCard x, deck = xs }
+
+        ( x :: xs, y :: z :: [] ) ->
+            update (ChangeGameState Game.PlayerStart) model
 
         _ ->
             ( model, Cmd.none )
+
+
+
+{-
+   dealCardPlayer : Model -> Int -> ( Model, Cmd Msg )
+   dealCardPlayer model hand =
+       let
+           addCardToPlayer c =
+               addCardToHand model.player hand c
+
+           default =
+               ( model, Cmd.none )
+       in
+       case model.deck of
+           x :: [] ->
+               case addCardToPlayer x of
+                   Just np ->
+                       ( { model | player = np, deck = model.discard, discard = [] }, shuffleDeck model.discard )
+
+                   Nothing ->
+                       default
+
+           x :: xs ->
+               case addCardToPlayer x of
+                   Just np ->
+                       ( { model | player = np, deck = xs }, Cmd.none )
+
+                   Nothing ->
+                       default
+
+           _ ->
+               default
+-}
 
 
 main : Program () Model Msg

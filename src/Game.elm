@@ -27,7 +27,8 @@ type alias Rules =
 type GameState
     = Init
     | PlaceBets
-    | Round
+    | RoundStart
+    | PlayerStart
     | RoundEnd
     | GameOver
 

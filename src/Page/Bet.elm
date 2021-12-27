@@ -28,6 +28,6 @@ view model =
         [ h1 [] [ text "Place Bets" ]
         , div []
             [ viewNumericInput "Bet: " "bet" model.bet minimumBet maximumBet stepValue ChangeBet
-            , div [] [ button [ onClick (ChangeGameState Game.Round) ] [ text "PlaceBet" ] ]
+            , div [] [ button [ onClick (ChangeGameState Game.RoundStart) ] [ text "PlaceBet" ] ]
             ]
         ]
