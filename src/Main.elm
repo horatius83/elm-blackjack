@@ -39,7 +39,7 @@ view model =
         Game.PlaceBets ->
             Page.Bet.view model
 
-        Game.RoundStart ->
+        Game.PlayerStart ->
             Page.Round.view model
 
         _ ->

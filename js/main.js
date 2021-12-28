@@ -6465,7 +6465,7 @@ var $author$project$Main$view = function (model) {
 			return $author$project$Page$Rules$view(model);
 		case 1:
 			return $author$project$Page$Bet$view(model);
-		case 2:
+		case 3:
 			return $author$project$Page$Round$view(model);
 		default:
 			return A2(
