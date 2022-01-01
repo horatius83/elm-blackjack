@@ -1,10 +1,12 @@
 module Main exposing (main)
 
+import Array
 import Browser
 import Card exposing (Card, Rank(..), Suit(..), cardBackHex, getCardFrontHex, getColor)
 import Controls exposing (viewCard, viewInput, viewNumericInput, viewPayoutInput)
 import Deck exposing (Deck)
 import Game exposing (Game, GameState, default, defaultPlayer, new)
+import Hand
 import Html exposing (..)
 import Html.Attributes exposing (attribute)
 import Html.Events exposing (onClick, onInput)
@@ -116,10 +118,42 @@ update msg model =
             ( { model | rules = { rules_ | numberOfSplits = sToI Game.default.numberOfSplits splits } }, Cmd.none )
 
         ChangeBet bet ->
-            ( { model | bet = sToI Game.default.minimumBet bet }, Cmd.none )
+            let
+                betAsInt =
+                    sToI Game.default.minimumBet bet
+
+                defaultHand =
+                    Hand.create [] betAsInt
+
+                oldHand =
+                    Array.get 0 model.player.hands |> Maybe.withDefault defaultHand
+
+                newHand =
+                    { oldHand | bet = betAsInt }
+
+                oldPlayer =
+                    model.player
+
+                newPlayer =
+                    { oldPlayer | hands = Array.fromList [ newHand ] }
+            in
+            ( { model | player = newPlayer }, Cmd.none )
 
         ChangeGameState state ->
             case state of
+                Game.PlaceBets ->
+                    let
+                        hand =
+                            Hand.create [] model.rules.minimumBet
+
+                        oldPlayer =
+                            model.player
+
+                        newPlayer =
+                            { oldPlayer | hands = Array.fromList [ hand ] }
+                    in
+                    ( { model | state = Game.PlaceBets, player = newPlayer }, Cmd.none )
+
                 Game.RoundStart ->
                     update DealCardToDealer model
 
@@ -165,39 +199,6 @@ dealCardToDealer model =
 
         _ ->
             ( model, Cmd.none )
-
-
-
-{-
-   dealCardPlayer : Model -> Int -> ( Model, Cmd Msg )
-   dealCardPlayer model hand =
-       let
-           addCardToPlayer c =
-               addCardToHand model.player hand c
-
-           default =
-               ( model, Cmd.none )
-       in
-       case model.deck of
-           x :: [] ->
-               case addCardToPlayer x of
-                   Just np ->
-                       ( { model | player = np, deck = model.discard, discard = [] }, shuffleDeck model.discard )
-
-                   Nothing ->
-                       default
-
-           x :: xs ->
-               case addCardToPlayer x of
-                   Just np ->
-                       ( { model | player = np, deck = xs }, Cmd.none )
-
-                   Nothing ->
-                       default
-
-           _ ->
-               default
--}
 
 
 main : Program () Model Msg
