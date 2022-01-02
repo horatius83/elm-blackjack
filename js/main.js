@@ -6458,7 +6458,11 @@ var $author$project$Page$Round$viewHand = function (_v0) {
 					[
 						A2(
 						$elm$html$Html$button,
-						_List_Nil,
+						_List_fromArray(
+							[
+								$elm$html$Html$Events$onClick(
+								$author$project$State$Hit(whichHand))
+							]),
 						_List_fromArray(
 							[
 								$elm$html$Html$text('Hit')

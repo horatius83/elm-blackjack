@@ -5,8 +5,9 @@ import Card exposing (Card)
 import Controls exposing (viewCard, viewCardBack, viewCards)
 import Hand exposing (Hand)
 import Html exposing (Html, button, div, h1, span, text)
+import Html.Events exposing (onClick)
 import Player exposing (Player)
-import State exposing (Msg)
+import State exposing (Msg(..))
 
 
 viewDealer : List Card -> Bool -> Html Msg
@@ -42,7 +43,7 @@ viewHand ( whichHand, hand ) =
         controls =
             div []
                 [ span []
-                    [ button [] [ text "Hit" ]
+                    [ button [ onClick (Hit whichHand) ] [ text "Hit" ]
                     , button [] [ text "Stay" ]
                     , button [] [ text "Insurance" ]
                     , button [] [ text "Double Down" ]
