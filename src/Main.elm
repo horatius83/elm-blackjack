@@ -222,46 +222,6 @@ dealInitialCards model =
             ( model, Cmd.none )
 
 
-
-{-
-   shuffleDeck : Msg -> Deck -> Cmd Msg
-   shuffleDeck msg deck =
-       Random.generate (\_ -> msg) <| Random.List.shuffle deck
-
-
-   dealCardToDealer : Model -> ( Model, Cmd Msg )
-   dealCardToDealer model =
-       let
-           dealer_ =
-               model.dealer
-
-           addCard card =
-               { dealer_ | cards = card :: dealer_.cards }
-       in
-       case ( model.deck, model.dealer.cards ) of
-           ( [], _ ) ->
-               ( model, shuffleDeck DealCardToDealer model.discard )
-
-           ( x :: [], [] ) ->
-               ( { model | dealer = addCard x, deck = model.discard, discard = [] }, shuffleDeck DealCardToDealer model.discard )
-
-           ( x :: [], y :: [] ) ->
-               ( { model | dealer = addCard x, deck = model.discard, discard = [] }, shuffleDeck (ChangeGameState Game.PlayerStart) model.discard )
-
-           ( x :: xs, [] ) ->
-               dealCardToDealer { model | dealer = addCard x, deck = xs }
-
-           ( x :: xs, y :: [] ) ->
-               dealCardToDealer { model | dealer = addCard x, deck = xs }
-
-           ( x :: xs, y :: z :: [] ) ->
-               update (ChangeGameState Game.PlayerStart) model
-
-           _ ->
-               ( model, Cmd.none )
--}
-
-
 main : Program () Model Msg
 main =
     Browser.element
