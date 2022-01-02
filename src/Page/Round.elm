@@ -27,7 +27,6 @@ viewDealer cards showAll =
     div []
         [ h1 [] [ text "Dealer" ]
         , span [] cardsAsHtml
-        , text <| String.fromInt (List.length cards) ++ " cards"
         ]
 
 

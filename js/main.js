@@ -6410,10 +6410,7 @@ var $author$project$Page$Round$viewDealer = F2(
 						[
 							$elm$html$Html$text('Dealer')
 						])),
-					A2($elm$html$Html$span, _List_Nil, cardsAsHtml),
-					$elm$html$Html$text(
-					$elm$core$String$fromInt(
-						$elm$core$List$length(cards)) + ' cards')
+					A2($elm$html$Html$span, _List_Nil, cardsAsHtml)
 				]));
 	});
 var $elm$core$Array$toIndexedList = function (array) {
