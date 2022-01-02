@@ -41,7 +41,7 @@ view model =
         Game.PlaceBets ->
             Page.Bet.view model
 
-        Game.PlayerStart ->
+        Game.RoundStart ->
             Page.Round.view model
 
         _ ->
@@ -155,50 +155,111 @@ update msg model =
                     ( { model | state = Game.PlaceBets, player = newPlayer }, Cmd.none )
 
                 Game.RoundStart ->
-                    update DealCardToDealer model
+                    dealInitialCards model
 
                 _ ->
                     ( { model | state = state }, Cmd.none )
 
-        DealCardToDealer ->
-            dealCardToDealer model
+        ShuffleDiscardIntoDeck nextMsg deck ->
+            update nextMsg { model | deck = deck, discard = [] }
 
 
-shuffleDeck : Msg -> Deck -> Cmd Msg
-shuffleDeck msg deck =
-    Random.generate (\_ -> msg) <| Random.List.shuffle deck
-
-
-dealCardToDealer : Model -> ( Model, Cmd Msg )
-dealCardToDealer model =
+dealInitialCards : Model -> ( Model, Cmd Msg )
+dealInitialCards model =
     let
-        dealer_ =
+        defaultHand =
+            Hand.create [] model.rules.minimumBet
+
+        hand =
+            Array.get 0 model.player.hands
+                |> Maybe.withDefault defaultHand
+
+        oldDealer =
             model.dealer
 
-        addCard card =
-            { dealer_ | cards = card :: dealer_.cards }
+        oldPlayer =
+            model.player
     in
-    case ( model.deck, model.dealer.cards ) of
-        ( [], _ ) ->
-            ( model, shuffleDeck DealCardToDealer model.discard )
+    case ( model.deck, model.dealer.cards, hand.cards ) of
+        ( [], _, _ ) ->
+            ( model, Random.generate (ShuffleDiscardIntoDeck (ChangeGameState Game.RoundStart)) <| Random.List.shuffle model.discard )
 
-        ( x :: [], [] ) ->
-            ( { model | dealer = addCard x, deck = model.discard, discard = [] }, shuffleDeck DealCardToDealer model.discard )
+        ( x :: xs, [], [] ) ->
+            let
+                newDealer =
+                    { oldDealer | cards = [ x ] }
+            in
+            dealInitialCards { model | dealer = newDealer, deck = xs }
 
-        ( x :: [], y :: [] ) ->
-            ( { model | dealer = addCard x, deck = model.discard, discard = [] }, shuffleDeck (ChangeGameState Game.PlayerStart) model.discard )
+        ( x :: xs, y :: [], [] ) ->
+            let
+                newHand =
+                    { hand | cards = [ x ] }
 
-        ( x :: xs, [] ) ->
-            dealCardToDealer { model | dealer = addCard x, deck = xs }
+                newPlayer =
+                    { oldPlayer | hands = Array.fromList [ newHand ] }
+            in
+            dealInitialCards { model | player = newPlayer, deck = xs }
 
-        ( x :: xs, y :: [] ) ->
-            dealCardToDealer { model | dealer = addCard x, deck = xs }
+        ( x :: xs, y :: [], z :: [] ) ->
+            let
+                newDealer =
+                    { oldDealer | cards = x :: [ y ] }
+            in
+            dealInitialCards { model | dealer = newDealer, deck = xs }
 
-        ( x :: xs, y :: z :: [] ) ->
-            update (ChangeGameState Game.PlayerStart) model
+        ( x :: xs, _, z :: [] ) ->
+            let
+                newHand =
+                    { hand | cards = z :: hand.cards }
 
-        _ ->
+                newPlayer =
+                    { oldPlayer | hands = Array.fromList [ newHand ] }
+            in
+            ( { model | player = newPlayer, deck = xs, state = Game.RoundStart }, Cmd.none )
+
+        ( _, _, _ ) ->
             ( model, Cmd.none )
+
+
+
+{-
+   shuffleDeck : Msg -> Deck -> Cmd Msg
+   shuffleDeck msg deck =
+       Random.generate (\_ -> msg) <| Random.List.shuffle deck
+
+
+   dealCardToDealer : Model -> ( Model, Cmd Msg )
+   dealCardToDealer model =
+       let
+           dealer_ =
+               model.dealer
+
+           addCard card =
+               { dealer_ | cards = card :: dealer_.cards }
+       in
+       case ( model.deck, model.dealer.cards ) of
+           ( [], _ ) ->
+               ( model, shuffleDeck DealCardToDealer model.discard )
+
+           ( x :: [], [] ) ->
+               ( { model | dealer = addCard x, deck = model.discard, discard = [] }, shuffleDeck DealCardToDealer model.discard )
+
+           ( x :: [], y :: [] ) ->
+               ( { model | dealer = addCard x, deck = model.discard, discard = [] }, shuffleDeck (ChangeGameState Game.PlayerStart) model.discard )
+
+           ( x :: xs, [] ) ->
+               dealCardToDealer { model | dealer = addCard x, deck = xs }
+
+           ( x :: xs, y :: [] ) ->
+               dealCardToDealer { model | dealer = addCard x, deck = xs }
+
+           ( x :: xs, y :: z :: [] ) ->
+               update (ChangeGameState Game.PlayerStart) model
+
+           _ ->
+               ( model, Cmd.none )
+-}
 
 
 main : Program () Model Msg
