@@ -28,3 +28,4 @@ type Msg
     | NewDeck Deck.Deck
     | ChangeGameState GameState
     | ShuffleDiscardIntoDeck Msg Deck.Deck
+    | Hit Int

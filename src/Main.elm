@@ -163,6 +163,45 @@ update msg model =
         ShuffleDiscardIntoDeck nextMsg deck ->
             update nextMsg { model | deck = deck, discard = [] }
 
+        Hit hand ->
+            hit model hand
+
+
+shuffleDiscard : Model -> Msg -> Cmd Msg
+shuffleDiscard model nextMsg =
+    Random.generate (ShuffleDiscardIntoDeck nextMsg) <| Random.List.shuffle model.discard
+
+
+hit : Model -> Int -> ( Model, Cmd Msg )
+hit model hand =
+    case model.deck of
+        [] ->
+            ( model, Hit hand |> shuffleDiscard model )
+
+        card :: cards ->
+            let
+                defaultHand =
+                    Hand.create [] model.rules.minimumBet
+
+                playerHand =
+                    model.player.hands
+                        |> Array.get hand
+                        |> Maybe.withDefault defaultHand
+
+                newHand =
+                    { playerHand | cards = card :: playerHand.cards }
+
+                oldPlayer =
+                    model.player
+
+                newHands =
+                    Array.set hand newHand model.player.hands
+
+                newPlayer =
+                    { oldPlayer | hands = newHands }
+            in
+            ( { model | player = newPlayer, deck = cards }, Cmd.none )
+
 
 dealInitialCards : Model -> ( Model, Cmd Msg )
 dealInitialCards model =
@@ -182,7 +221,7 @@ dealInitialCards model =
     in
     case ( model.deck, model.dealer.cards, hand.cards ) of
         ( [], _, _ ) ->
-            ( model, Random.generate (ShuffleDiscardIntoDeck (ChangeGameState Game.RoundStart)) <| Random.List.shuffle model.discard )
+            ( model, ChangeGameState Game.RoundStart |> shuffleDiscard model )
 
         ( x :: xs, [], [] ) ->
             let
@@ -211,7 +250,7 @@ dealInitialCards model =
         ( x :: xs, _, z :: [] ) ->
             let
                 newHand =
-                    { hand | cards = z :: hand.cards }
+                    { hand | cards = x :: hand.cards }
 
                 newPlayer =
                     { oldPlayer | hands = Array.fromList [ newHand ] }

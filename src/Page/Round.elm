@@ -10,5 +10,4 @@ view model =
     div []
         [ viewDealer model.dealer.cards False
         , viewPlayer model.player
-        , viewRoundActions model
         ]

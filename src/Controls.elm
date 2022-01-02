@@ -1,7 +1,9 @@
 module Controls exposing (..)
 
+import Array
 import Card exposing (Card, cardBackHex, getCardFrontHex, getColor)
 import Game
+import Hand exposing (Hand)
 import Html exposing (Html, button, div, h1, input, label, span, text)
 import Html.Attributes exposing (attribute)
 import Html.Events exposing (onClick, onInput)
@@ -128,11 +130,47 @@ viewDealer cards showAll =
         ]
 
 
+viewHand : ( Int, Hand ) -> Html Msg
+viewHand ( whichHand, hand ) =
+    let
+        handTitle =
+            "Hand #" ++ String.fromInt (whichHand + 1)
+
+        handTitleHtml =
+            div [] [ text handTitle ]
+
+        controls =
+            div []
+                [ span []
+                    [ button [] [ text "Hit" ]
+                    , button [] [ text "Stay" ]
+                    , button [] [ text "Insurance" ]
+                    , button [] [ text "Double Down" ]
+                    , button [] [ text "Split" ]
+                    ]
+                ]
+
+        html =
+            [ handTitleHtml ] ++ viewCards hand.cards ++ [ controls ]
+    in
+    div [] [ div [] html ]
+
+
+viewHands : Array.Array Hand -> List (Html Msg)
+viewHands hands =
+    Array.toIndexedList hands
+        |> List.map viewHand
+
+
 viewPlayer : Player -> Html Msg
 viewPlayer player =
+    let
+        hands =
+            viewHands player.hands
+    in
     div []
-        [ h1 []
-            [ text "Player" ]
+        [ h1 [] [ text player.name ]
+        , div [] hands
         ]
 
 
