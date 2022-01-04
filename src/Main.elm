@@ -118,53 +118,66 @@ update msg model =
             ( { model | rules = { rules_ | numberOfSplits = sToI Game.default.numberOfSplits splits } }, Cmd.none )
 
         ChangeBet bet ->
-            let
-                betAsInt =
-                    sToI Game.default.minimumBet bet
-
-                defaultHand =
-                    Hand.create [] betAsInt
-
-                oldHand =
-                    Array.get 0 model.player.hands |> Maybe.withDefault defaultHand
-
-                newHand =
-                    { oldHand | bet = betAsInt }
-
-                oldPlayer =
-                    model.player
-
-                newPlayer =
-                    { oldPlayer | hands = Array.fromList [ newHand ] }
-            in
-            ( { model | player = newPlayer }, Cmd.none )
+            changeBet model bet
 
         ChangeGameState state ->
-            case state of
-                Game.PlaceBets ->
-                    let
-                        hand =
-                            Hand.create [] model.rules.minimumBet
-
-                        oldPlayer =
-                            model.player
-
-                        newPlayer =
-                            { oldPlayer | hands = Array.fromList [ hand ] }
-                    in
-                    ( { model | state = Game.PlaceBets, player = newPlayer }, Cmd.none )
-
-                Game.RoundStart ->
-                    dealInitialCards model
-
-                _ ->
-                    ( { model | state = state }, Cmd.none )
+            changeGameState model state
 
         ShuffleDiscardIntoDeck nextMsg deck ->
             update nextMsg { model | deck = deck, discard = [] }
 
         Hit hand ->
             hit model hand
+
+
+changeBet : Model -> String -> ( Model, Cmd Msg )
+changeBet model betAsString =
+    let
+        sToI d v =
+            Maybe.withDefault d (String.toInt v)
+
+        betAsInt =
+            sToI Game.default.minimumBet betAsString
+
+        defaultHand =
+            Hand.create [] betAsInt
+
+        oldHand =
+            Array.get 0 model.player.hands |> Maybe.withDefault defaultHand
+
+        newHand =
+            { oldHand | bet = betAsInt }
+
+        oldPlayer =
+            model.player
+
+        newPlayer =
+            { oldPlayer | hands = Array.fromList [ newHand ] }
+    in
+    ( { model | player = newPlayer }, Cmd.none )
+
+
+changeGameState : Model -> Game.GameState -> ( Model, Cmd Msg )
+changeGameState model state =
+    case state of
+        Game.PlaceBets ->
+            let
+                hand =
+                    Hand.create [] model.rules.minimumBet
+
+                oldPlayer =
+                    model.player
+
+                newPlayer =
+                    { oldPlayer | hands = Array.fromList [ hand ] }
+            in
+            ( { model | state = Game.PlaceBets, player = newPlayer }, Cmd.none )
+
+        Game.RoundStart ->
+            dealInitialCards model
+
+        _ ->
+            ( { model | state = state }, Cmd.none )
 
 
 shuffleDiscard : Model -> Msg -> Cmd Msg

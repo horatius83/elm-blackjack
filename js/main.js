@@ -5546,7 +5546,6 @@ var $author$project$Main$init = function (_v0) {
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
-var $author$project$Game$PlaceBets = 1;
 var $author$project$Hand$Hand = F5(
 	function (cards, bet, insurance, stayed, doubleDown) {
 		return {aq: bet, at: cards, az: doubleDown, aG: insurance, aT: stayed};
@@ -5555,10 +5554,6 @@ var $author$project$Hand$create = F2(
 	function (deck, bet) {
 		return A5($author$project$Hand$Hand, deck, bet, false, false, false);
 	});
-var $author$project$State$ChangeGameState = function (a) {
-	return {$: 12, a: a};
-};
-var $author$project$Game$RoundStart = 2;
 var $elm$core$Array$fromListHelp = F3(
 	function (list, nodeList, nodeListSize) {
 		fromListHelp:
@@ -5636,6 +5631,52 @@ var $elm$core$Array$get = F2(
 	});
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
+var $elm$core$Maybe$withDefault = F2(
+	function (_default, maybe) {
+		if (!maybe.$) {
+			var value = maybe.a;
+			return value;
+		} else {
+			return _default;
+		}
+	});
+var $author$project$Main$changeBet = F2(
+	function (model, betAsString) {
+		var sToI = F2(
+			function (d, v) {
+				return A2(
+					$elm$core$Maybe$withDefault,
+					d,
+					$elm$core$String$toInt(v));
+			});
+		var oldPlayer = model.aP;
+		var betAsInt = A2(sToI, $author$project$Game$default.aI, betAsString);
+		var defaultHand = A2($author$project$Hand$create, _List_Nil, betAsInt);
+		var oldHand = A2(
+			$elm$core$Maybe$withDefault,
+			defaultHand,
+			A2($elm$core$Array$get, 0, model.aP.k));
+		var newHand = _Utils_update(
+			oldHand,
+			{aq: betAsInt});
+		var newPlayer = _Utils_update(
+			oldPlayer,
+			{
+				k: $elm$core$Array$fromList(
+					_List_fromArray(
+						[newHand]))
+			});
+		return _Utils_Tuple2(
+			_Utils_update(
+				model,
+				{aP: newPlayer}),
+			$elm$core$Platform$Cmd$none);
+	});
+var $author$project$Game$PlaceBets = 1;
+var $author$project$State$ChangeGameState = function (a) {
+	return {$: 12, a: a};
+};
+var $author$project$Game$RoundStart = 2;
 var $author$project$State$ShuffleDiscardIntoDeck = F2(
 	function (a, b) {
 		return {$: 13, a: a, b: b};
@@ -5646,15 +5687,6 @@ var $author$project$Main$shuffleDiscard = F2(
 			$elm$random$Random$generate,
 			$author$project$State$ShuffleDiscardIntoDeck(nextMsg),
 			$elm_community$random_extra$Random$List$shuffle(model.ay));
-	});
-var $elm$core$Maybe$withDefault = F2(
-	function (_default, maybe) {
-		if (!maybe.$) {
-			var value = maybe.a;
-			return value;
-		} else {
-			return _default;
-		}
 	});
 var $author$project$Main$dealInitialCards = function (model) {
 	dealInitialCards:
@@ -5779,6 +5811,34 @@ var $author$project$Main$dealInitialCards = function (model) {
 		return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 	}
 };
+var $author$project$Main$changeGameState = F2(
+	function (model, state) {
+		switch (state) {
+			case 1:
+				var oldPlayer = model.aP;
+				var hand = A2($author$project$Hand$create, _List_Nil, model.aR.aI);
+				var newPlayer = _Utils_update(
+					oldPlayer,
+					{
+						k: $elm$core$Array$fromList(
+							_List_fromArray(
+								[hand]))
+					});
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{aP: newPlayer, aS: 1}),
+					$elm$core$Platform$Cmd$none);
+			case 2:
+				return $author$project$Main$dealInitialCards(model);
+			default:
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{aS: state}),
+					$elm$core$Platform$Cmd$none);
+		}
+	});
 var $author$project$State$Hit = function (a) {
 	return {$: 14, a: a};
 };
@@ -6011,55 +6071,10 @@ var $author$project$Main$update = F2(
 						$elm$core$Platform$Cmd$none);
 				case 10:
 					var bet = msg.a;
-					var oldPlayer = model.aP;
-					var betAsInt = A2(sToI, $author$project$Game$default.aI, bet);
-					var defaultHand = A2($author$project$Hand$create, _List_Nil, betAsInt);
-					var oldHand = A2(
-						$elm$core$Maybe$withDefault,
-						defaultHand,
-						A2($elm$core$Array$get, 0, model.aP.k));
-					var newHand = _Utils_update(
-						oldHand,
-						{aq: betAsInt});
-					var newPlayer = _Utils_update(
-						oldPlayer,
-						{
-							k: $elm$core$Array$fromList(
-								_List_fromArray(
-									[newHand]))
-						});
-					return _Utils_Tuple2(
-						_Utils_update(
-							model,
-							{aP: newPlayer}),
-						$elm$core$Platform$Cmd$none);
+					return A2($author$project$Main$changeBet, model, bet);
 				case 12:
 					var state = msg.a;
-					switch (state) {
-						case 1:
-							var oldPlayer = model.aP;
-							var hand = A2($author$project$Hand$create, _List_Nil, model.aR.aI);
-							var newPlayer = _Utils_update(
-								oldPlayer,
-								{
-									k: $elm$core$Array$fromList(
-										_List_fromArray(
-											[hand]))
-								});
-							return _Utils_Tuple2(
-								_Utils_update(
-									model,
-									{aP: newPlayer, aS: 1}),
-								$elm$core$Platform$Cmd$none);
-						case 2:
-							return $author$project$Main$dealInitialCards(model);
-						default:
-							return _Utils_Tuple2(
-								_Utils_update(
-									model,
-									{aS: state}),
-								$elm$core$Platform$Cmd$none);
-					}
+					return A2($author$project$Main$changeGameState, model, state);
 				case 13:
 					var nextMsg = msg.a;
 					var deck = msg.b;

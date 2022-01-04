@@ -1,5 +1,6 @@
 module Game exposing (..)
 
+import Card
 import Deck
 import Player
 
@@ -56,3 +57,20 @@ defaultPlayer =
 new : Player.Player -> Rules -> Game
 new player rules =
     Game { cards = [] } player (Deck.new rules.numberOfDecks) [] Init rules
+
+
+getCardValues : Deck.Deck -> List Int
+getCardValues deck =
+    case deck of
+        [] ->
+            [ 0 ]
+
+        card :: cards ->
+            let
+                values =
+                    Card.values card
+
+                otherValues =
+                    getCardValues cards
+            in
+            List.foldl (++) [] <| List.map (\x -> List.map (\y -> x + y) otherValues) values
