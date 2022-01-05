@@ -5243,7 +5243,7 @@ var $author$project$Game$default = A6(
 	0);
 var $author$project$Player$Player = F3(
 	function (name, hands, money) {
-		return {k: hands, V: money, aJ: name};
+		return {h: hands, V: money, aJ: name};
 	});
 var $author$project$Player$new = F2(
 	function (name, money) {
@@ -5554,6 +5554,9 @@ var $author$project$Hand$create = F2(
 	function (deck, bet) {
 		return A5($author$project$Hand$Hand, deck, bet, false, false, false);
 	});
+var $author$project$Main$defaultHand = function (model) {
+	return A2($author$project$Hand$create, _List_Nil, model.aR.aI);
+};
 var $elm$core$Array$fromListHelp = F3(
 	function (list, nodeList, nodeListSize) {
 		fromListHelp:
@@ -5650,19 +5653,18 @@ var $author$project$Main$changeBet = F2(
 					$elm$core$String$toInt(v));
 			});
 		var oldPlayer = model.aP;
-		var betAsInt = A2(sToI, $author$project$Game$default.aI, betAsString);
-		var defaultHand = A2($author$project$Hand$create, _List_Nil, betAsInt);
 		var oldHand = A2(
 			$elm$core$Maybe$withDefault,
-			defaultHand,
-			A2($elm$core$Array$get, 0, model.aP.k));
+			$author$project$Main$defaultHand(model),
+			A2($elm$core$Array$get, 0, model.aP.h));
+		var betAsInt = A2(sToI, $author$project$Game$default.aI, betAsString);
 		var newHand = _Utils_update(
 			oldHand,
 			{aq: betAsInt});
 		var newPlayer = _Utils_update(
 			oldPlayer,
 			{
-				k: $elm$core$Array$fromList(
+				h: $elm$core$Array$fromList(
 					_List_fromArray(
 						[newHand]))
 			});
@@ -5693,11 +5695,10 @@ var $author$project$Main$dealInitialCards = function (model) {
 	while (true) {
 		var oldPlayer = model.aP;
 		var oldDealer = model.av;
-		var defaultHand = A2($author$project$Hand$create, _List_Nil, model.aR.aI);
 		var hand = A2(
 			$elm$core$Maybe$withDefault,
-			defaultHand,
-			A2($elm$core$Array$get, 0, model.aP.k));
+			$author$project$Main$defaultHand(model),
+			A2($elm$core$Array$get, 0, model.aP.h));
 		var _v0 = _Utils_Tuple3(model.aw, model.av.at, hand.at);
 		_v0$5:
 		while (true) {
@@ -5741,7 +5742,7 @@ var $author$project$Main$dealInitialCards = function (model) {
 							var newPlayer = _Utils_update(
 								oldPlayer,
 								{
-									k: $elm$core$Array$fromList(
+									h: $elm$core$Array$fromList(
 										_List_fromArray(
 											[newHand]))
 								});
@@ -5792,7 +5793,7 @@ var $author$project$Main$dealInitialCards = function (model) {
 							var newPlayer = _Utils_update(
 								oldPlayer,
 								{
-									k: $elm$core$Array$fromList(
+									h: $elm$core$Array$fromList(
 										_List_fromArray(
 											[newHand]))
 								});
@@ -5820,7 +5821,7 @@ var $author$project$Main$changeGameState = F2(
 				var newPlayer = _Utils_update(
 					oldPlayer,
 					{
-						k: $elm$core$Array$fromList(
+						h: $elm$core$Array$fromList(
 							_List_fromArray(
 								[hand]))
 					});
@@ -5841,6 +5842,270 @@ var $author$project$Main$changeGameState = F2(
 	});
 var $author$project$State$Hit = function (a) {
 	return {$: 14, a: a};
+};
+var $elm$core$Set$Set_elm_builtin = $elm$core$Basics$identity;
+var $elm$core$Dict$RBEmpty_elm_builtin = {$: -2};
+var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
+var $elm$core$Dict$foldl = F3(
+	function (func, acc, dict) {
+		foldl:
+		while (true) {
+			if (dict.$ === -2) {
+				return acc;
+			} else {
+				var key = dict.b;
+				var value = dict.c;
+				var left = dict.d;
+				var right = dict.e;
+				var $temp$func = func,
+					$temp$acc = A3(
+					func,
+					key,
+					value,
+					A3($elm$core$Dict$foldl, func, acc, left)),
+					$temp$dict = right;
+				func = $temp$func;
+				acc = $temp$acc;
+				dict = $temp$dict;
+				continue foldl;
+			}
+		}
+	});
+var $elm$core$Dict$Black = 1;
+var $elm$core$Dict$RBNode_elm_builtin = F5(
+	function (a, b, c, d, e) {
+		return {$: -1, a: a, b: b, c: c, d: d, e: e};
+	});
+var $elm$core$Dict$Red = 0;
+var $elm$core$Dict$balance = F5(
+	function (color, key, value, left, right) {
+		if ((right.$ === -1) && (!right.a)) {
+			var _v1 = right.a;
+			var rK = right.b;
+			var rV = right.c;
+			var rLeft = right.d;
+			var rRight = right.e;
+			if ((left.$ === -1) && (!left.a)) {
+				var _v3 = left.a;
+				var lK = left.b;
+				var lV = left.c;
+				var lLeft = left.d;
+				var lRight = left.e;
+				return A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					0,
+					key,
+					value,
+					A5($elm$core$Dict$RBNode_elm_builtin, 1, lK, lV, lLeft, lRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, 1, rK, rV, rLeft, rRight));
+			} else {
+				return A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					color,
+					rK,
+					rV,
+					A5($elm$core$Dict$RBNode_elm_builtin, 0, key, value, left, rLeft),
+					rRight);
+			}
+		} else {
+			if ((((left.$ === -1) && (!left.a)) && (left.d.$ === -1)) && (!left.d.a)) {
+				var _v5 = left.a;
+				var lK = left.b;
+				var lV = left.c;
+				var _v6 = left.d;
+				var _v7 = _v6.a;
+				var llK = _v6.b;
+				var llV = _v6.c;
+				var llLeft = _v6.d;
+				var llRight = _v6.e;
+				var lRight = left.e;
+				return A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					0,
+					lK,
+					lV,
+					A5($elm$core$Dict$RBNode_elm_builtin, 1, llK, llV, llLeft, llRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, 1, key, value, lRight, right));
+			} else {
+				return A5($elm$core$Dict$RBNode_elm_builtin, color, key, value, left, right);
+			}
+		}
+	});
+var $elm$core$Basics$compare = _Utils_compare;
+var $elm$core$Dict$insertHelp = F3(
+	function (key, value, dict) {
+		if (dict.$ === -2) {
+			return A5($elm$core$Dict$RBNode_elm_builtin, 0, key, value, $elm$core$Dict$RBEmpty_elm_builtin, $elm$core$Dict$RBEmpty_elm_builtin);
+		} else {
+			var nColor = dict.a;
+			var nKey = dict.b;
+			var nValue = dict.c;
+			var nLeft = dict.d;
+			var nRight = dict.e;
+			var _v1 = A2($elm$core$Basics$compare, key, nKey);
+			switch (_v1) {
+				case 0:
+					return A5(
+						$elm$core$Dict$balance,
+						nColor,
+						nKey,
+						nValue,
+						A3($elm$core$Dict$insertHelp, key, value, nLeft),
+						nRight);
+				case 1:
+					return A5($elm$core$Dict$RBNode_elm_builtin, nColor, nKey, value, nLeft, nRight);
+				default:
+					return A5(
+						$elm$core$Dict$balance,
+						nColor,
+						nKey,
+						nValue,
+						nLeft,
+						A3($elm$core$Dict$insertHelp, key, value, nRight));
+			}
+		}
+	});
+var $elm$core$Dict$insert = F3(
+	function (key, value, dict) {
+		var _v0 = A3($elm$core$Dict$insertHelp, key, value, dict);
+		if ((_v0.$ === -1) && (!_v0.a)) {
+			var _v1 = _v0.a;
+			var k = _v0.b;
+			var v = _v0.c;
+			var l = _v0.d;
+			var r = _v0.e;
+			return A5($elm$core$Dict$RBNode_elm_builtin, 1, k, v, l, r);
+		} else {
+			var x = _v0;
+			return x;
+		}
+	});
+var $elm$core$Dict$filter = F2(
+	function (isGood, dict) {
+		return A3(
+			$elm$core$Dict$foldl,
+			F3(
+				function (k, v, d) {
+					return A2(isGood, k, v) ? A3($elm$core$Dict$insert, k, v, d) : d;
+				}),
+			$elm$core$Dict$empty,
+			dict);
+	});
+var $elm$core$Set$filter = F2(
+	function (isGood, _v0) {
+		var dict = _v0;
+		return A2(
+			$elm$core$Dict$filter,
+			F2(
+				function (key, _v1) {
+					return isGood(key);
+				}),
+			dict);
+	});
+var $elm$core$Set$empty = $elm$core$Dict$empty;
+var $elm$core$Set$insert = F2(
+	function (key, _v0) {
+		var dict = _v0;
+		return A3($elm$core$Dict$insert, key, 0, dict);
+	});
+var $elm$core$Set$fromList = function (list) {
+	return A3($elm$core$List$foldl, $elm$core$Set$insert, $elm$core$Set$empty, list);
+};
+var $author$project$Card$values = function (_v0) {
+	var rank = _v0.H;
+	var suit = _v0.L;
+	switch (rank) {
+		case 0:
+			return _List_fromArray(
+				[2]);
+		case 1:
+			return _List_fromArray(
+				[3]);
+		case 2:
+			return _List_fromArray(
+				[4]);
+		case 3:
+			return _List_fromArray(
+				[5]);
+		case 4:
+			return _List_fromArray(
+				[6]);
+		case 5:
+			return _List_fromArray(
+				[7]);
+		case 6:
+			return _List_fromArray(
+				[8]);
+		case 7:
+			return _List_fromArray(
+				[9]);
+		case 8:
+			return _List_fromArray(
+				[10]);
+		case 9:
+			return _List_fromArray(
+				[10]);
+		case 10:
+			return _List_fromArray(
+				[10]);
+		case 11:
+			return _List_fromArray(
+				[10]);
+		default:
+			return _List_fromArray(
+				[1, 11]);
+	}
+};
+var $author$project$Game$getCardValues = function (deck) {
+	var getCardValuesAsList = function (d) {
+		if (!d.b) {
+			return _List_fromArray(
+				[0]);
+		} else {
+			var card = d.a;
+			var cards = d.b;
+			var values = $author$project$Card$values(card);
+			var otherValues = getCardValuesAsList(cards);
+			return A3(
+				$elm$core$List$foldl,
+				$elm$core$Basics$append,
+				_List_Nil,
+				A2(
+					$elm$core$List$map,
+					function (x) {
+						return A2(
+							$elm$core$List$map,
+							function (y) {
+								return x + y;
+							},
+							otherValues);
+					},
+					values));
+		}
+	};
+	return $elm$core$Set$fromList(
+		getCardValuesAsList(deck));
+};
+var $elm$core$Dict$isEmpty = function (dict) {
+	if (dict.$ === -2) {
+		return true;
+	} else {
+		return false;
+	}
+};
+var $elm$core$Set$isEmpty = function (_v0) {
+	var dict = _v0;
+	return $elm$core$Dict$isEmpty(dict);
+};
+var $author$project$Game$isBusted = function (deck) {
+	var values = $author$project$Game$getCardValues(deck);
+	var valuesUnder22 = A2(
+		$elm$core$Set$filter,
+		function (x) {
+			return x < 22;
+		},
+		values);
+	return $elm$core$Set$isEmpty(valuesUnder22);
 };
 var $elm$core$Elm$JsArray$unsafeSet = _JsArray_unsafeSet;
 var $elm$core$Array$setHelp = F4(
@@ -5885,6 +6150,82 @@ var $elm$core$Array$set = F3(
 			A4($elm$core$Array$setHelp, startShift, index, value, tree),
 			tail));
 	});
+var $author$project$Game$RoundEnd = 4;
+var $elm$core$Elm$JsArray$foldl = _JsArray_foldl;
+var $elm$core$Array$foldl = F3(
+	function (func, baseCase, _v0) {
+		var tree = _v0.c;
+		var tail = _v0.d;
+		var helper = F2(
+			function (node, acc) {
+				if (!node.$) {
+					var subTree = node.a;
+					return A3($elm$core$Elm$JsArray$foldl, helper, acc, subTree);
+				} else {
+					var values = node.a;
+					return A3($elm$core$Elm$JsArray$foldl, func, acc, values);
+				}
+			});
+		return A3(
+			$elm$core$Elm$JsArray$foldl,
+			func,
+			A3($elm$core$Elm$JsArray$foldl, helper, baseCase, tree),
+			tail);
+	});
+var $elm$core$Elm$JsArray$map = _JsArray_map;
+var $elm$core$Array$map = F2(
+	function (func, _v0) {
+		var len = _v0.a;
+		var startShift = _v0.b;
+		var tree = _v0.c;
+		var tail = _v0.d;
+		var helper = function (node) {
+			if (!node.$) {
+				var subTree = node.a;
+				return $elm$core$Array$SubTree(
+					A2($elm$core$Elm$JsArray$map, helper, subTree));
+			} else {
+				var values = node.a;
+				return $elm$core$Array$Leaf(
+					A2($elm$core$Elm$JsArray$map, func, values));
+			}
+		};
+		return A4(
+			$elm$core$Array$Array_elm_builtin,
+			len,
+			startShift,
+			A2($elm$core$Elm$JsArray$map, helper, tree),
+			A2($elm$core$Elm$JsArray$map, func, tail));
+	});
+var $author$project$Main$stay = F2(
+	function (model, hand) {
+		var playerHand = A2(
+			$elm$core$Maybe$withDefault,
+			$author$project$Main$defaultHand(model),
+			A2($elm$core$Array$get, hand, model.aP.h));
+		var oldPlayer = model.aP;
+		var newHand = _Utils_update(
+			playerHand,
+			{aT: true});
+		var newHands = A3($elm$core$Array$set, hand, newHand, model.aP.h);
+		var newPlayer = _Utils_update(
+			oldPlayer,
+			{h: newHands});
+		var newModel = _Utils_update(
+			model,
+			{aP: newPlayer});
+		var allStayed = A3(
+			$elm$core$Array$foldl,
+			$elm$core$Basics$or,
+			false,
+			A2(
+				$elm$core$Array$map,
+				function (x) {
+					return x.aT;
+				},
+				newHands));
+		return allStayed ? A2($author$project$Main$changeGameState, newModel, 4) : _Utils_Tuple2(newModel, $elm$core$Platform$Cmd$none);
+	});
 var $author$project$Main$hit = F2(
 	function (model, hand) {
 		var _v0 = model.aw;
@@ -5898,26 +6239,24 @@ var $author$project$Main$hit = F2(
 		} else {
 			var card = _v0.a;
 			var cards = _v0.b;
-			var oldPlayer = model.aP;
-			var defaultHand = A2($author$project$Hand$create, _List_Nil, model.aR.aI);
 			var playerHand = A2(
 				$elm$core$Maybe$withDefault,
-				defaultHand,
-				A2($elm$core$Array$get, hand, model.aP.k));
+				$author$project$Main$defaultHand(model),
+				A2($elm$core$Array$get, hand, model.aP.h));
+			var oldPlayer = model.aP;
 			var newHand = _Utils_update(
 				playerHand,
 				{
 					at: A2($elm$core$List$cons, card, playerHand.at)
 				});
-			var newHands = A3($elm$core$Array$set, hand, newHand, model.aP.k);
+			var newHands = A3($elm$core$Array$set, hand, newHand, model.aP.h);
 			var newPlayer = _Utils_update(
 				oldPlayer,
-				{k: newHands});
-			return _Utils_Tuple2(
-				_Utils_update(
-					model,
-					{aw: cards, aP: newPlayer}),
-				$elm$core$Platform$Cmd$none);
+				{h: newHands});
+			var newModel = _Utils_update(
+				model,
+				{aw: cards, aP: newPlayer});
+			return $author$project$Game$isBusted(newHand.at) ? A2($author$project$Main$stay, newModel, hand) : _Utils_Tuple2(newModel, $elm$core$Platform$Cmd$none);
 		}
 	});
 var $author$project$Main$update = F2(
@@ -6085,9 +6424,12 @@ var $author$project$Main$update = F2(
 					msg = $temp$msg;
 					model = $temp$model;
 					continue update;
-				default:
+				case 14:
 					var hand = msg.a;
 					return A2($author$project$Main$hit, model, hand);
+				default:
+					var hand = msg.a;
+					return A2($author$project$Main$stay, model, hand);
 			}
 		}
 	});
@@ -6246,7 +6588,7 @@ var $author$project$Page$Bet$view = function (model) {
 	var maximumBet = $elm$core$Maybe$Just(
 		(_Utils_cmp(model.aR.aH, model.aP.V) < 0) ? model.aR.aH : model.aP.V);
 	var bet = function () {
-		var _v0 = $elm$core$Array$toList(model.aP.k);
+		var _v0 = $elm$core$Array$toList(model.aP.h);
 		if (_v0.b) {
 			var x = _v0.a;
 			var xs = _v0.b;
@@ -6447,6 +6789,9 @@ var $elm$core$Array$toIndexedList = function (array) {
 		_Utils_Tuple2(len - 1, _List_Nil),
 		array).b;
 };
+var $author$project$State$Stay = function (a) {
+	return {$: 15, a: a};
+};
 var $elm$json$Json$Encode$bool = _Json_wrap;
 var $elm$html$Html$Attributes$boolProperty = F2(
 	function (key, bool) {
@@ -6456,270 +6801,6 @@ var $elm$html$Html$Attributes$boolProperty = F2(
 			$elm$json$Json$Encode$bool(bool));
 	});
 var $elm$html$Html$Attributes$disabled = $elm$html$Html$Attributes$boolProperty('disabled');
-var $elm$core$Set$Set_elm_builtin = $elm$core$Basics$identity;
-var $elm$core$Dict$RBEmpty_elm_builtin = {$: -2};
-var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
-var $elm$core$Set$empty = $elm$core$Dict$empty;
-var $elm$core$Dict$Black = 1;
-var $elm$core$Dict$RBNode_elm_builtin = F5(
-	function (a, b, c, d, e) {
-		return {$: -1, a: a, b: b, c: c, d: d, e: e};
-	});
-var $elm$core$Dict$Red = 0;
-var $elm$core$Dict$balance = F5(
-	function (color, key, value, left, right) {
-		if ((right.$ === -1) && (!right.a)) {
-			var _v1 = right.a;
-			var rK = right.b;
-			var rV = right.c;
-			var rLeft = right.d;
-			var rRight = right.e;
-			if ((left.$ === -1) && (!left.a)) {
-				var _v3 = left.a;
-				var lK = left.b;
-				var lV = left.c;
-				var lLeft = left.d;
-				var lRight = left.e;
-				return A5(
-					$elm$core$Dict$RBNode_elm_builtin,
-					0,
-					key,
-					value,
-					A5($elm$core$Dict$RBNode_elm_builtin, 1, lK, lV, lLeft, lRight),
-					A5($elm$core$Dict$RBNode_elm_builtin, 1, rK, rV, rLeft, rRight));
-			} else {
-				return A5(
-					$elm$core$Dict$RBNode_elm_builtin,
-					color,
-					rK,
-					rV,
-					A5($elm$core$Dict$RBNode_elm_builtin, 0, key, value, left, rLeft),
-					rRight);
-			}
-		} else {
-			if ((((left.$ === -1) && (!left.a)) && (left.d.$ === -1)) && (!left.d.a)) {
-				var _v5 = left.a;
-				var lK = left.b;
-				var lV = left.c;
-				var _v6 = left.d;
-				var _v7 = _v6.a;
-				var llK = _v6.b;
-				var llV = _v6.c;
-				var llLeft = _v6.d;
-				var llRight = _v6.e;
-				var lRight = left.e;
-				return A5(
-					$elm$core$Dict$RBNode_elm_builtin,
-					0,
-					lK,
-					lV,
-					A5($elm$core$Dict$RBNode_elm_builtin, 1, llK, llV, llLeft, llRight),
-					A5($elm$core$Dict$RBNode_elm_builtin, 1, key, value, lRight, right));
-			} else {
-				return A5($elm$core$Dict$RBNode_elm_builtin, color, key, value, left, right);
-			}
-		}
-	});
-var $elm$core$Basics$compare = _Utils_compare;
-var $elm$core$Dict$insertHelp = F3(
-	function (key, value, dict) {
-		if (dict.$ === -2) {
-			return A5($elm$core$Dict$RBNode_elm_builtin, 0, key, value, $elm$core$Dict$RBEmpty_elm_builtin, $elm$core$Dict$RBEmpty_elm_builtin);
-		} else {
-			var nColor = dict.a;
-			var nKey = dict.b;
-			var nValue = dict.c;
-			var nLeft = dict.d;
-			var nRight = dict.e;
-			var _v1 = A2($elm$core$Basics$compare, key, nKey);
-			switch (_v1) {
-				case 0:
-					return A5(
-						$elm$core$Dict$balance,
-						nColor,
-						nKey,
-						nValue,
-						A3($elm$core$Dict$insertHelp, key, value, nLeft),
-						nRight);
-				case 1:
-					return A5($elm$core$Dict$RBNode_elm_builtin, nColor, nKey, value, nLeft, nRight);
-				default:
-					return A5(
-						$elm$core$Dict$balance,
-						nColor,
-						nKey,
-						nValue,
-						nLeft,
-						A3($elm$core$Dict$insertHelp, key, value, nRight));
-			}
-		}
-	});
-var $elm$core$Dict$insert = F3(
-	function (key, value, dict) {
-		var _v0 = A3($elm$core$Dict$insertHelp, key, value, dict);
-		if ((_v0.$ === -1) && (!_v0.a)) {
-			var _v1 = _v0.a;
-			var k = _v0.b;
-			var v = _v0.c;
-			var l = _v0.d;
-			var r = _v0.e;
-			return A5($elm$core$Dict$RBNode_elm_builtin, 1, k, v, l, r);
-		} else {
-			var x = _v0;
-			return x;
-		}
-	});
-var $elm$core$Set$insert = F2(
-	function (key, _v0) {
-		var dict = _v0;
-		return A3($elm$core$Dict$insert, key, 0, dict);
-	});
-var $elm$core$Set$fromList = function (list) {
-	return A3($elm$core$List$foldl, $elm$core$Set$insert, $elm$core$Set$empty, list);
-};
-var $author$project$Card$values = function (_v0) {
-	var rank = _v0.H;
-	var suit = _v0.L;
-	switch (rank) {
-		case 0:
-			return _List_fromArray(
-				[2]);
-		case 1:
-			return _List_fromArray(
-				[3]);
-		case 2:
-			return _List_fromArray(
-				[4]);
-		case 3:
-			return _List_fromArray(
-				[5]);
-		case 4:
-			return _List_fromArray(
-				[6]);
-		case 5:
-			return _List_fromArray(
-				[7]);
-		case 6:
-			return _List_fromArray(
-				[8]);
-		case 7:
-			return _List_fromArray(
-				[9]);
-		case 8:
-			return _List_fromArray(
-				[10]);
-		case 9:
-			return _List_fromArray(
-				[10]);
-		case 10:
-			return _List_fromArray(
-				[10]);
-		case 11:
-			return _List_fromArray(
-				[10]);
-		default:
-			return _List_fromArray(
-				[1, 11]);
-	}
-};
-var $author$project$Game$getCardValues = function (deck) {
-	var getCardValuesAsList = function (d) {
-		if (!d.b) {
-			return _List_fromArray(
-				[0]);
-		} else {
-			var card = d.a;
-			var cards = d.b;
-			var values = $author$project$Card$values(card);
-			var otherValues = getCardValuesAsList(cards);
-			return A3(
-				$elm$core$List$foldl,
-				$elm$core$Basics$append,
-				_List_Nil,
-				A2(
-					$elm$core$List$map,
-					function (x) {
-						return A2(
-							$elm$core$List$map,
-							function (y) {
-								return x + y;
-							},
-							otherValues);
-					},
-					values));
-		}
-	};
-	return $elm$core$Set$fromList(
-		getCardValuesAsList(deck));
-};
-var $elm$core$Dict$foldl = F3(
-	function (func, acc, dict) {
-		foldl:
-		while (true) {
-			if (dict.$ === -2) {
-				return acc;
-			} else {
-				var key = dict.b;
-				var value = dict.c;
-				var left = dict.d;
-				var right = dict.e;
-				var $temp$func = func,
-					$temp$acc = A3(
-					func,
-					key,
-					value,
-					A3($elm$core$Dict$foldl, func, acc, left)),
-					$temp$dict = right;
-				func = $temp$func;
-				acc = $temp$acc;
-				dict = $temp$dict;
-				continue foldl;
-			}
-		}
-	});
-var $elm$core$Dict$filter = F2(
-	function (isGood, dict) {
-		return A3(
-			$elm$core$Dict$foldl,
-			F3(
-				function (k, v, d) {
-					return A2(isGood, k, v) ? A3($elm$core$Dict$insert, k, v, d) : d;
-				}),
-			$elm$core$Dict$empty,
-			dict);
-	});
-var $elm$core$Set$filter = F2(
-	function (isGood, _v0) {
-		var dict = _v0;
-		return A2(
-			$elm$core$Dict$filter,
-			F2(
-				function (key, _v1) {
-					return isGood(key);
-				}),
-			dict);
-	});
-var $elm$core$Dict$isEmpty = function (dict) {
-	if (dict.$ === -2) {
-		return true;
-	} else {
-		return false;
-	}
-};
-var $elm$core$Set$isEmpty = function (_v0) {
-	var dict = _v0;
-	return $elm$core$Dict$isEmpty(dict);
-};
-var $author$project$Game$isBusted = function (deck) {
-	var values = $author$project$Game$getCardValues(deck);
-	var valuesUnder22 = A2(
-		$elm$core$Set$filter,
-		function (x) {
-			return x < 22;
-		},
-		values);
-	return $elm$core$Set$isEmpty(valuesUnder22);
-};
 var $elm$core$Set$foldl = F3(
 	function (func, initialState, _v0) {
 		var dict = _v0;
@@ -6791,7 +6872,11 @@ var $author$project$Page$Round$viewHand = function (_v0) {
 							])),
 						A2(
 						$elm$html$Html$button,
-						_List_Nil,
+						_List_fromArray(
+							[
+								$elm$html$Html$Events$onClick(
+								$author$project$State$Stay(whichHand))
+							]),
 						_List_fromArray(
 							[
 								$elm$html$Html$text('Stay')
@@ -6842,7 +6927,7 @@ var $author$project$Page$Round$viewHands = function (hands) {
 		$elm$core$Array$toIndexedList(hands));
 };
 var $author$project$Page$Round$viewPlayer = function (player) {
-	var hands = $author$project$Page$Round$viewHands(player.k);
+	var hands = $author$project$Page$Round$viewHands(player.h);
 	return A2(
 		$elm$html$Html$div,
 		_List_Nil,

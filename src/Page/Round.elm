@@ -56,7 +56,10 @@ viewHand ( whichHand, hand ) =
                         , disabled (Game.isBusted hand.cards)
                         ]
                         [ text "Hit" ]
-                    , button [] [ text "Stay" ]
+                    , button
+                        [ onClick (Stay whichHand)
+                        ]
+                        [ text "Stay" ]
                     , button [] [ text "Insurance" ]
                     , button [] [ text "Double Down" ]
                     , button [] [ text "Split" ]

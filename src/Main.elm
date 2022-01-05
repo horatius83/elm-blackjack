@@ -129,6 +129,9 @@ update msg model =
         Hit hand ->
             hit model hand
 
+        Stay hand ->
+            stay model hand
+
 
 changeBet : Model -> String -> ( Model, Cmd Msg )
 changeBet model betAsString =
@@ -139,11 +142,8 @@ changeBet model betAsString =
         betAsInt =
             sToI Game.default.minimumBet betAsString
 
-        defaultHand =
-            Hand.create [] betAsInt
-
         oldHand =
-            Array.get 0 model.player.hands |> Maybe.withDefault defaultHand
+            Array.get 0 model.player.hands |> Maybe.withDefault (defaultHand model)
 
         newHand =
             { oldHand | bet = betAsInt }
@@ -185,6 +185,11 @@ shuffleDiscard model nextMsg =
     Random.generate (ShuffleDiscardIntoDeck nextMsg) <| Random.List.shuffle model.discard
 
 
+defaultHand : Model -> Hand.Hand
+defaultHand model =
+    Hand.create [] model.rules.minimumBet
+
+
 hit : Model -> Int -> ( Model, Cmd Msg )
 hit model hand =
     case model.deck of
@@ -193,13 +198,10 @@ hit model hand =
 
         card :: cards ->
             let
-                defaultHand =
-                    Hand.create [] model.rules.minimumBet
-
                 playerHand =
                     model.player.hands
                         |> Array.get hand
-                        |> Maybe.withDefault defaultHand
+                        |> Maybe.withDefault (defaultHand model)
 
                 newHand =
                     { playerHand | cards = card :: playerHand.cards }
@@ -212,19 +214,57 @@ hit model hand =
 
                 newPlayer =
                     { oldPlayer | hands = newHands }
+
+                newModel =
+                    { model | player = newPlayer, deck = cards }
             in
-            ( { model | player = newPlayer, deck = cards }, Cmd.none )
+            if Game.isBusted newHand.cards then
+                stay newModel hand
+
+            else
+                ( newModel, Cmd.none )
+
+
+stay : Model -> Int -> ( Model, Cmd Msg )
+stay model hand =
+    let
+        playerHand =
+            model.player.hands
+                |> Array.get hand
+                |> Maybe.withDefault (defaultHand model)
+
+        newHand =
+            { playerHand | stayed = True }
+
+        oldPlayer =
+            model.player
+
+        newHands =
+            Array.set hand newHand model.player.hands
+
+        newPlayer =
+            { oldPlayer | hands = newHands }
+
+        newModel =
+            { model | player = newPlayer }
+
+        allStayed =
+            Array.map (\x -> x.stayed) newHands
+                |> Array.foldl (||) False
+    in
+    if allStayed then
+        changeGameState newModel Game.RoundEnd
+
+    else
+        ( newModel, Cmd.none )
 
 
 dealInitialCards : Model -> ( Model, Cmd Msg )
 dealInitialCards model =
     let
-        defaultHand =
-            Hand.create [] model.rules.minimumBet
-
         hand =
             Array.get 0 model.player.hands
-                |> Maybe.withDefault defaultHand
+                |> Maybe.withDefault (defaultHand model)
 
         oldDealer =
             model.dealer
