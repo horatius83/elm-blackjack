@@ -13,6 +13,7 @@ import Html.Events exposing (onClick, onInput)
 import List
 import Page.Bet
 import Page.Round
+import Page.RoundEnd
 import Page.Rules
 import Player exposing (addCardToHand)
 import Random
@@ -43,6 +44,9 @@ view model =
 
         Game.RoundStart ->
             Page.Round.view model
+
+        Game.RoundEnd ->
+            Page.RoundEnd.view model
 
         _ ->
             div []
