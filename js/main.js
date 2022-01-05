@@ -6447,9 +6447,317 @@ var $elm$core$Array$toIndexedList = function (array) {
 		_Utils_Tuple2(len - 1, _List_Nil),
 		array).b;
 };
+var $elm$json$Json$Encode$bool = _Json_wrap;
+var $elm$html$Html$Attributes$boolProperty = F2(
+	function (key, bool) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$bool(bool));
+	});
+var $elm$html$Html$Attributes$disabled = $elm$html$Html$Attributes$boolProperty('disabled');
+var $elm$core$Set$Set_elm_builtin = $elm$core$Basics$identity;
+var $elm$core$Dict$RBEmpty_elm_builtin = {$: -2};
+var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
+var $elm$core$Set$empty = $elm$core$Dict$empty;
+var $elm$core$Dict$Black = 1;
+var $elm$core$Dict$RBNode_elm_builtin = F5(
+	function (a, b, c, d, e) {
+		return {$: -1, a: a, b: b, c: c, d: d, e: e};
+	});
+var $elm$core$Dict$Red = 0;
+var $elm$core$Dict$balance = F5(
+	function (color, key, value, left, right) {
+		if ((right.$ === -1) && (!right.a)) {
+			var _v1 = right.a;
+			var rK = right.b;
+			var rV = right.c;
+			var rLeft = right.d;
+			var rRight = right.e;
+			if ((left.$ === -1) && (!left.a)) {
+				var _v3 = left.a;
+				var lK = left.b;
+				var lV = left.c;
+				var lLeft = left.d;
+				var lRight = left.e;
+				return A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					0,
+					key,
+					value,
+					A5($elm$core$Dict$RBNode_elm_builtin, 1, lK, lV, lLeft, lRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, 1, rK, rV, rLeft, rRight));
+			} else {
+				return A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					color,
+					rK,
+					rV,
+					A5($elm$core$Dict$RBNode_elm_builtin, 0, key, value, left, rLeft),
+					rRight);
+			}
+		} else {
+			if ((((left.$ === -1) && (!left.a)) && (left.d.$ === -1)) && (!left.d.a)) {
+				var _v5 = left.a;
+				var lK = left.b;
+				var lV = left.c;
+				var _v6 = left.d;
+				var _v7 = _v6.a;
+				var llK = _v6.b;
+				var llV = _v6.c;
+				var llLeft = _v6.d;
+				var llRight = _v6.e;
+				var lRight = left.e;
+				return A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					0,
+					lK,
+					lV,
+					A5($elm$core$Dict$RBNode_elm_builtin, 1, llK, llV, llLeft, llRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, 1, key, value, lRight, right));
+			} else {
+				return A5($elm$core$Dict$RBNode_elm_builtin, color, key, value, left, right);
+			}
+		}
+	});
+var $elm$core$Basics$compare = _Utils_compare;
+var $elm$core$Dict$insertHelp = F3(
+	function (key, value, dict) {
+		if (dict.$ === -2) {
+			return A5($elm$core$Dict$RBNode_elm_builtin, 0, key, value, $elm$core$Dict$RBEmpty_elm_builtin, $elm$core$Dict$RBEmpty_elm_builtin);
+		} else {
+			var nColor = dict.a;
+			var nKey = dict.b;
+			var nValue = dict.c;
+			var nLeft = dict.d;
+			var nRight = dict.e;
+			var _v1 = A2($elm$core$Basics$compare, key, nKey);
+			switch (_v1) {
+				case 0:
+					return A5(
+						$elm$core$Dict$balance,
+						nColor,
+						nKey,
+						nValue,
+						A3($elm$core$Dict$insertHelp, key, value, nLeft),
+						nRight);
+				case 1:
+					return A5($elm$core$Dict$RBNode_elm_builtin, nColor, nKey, value, nLeft, nRight);
+				default:
+					return A5(
+						$elm$core$Dict$balance,
+						nColor,
+						nKey,
+						nValue,
+						nLeft,
+						A3($elm$core$Dict$insertHelp, key, value, nRight));
+			}
+		}
+	});
+var $elm$core$Dict$insert = F3(
+	function (key, value, dict) {
+		var _v0 = A3($elm$core$Dict$insertHelp, key, value, dict);
+		if ((_v0.$ === -1) && (!_v0.a)) {
+			var _v1 = _v0.a;
+			var k = _v0.b;
+			var v = _v0.c;
+			var l = _v0.d;
+			var r = _v0.e;
+			return A5($elm$core$Dict$RBNode_elm_builtin, 1, k, v, l, r);
+		} else {
+			var x = _v0;
+			return x;
+		}
+	});
+var $elm$core$Set$insert = F2(
+	function (key, _v0) {
+		var dict = _v0;
+		return A3($elm$core$Dict$insert, key, 0, dict);
+	});
+var $elm$core$Set$fromList = function (list) {
+	return A3($elm$core$List$foldl, $elm$core$Set$insert, $elm$core$Set$empty, list);
+};
+var $author$project$Card$values = function (_v0) {
+	var rank = _v0.H;
+	var suit = _v0.L;
+	switch (rank) {
+		case 0:
+			return _List_fromArray(
+				[2]);
+		case 1:
+			return _List_fromArray(
+				[3]);
+		case 2:
+			return _List_fromArray(
+				[4]);
+		case 3:
+			return _List_fromArray(
+				[5]);
+		case 4:
+			return _List_fromArray(
+				[6]);
+		case 5:
+			return _List_fromArray(
+				[7]);
+		case 6:
+			return _List_fromArray(
+				[8]);
+		case 7:
+			return _List_fromArray(
+				[9]);
+		case 8:
+			return _List_fromArray(
+				[10]);
+		case 9:
+			return _List_fromArray(
+				[10]);
+		case 10:
+			return _List_fromArray(
+				[10]);
+		case 11:
+			return _List_fromArray(
+				[10]);
+		default:
+			return _List_fromArray(
+				[1, 11]);
+	}
+};
+var $author$project$Game$getCardValues = function (deck) {
+	var getCardValuesAsList = function (d) {
+		if (!d.b) {
+			return _List_fromArray(
+				[0]);
+		} else {
+			var card = d.a;
+			var cards = d.b;
+			var values = $author$project$Card$values(card);
+			var otherValues = getCardValuesAsList(cards);
+			return A3(
+				$elm$core$List$foldl,
+				$elm$core$Basics$append,
+				_List_Nil,
+				A2(
+					$elm$core$List$map,
+					function (x) {
+						return A2(
+							$elm$core$List$map,
+							function (y) {
+								return x + y;
+							},
+							otherValues);
+					},
+					values));
+		}
+	};
+	return $elm$core$Set$fromList(
+		getCardValuesAsList(deck));
+};
+var $elm$core$Dict$foldl = F3(
+	function (func, acc, dict) {
+		foldl:
+		while (true) {
+			if (dict.$ === -2) {
+				return acc;
+			} else {
+				var key = dict.b;
+				var value = dict.c;
+				var left = dict.d;
+				var right = dict.e;
+				var $temp$func = func,
+					$temp$acc = A3(
+					func,
+					key,
+					value,
+					A3($elm$core$Dict$foldl, func, acc, left)),
+					$temp$dict = right;
+				func = $temp$func;
+				acc = $temp$acc;
+				dict = $temp$dict;
+				continue foldl;
+			}
+		}
+	});
+var $elm$core$Dict$filter = F2(
+	function (isGood, dict) {
+		return A3(
+			$elm$core$Dict$foldl,
+			F3(
+				function (k, v, d) {
+					return A2(isGood, k, v) ? A3($elm$core$Dict$insert, k, v, d) : d;
+				}),
+			$elm$core$Dict$empty,
+			dict);
+	});
+var $elm$core$Set$filter = F2(
+	function (isGood, _v0) {
+		var dict = _v0;
+		return A2(
+			$elm$core$Dict$filter,
+			F2(
+				function (key, _v1) {
+					return isGood(key);
+				}),
+			dict);
+	});
+var $elm$core$Dict$isEmpty = function (dict) {
+	if (dict.$ === -2) {
+		return true;
+	} else {
+		return false;
+	}
+};
+var $elm$core$Set$isEmpty = function (_v0) {
+	var dict = _v0;
+	return $elm$core$Dict$isEmpty(dict);
+};
+var $author$project$Game$isBusted = function (deck) {
+	var values = $author$project$Game$getCardValues(deck);
+	var valuesUnder22 = A2(
+		$elm$core$Set$filter,
+		function (x) {
+			return x < 22;
+		},
+		values);
+	return $elm$core$Set$isEmpty(valuesUnder22);
+};
+var $elm$core$Set$foldl = F3(
+	function (func, initialState, _v0) {
+		var dict = _v0;
+		return A3(
+			$elm$core$Dict$foldl,
+			F3(
+				function (key, _v1, state) {
+					return A2(func, key, state);
+				}),
+			initialState,
+			dict);
+	});
+var $elm$core$Set$map = F2(
+	function (func, set) {
+		return $elm$core$Set$fromList(
+			A3(
+				$elm$core$Set$foldl,
+				F2(
+					function (x, xs) {
+						return A2(
+							$elm$core$List$cons,
+							func(x),
+							xs);
+					}),
+				_List_Nil,
+				set));
+	});
 var $author$project$Page$Round$viewHand = function (_v0) {
 	var whichHand = _v0.a;
 	var hand = _v0.b;
+	var valuesAsText = A2(
+		$elm$core$String$join,
+		', ',
+		$elm$core$Set$toList(
+			A2(
+				$elm$core$Set$map,
+				$elm$core$String$fromInt,
+				$author$project$Game$getCardValues(hand.at))));
 	var handTitle = 'Hand #' + $elm$core$String$fromInt(whichHand + 1);
 	var handTitleHtml = A2(
 		$elm$html$Html$div,
@@ -6473,7 +6781,9 @@ var $author$project$Page$Round$viewHand = function (_v0) {
 						_List_fromArray(
 							[
 								$elm$html$Html$Events$onClick(
-								$author$project$State$Hit(whichHand))
+								$author$project$State$Hit(whichHand)),
+								$elm$html$Html$Attributes$disabled(
+								$author$project$Game$isBusted(hand.at))
 							]),
 						_List_fromArray(
 							[
@@ -6506,7 +6816,8 @@ var $author$project$Page$Round$viewHand = function (_v0) {
 						_List_fromArray(
 							[
 								$elm$html$Html$text('Split')
-							]))
+							])),
+						$elm$html$Html$text(valuesAsText)
 					]))
 			]));
 	var html = _Utils_ap(
