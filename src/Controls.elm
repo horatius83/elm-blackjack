@@ -33,8 +33,8 @@ viewDealer cards showAll =
         ]
 
 
-viewHand : ( Int, Hand ) -> Html Msg
-viewHand ( whichHand, hand ) =
+viewHand : Bool -> ( Int, Hand ) -> Html Msg
+viewHand showControls ( whichHand, hand ) =
     let
         handTitle =
             "Hand #" ++ String.fromInt (whichHand + 1)
@@ -68,22 +68,30 @@ viewHand ( whichHand, hand ) =
                 ]
 
         html =
-            [ handTitleHtml ] ++ viewCards hand.cards ++ [ controls ]
+            if showControls then
+                [ handTitleHtml ] ++ viewCards hand.cards ++ [ controls ]
+
+            else
+                [ handTitleHtml ] ++ viewCards hand.cards
     in
     div [] [ div [] html ]
 
 
-viewHands : Array.Array Hand -> List (Html Msg)
-viewHands hands =
+viewHands : Bool -> Array.Array Hand -> List (Html Msg)
+viewHands showControls hands =
+    let
+        vh =
+            viewHand showControls
+    in
     Array.toIndexedList hands
-        |> List.map viewHand
+        |> List.map vh
 
 
-viewPlayer : Player -> Html Msg
-viewPlayer player =
+viewPlayer : Bool -> Player -> Html Msg
+viewPlayer showControls player =
     let
         hands =
-            viewHands player.hands
+            viewHands showControls player.hands
     in
     div []
         [ h1 [] [ text player.name ]

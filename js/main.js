@@ -6828,121 +6828,128 @@ var $elm$core$Set$map = F2(
 				_List_Nil,
 				set));
 	});
-var $author$project$Controls$viewHand = function (_v0) {
-	var whichHand = _v0.a;
-	var hand = _v0.b;
-	var valuesAsText = A2(
-		$elm$core$String$join,
-		', ',
-		$elm$core$Set$toList(
-			A2(
-				$elm$core$Set$map,
-				$elm$core$String$fromInt,
-				$author$project$Game$getCardValues(hand.D))));
-	var handTitle = 'Hand #' + $elm$core$String$fromInt(whichHand + 1);
-	var handTitleHtml = A2(
-		$elm$html$Html$div,
-		_List_Nil,
-		_List_fromArray(
-			[
-				$elm$html$Html$text(handTitle)
-			]));
-	var controls = A2(
-		$elm$html$Html$div,
-		_List_Nil,
-		_List_fromArray(
-			[
+var $author$project$Controls$viewHand = F2(
+	function (showControls, _v0) {
+		var whichHand = _v0.a;
+		var hand = _v0.b;
+		var valuesAsText = A2(
+			$elm$core$String$join,
+			', ',
+			$elm$core$Set$toList(
 				A2(
-				$elm$html$Html$span,
-				_List_Nil,
-				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$button,
-						_List_fromArray(
-							[
-								$elm$html$Html$Events$onClick(
-								$author$project$State$Hit(whichHand)),
-								$elm$html$Html$Attributes$disabled(
-								$author$project$Game$isBusted(hand.D))
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Hit')
-							])),
-						A2(
-						$elm$html$Html$button,
-						_List_fromArray(
-							[
-								$elm$html$Html$Events$onClick(
-								$author$project$State$Stay(whichHand))
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Stay')
-							])),
-						A2(
-						$elm$html$Html$button,
-						_List_Nil,
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Insurance')
-							])),
-						A2(
-						$elm$html$Html$button,
-						_List_Nil,
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Double Down')
-							])),
-						A2(
-						$elm$html$Html$button,
-						_List_Nil,
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Split')
-							])),
-						$elm$html$Html$text(valuesAsText)
-					]))
-			]));
-	var html = _Utils_ap(
-		_List_fromArray(
-			[handTitleHtml]),
-		_Utils_ap(
-			$author$project$Controls$viewCards(hand.D),
+					$elm$core$Set$map,
+					$elm$core$String$fromInt,
+					$author$project$Game$getCardValues(hand.D))));
+		var handTitle = 'Hand #' + $elm$core$String$fromInt(whichHand + 1);
+		var handTitleHtml = A2(
+			$elm$html$Html$div,
+			_List_Nil,
 			_List_fromArray(
-				[controls])));
-	return A2(
-		$elm$html$Html$div,
-		_List_Nil,
-		_List_fromArray(
-			[
-				A2($elm$html$Html$div, _List_Nil, html)
-			]));
-};
-var $author$project$Controls$viewHands = function (hands) {
-	return A2(
-		$elm$core$List$map,
-		$author$project$Controls$viewHand,
-		$elm$core$Array$toIndexedList(hands));
-};
-var $author$project$Controls$viewPlayer = function (player) {
-	var hands = $author$project$Controls$viewHands(player.aC);
-	return A2(
-		$elm$html$Html$div,
-		_List_Nil,
-		_List_fromArray(
-			[
-				A2(
-				$elm$html$Html$h1,
-				_List_Nil,
+				[
+					$elm$html$Html$text(handTitle)
+				]));
+		var controls = A2(
+			$elm$html$Html$div,
+			_List_Nil,
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$span,
+					_List_Nil,
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$button,
+							_List_fromArray(
+								[
+									$elm$html$Html$Events$onClick(
+									$author$project$State$Hit(whichHand)),
+									$elm$html$Html$Attributes$disabled(
+									$author$project$Game$isBusted(hand.D))
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Hit')
+								])),
+							A2(
+							$elm$html$Html$button,
+							_List_fromArray(
+								[
+									$elm$html$Html$Events$onClick(
+									$author$project$State$Stay(whichHand))
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Stay')
+								])),
+							A2(
+							$elm$html$Html$button,
+							_List_Nil,
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Insurance')
+								])),
+							A2(
+							$elm$html$Html$button,
+							_List_Nil,
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Double Down')
+								])),
+							A2(
+							$elm$html$Html$button,
+							_List_Nil,
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Split')
+								])),
+							$elm$html$Html$text(valuesAsText)
+						]))
+				]));
+		var html = showControls ? _Utils_ap(
+			_List_fromArray(
+				[handTitleHtml]),
+			_Utils_ap(
+				$author$project$Controls$viewCards(hand.D),
 				_List_fromArray(
-					[
-						$elm$html$Html$text(player.aJ)
-					])),
-				A2($elm$html$Html$div, _List_Nil, hands)
-			]));
-};
+					[controls]))) : _Utils_ap(
+			_List_fromArray(
+				[handTitleHtml]),
+			$author$project$Controls$viewCards(hand.D));
+		return A2(
+			$elm$html$Html$div,
+			_List_Nil,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$div, _List_Nil, html)
+				]));
+	});
+var $author$project$Controls$viewHands = F2(
+	function (showControls, hands) {
+		var vh = $author$project$Controls$viewHand(showControls);
+		return A2(
+			$elm$core$List$map,
+			vh,
+			$elm$core$Array$toIndexedList(hands));
+	});
+var $author$project$Controls$viewPlayer = F2(
+	function (showControls, player) {
+		var hands = A2($author$project$Controls$viewHands, showControls, player.aC);
+		return A2(
+			$elm$html$Html$div,
+			_List_Nil,
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$h1,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$elm$html$Html$text(player.aJ)
+						])),
+					A2($elm$html$Html$div, _List_Nil, hands)
+				]));
+	});
 var $author$project$Page$Round$view = function (model) {
 	return A2(
 		$elm$html$Html$div,
@@ -6950,7 +6957,7 @@ var $author$project$Page$Round$view = function (model) {
 		_List_fromArray(
 			[
 				A2($author$project$Controls$viewDealer, model.au.D, false),
-				$author$project$Controls$viewPlayer(model.aP)
+				A2($author$project$Controls$viewPlayer, true, model.aP)
 			]));
 };
 var $author$project$Page$RoundEnd$view = function (model) {
@@ -6960,7 +6967,7 @@ var $author$project$Page$RoundEnd$view = function (model) {
 		_List_fromArray(
 			[
 				A2($author$project$Controls$viewDealer, model.au.D, true),
-				$author$project$Controls$viewPlayer(model.aP)
+				A2($author$project$Controls$viewPlayer, false, model.aP)
 			]));
 };
 var $author$project$State$ChangeMaximumBet = function (a) {

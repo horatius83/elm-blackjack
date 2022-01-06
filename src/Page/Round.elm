@@ -9,5 +9,5 @@ view : Model -> Html Msg
 view model =
     div []
         [ viewDealer model.dealer.cards False
-        , viewPlayer model.player
+        , viewPlayer True model.player
         ]
