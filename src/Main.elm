@@ -18,6 +18,7 @@ import Page.Rules
 import Player exposing (addCardToHand)
 import Random
 import Random.List
+import Set
 import State exposing (Model, Msg(..))
 
 
@@ -180,8 +181,40 @@ changeGameState model state =
         Game.RoundStart ->
             dealInitialCards model
 
+        Game.RoundEnd ->
+            roundEnd model
+
         _ ->
             ( { model | state = state }, Cmd.none )
+
+
+roundEnd : Model -> ( Model, Cmd Msg )
+roundEnd model =
+    let
+        values =
+            Game.getCardValues model.dealer.cards
+                |> Set.filter (\x -> x < 22)
+
+        maxValue =
+            Set.foldl
+                (\max x ->
+                    if x > max then
+                        x
+
+                    else
+                        max
+                )
+                0
+                values
+
+        areAnyValidValues =
+            Set.isEmpty values |> not
+    in
+    if areAnyValidValues then
+        ( model, Cmd.none )
+
+    else
+        ( model, Cmd.none )
 
 
 shuffleDiscard : Model -> Msg -> Cmd Msg

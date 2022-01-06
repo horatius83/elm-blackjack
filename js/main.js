@@ -5812,37 +5812,6 @@ var $author$project$Main$dealInitialCards = function (model) {
 		return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 	}
 };
-var $author$project$Main$changeGameState = F2(
-	function (model, state) {
-		switch (state) {
-			case 1:
-				var oldPlayer = model.aP;
-				var hand = A2($author$project$Hand$create, _List_Nil, model.aR.aI);
-				var newPlayer = _Utils_update(
-					oldPlayer,
-					{
-						aC: $elm$core$Array$fromList(
-							_List_fromArray(
-								[hand]))
-					});
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{aP: newPlayer, aS: 1}),
-					$elm$core$Platform$Cmd$none);
-			case 2:
-				return $author$project$Main$dealInitialCards(model);
-			default:
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{aS: state}),
-					$elm$core$Platform$Cmd$none);
-		}
-	});
-var $author$project$State$Hit = function (a) {
-	return {$: 14, a: a};
-};
 var $elm$core$Set$Set_elm_builtin = $elm$core$Basics$identity;
 var $elm$core$Dict$RBEmpty_elm_builtin = {$: -2};
 var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
@@ -6002,6 +5971,18 @@ var $elm$core$Set$filter = F2(
 				}),
 			dict);
 	});
+var $elm$core$Set$foldl = F3(
+	function (func, initialState, _v0) {
+		var dict = _v0;
+		return A3(
+			$elm$core$Dict$foldl,
+			F3(
+				function (key, _v1, state) {
+					return A2(func, key, state);
+				}),
+			initialState,
+			dict);
+	});
 var $elm$core$Set$empty = $elm$core$Dict$empty;
 var $elm$core$Set$insert = F2(
 	function (key, _v0) {
@@ -6096,6 +6077,58 @@ var $elm$core$Dict$isEmpty = function (dict) {
 var $elm$core$Set$isEmpty = function (_v0) {
 	var dict = _v0;
 	return $elm$core$Dict$isEmpty(dict);
+};
+var $elm$core$Basics$not = _Basics_not;
+var $author$project$Main$roundEnd = function (model) {
+	var values = A2(
+		$elm$core$Set$filter,
+		function (x) {
+			return x < 22;
+		},
+		$author$project$Game$getCardValues(model.au.D));
+	var maxValue = A3(
+		$elm$core$Set$foldl,
+		F2(
+			function (max, x) {
+				return (_Utils_cmp(x, max) > 0) ? x : max;
+			}),
+		0,
+		values);
+	var areAnyValidValues = !$elm$core$Set$isEmpty(values);
+	return areAnyValidValues ? _Utils_Tuple2(model, $elm$core$Platform$Cmd$none) : _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+};
+var $author$project$Main$changeGameState = F2(
+	function (model, state) {
+		switch (state) {
+			case 1:
+				var oldPlayer = model.aP;
+				var hand = A2($author$project$Hand$create, _List_Nil, model.aR.aI);
+				var newPlayer = _Utils_update(
+					oldPlayer,
+					{
+						aC: $elm$core$Array$fromList(
+							_List_fromArray(
+								[hand]))
+					});
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{aP: newPlayer, aS: 1}),
+					$elm$core$Platform$Cmd$none);
+			case 2:
+				return $author$project$Main$dealInitialCards(model);
+			case 4:
+				return $author$project$Main$roundEnd(model);
+			default:
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{aS: state}),
+					$elm$core$Platform$Cmd$none);
+		}
+	});
+var $author$project$State$Hit = function (a) {
+	return {$: 14, a: a};
 };
 var $author$project$Game$isBusted = function (deck) {
 	var values = $author$project$Game$getCardValues(deck);
@@ -6801,18 +6834,6 @@ var $elm$html$Html$Attributes$boolProperty = F2(
 			$elm$json$Json$Encode$bool(bool));
 	});
 var $elm$html$Html$Attributes$disabled = $elm$html$Html$Attributes$boolProperty('disabled');
-var $elm$core$Set$foldl = F3(
-	function (func, initialState, _v0) {
-		var dict = _v0;
-		return A3(
-			$elm$core$Dict$foldl,
-			F3(
-				function (key, _v1, state) {
-					return A2(func, key, state);
-				}),
-			initialState,
-			dict);
-	});
 var $elm$core$Set$map = F2(
 	function (func, set) {
 		return $elm$core$Set$fromList(
