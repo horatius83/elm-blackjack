@@ -1,7 +1,7 @@
 module Page.Round exposing (view)
 
 import Controls exposing (viewDealer, viewPlayer)
-import Html exposing (Html, div)
+import Html exposing (Html, div, text)
 import State exposing (Model, Msg)
 
 
@@ -10,4 +10,5 @@ view model =
     div []
         [ viewDealer model.dealer.cards False
         , viewPlayer True model.player
+        , text "Round"
         ]

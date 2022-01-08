@@ -5546,6 +5546,7 @@ var $author$project$Main$init = function (_v0) {
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
+var $author$project$Game$RoundEnd = 4;
 var $author$project$Hand$Hand = F5(
 	function (cards, bet, insurance, stayed, doubleDown) {
 		return {aq: bet, D: cards, ay: doubleDown, aG: insurance, aT: stayed};
@@ -6118,7 +6119,10 @@ var $author$project$Main$changeGameState = F2(
 			case 2:
 				return $author$project$Main$dealInitialCards(model);
 			case 4:
-				return $author$project$Main$roundEnd(model);
+				return $author$project$Main$roundEnd(
+					_Utils_update(
+						model,
+						{aS: state}));
 			default:
 				return _Utils_Tuple2(
 					_Utils_update(
@@ -6183,7 +6187,6 @@ var $elm$core$Array$set = F3(
 			A4($elm$core$Array$setHelp, startShift, index, value, tree),
 			tail));
 	});
-var $author$project$Game$RoundEnd = 4;
 var $elm$core$Elm$JsArray$foldl = _JsArray_foldl;
 var $elm$core$Array$foldl = F3(
 	function (func, baseCase, _v0) {
@@ -6249,8 +6252,8 @@ var $author$project$Main$stay = F2(
 			{aP: newPlayer});
 		var allStayed = A3(
 			$elm$core$Array$foldl,
-			$elm$core$Basics$or,
-			false,
+			$elm$core$Basics$and,
+			true,
 			A2(
 				$elm$core$Array$map,
 				function (x) {
@@ -6462,7 +6465,7 @@ var $author$project$Main$update = F2(
 					return A2($author$project$Main$hit, model, hand);
 				default:
 					var hand = msg.a;
-					return A2($author$project$Main$stay, model, hand);
+					return A2($author$project$Main$changeGameState, model, 4);
 			}
 		}
 	});
@@ -6978,7 +6981,8 @@ var $author$project$Page$Round$view = function (model) {
 		_List_fromArray(
 			[
 				A2($author$project$Controls$viewDealer, model.au.D, false),
-				A2($author$project$Controls$viewPlayer, true, model.aP)
+				A2($author$project$Controls$viewPlayer, true, model.aP),
+				$elm$html$Html$text('Round')
 			]));
 };
 var $author$project$Page$RoundEnd$view = function (model) {
@@ -6988,7 +6992,14 @@ var $author$project$Page$RoundEnd$view = function (model) {
 		_List_fromArray(
 			[
 				A2($author$project$Controls$viewDealer, model.au.D, true),
-				A2($author$project$Controls$viewPlayer, false, model.aP)
+				A2($author$project$Controls$viewPlayer, false, model.aP),
+				A2(
+				$elm$html$Html$h1,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Round End')
+					]))
 			]));
 };
 var $author$project$State$ChangeMaximumBet = function (a) {

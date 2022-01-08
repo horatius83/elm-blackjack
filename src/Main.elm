@@ -135,7 +135,8 @@ update msg model =
             hit model hand
 
         Stay hand ->
-            stay model hand
+            --stay model hand
+            changeGameState model Game.RoundEnd
 
 
 changeBet : Model -> String -> ( Model, Cmd Msg )
@@ -182,7 +183,7 @@ changeGameState model state =
             dealInitialCards model
 
         Game.RoundEnd ->
-            roundEnd model
+            roundEnd { model | state = state }
 
         _ ->
             ( { model | state = state }, Cmd.none )
@@ -287,7 +288,7 @@ stay model hand =
 
         allStayed =
             Array.map (\x -> x.stayed) newHands
-                |> Array.foldl (||) False
+                |> Array.foldl (&&) True
     in
     if allStayed then
         changeGameState newModel Game.RoundEnd
