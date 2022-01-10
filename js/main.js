@@ -5546,7 +5546,6 @@ var $author$project$Main$init = function (_v0) {
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
-var $author$project$Game$RoundEnd = 4;
 var $author$project$Hand$Hand = F5(
 	function (cards, bet, insurance, stayed, doubleDown) {
 		return {aq: bet, D: cards, ay: doubleDown, aG: insurance, aT: stayed};
@@ -6187,6 +6186,7 @@ var $elm$core$Array$set = F3(
 			A4($elm$core$Array$setHelp, startShift, index, value, tree),
 			tail));
 	});
+var $author$project$Game$RoundEnd = 4;
 var $elm$core$Elm$JsArray$foldl = _JsArray_foldl;
 var $elm$core$Array$foldl = F3(
 	function (func, baseCase, _v0) {
@@ -6465,7 +6465,7 @@ var $author$project$Main$update = F2(
 					return A2($author$project$Main$hit, model, hand);
 				default:
 					var hand = msg.a;
-					return A2($author$project$Main$changeGameState, model, 4);
+					return A2($author$project$Main$stay, model, hand);
 			}
 		}
 	});

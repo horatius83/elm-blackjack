@@ -135,8 +135,7 @@ update msg model =
             hit model hand
 
         Stay hand ->
-            --stay model hand
-            changeGameState model Game.RoundEnd
+            stay model hand
 
 
 changeBet : Model -> String -> ( Model, Cmd Msg )
