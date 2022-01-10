@@ -6130,6 +6130,68 @@ var $author$project$Main$changeGameState = F2(
 					$elm$core$Platform$Cmd$none);
 		}
 	});
+var $author$project$State$DealDealerCards = {$: 16};
+var $author$project$Game$RoundEnd = 4;
+var $author$project$Main$dealDealerCards = function (model) {
+	dealDealerCards:
+	while (true) {
+		var validCardCounts = $elm$core$Set$toList(
+			A2(
+				$elm$core$Set$filter,
+				function (x) {
+					return x < 22;
+				},
+				$author$project$Game$getCardValues(model.au.D)));
+		var maxCardCount = A3(
+			$elm$core$List$foldl,
+			F2(
+				function (max, x) {
+					return (_Utils_cmp(x, max) > 0) ? x : max;
+				}),
+			0,
+			validCardCounts);
+		var _v0 = _Utils_Tuple3(validCardCounts, maxCardCount < 17, model.av);
+		_v0$0:
+		while (true) {
+			if (_v0.b) {
+				if (!_v0.c.b) {
+					if (!_v0.a.b) {
+						break _v0$0;
+					} else {
+						return _Utils_Tuple2(
+							model,
+							A2($author$project$Main$shuffleDiscard, model, $author$project$State$DealDealerCards));
+					}
+				} else {
+					if (!_v0.a.b) {
+						break _v0$0;
+					} else {
+						var _v1 = _v0.c;
+						var card = _v1.a;
+						var cards = _v1.b;
+						var oldDealer = model.au;
+						var newCards = A2($elm$core$List$cons, card, oldDealer.D);
+						var newDealer = _Utils_update(
+							oldDealer,
+							{D: newCards});
+						var $temp$model = _Utils_update(
+							model,
+							{au: newDealer, av: cards});
+						model = $temp$model;
+						continue dealDealerCards;
+					}
+				}
+			} else {
+				if (!_v0.a.b) {
+					break _v0$0;
+				} else {
+					return A2($author$project$Main$changeGameState, model, 4);
+				}
+			}
+		}
+		return A2($author$project$Main$changeGameState, model, 4);
+	}
+};
 var $author$project$State$Hit = function (a) {
 	return {$: 14, a: a};
 };
@@ -6186,7 +6248,6 @@ var $elm$core$Array$set = F3(
 			A4($elm$core$Array$setHelp, startShift, index, value, tree),
 			tail));
 	});
-var $author$project$Game$RoundEnd = 4;
 var $elm$core$Elm$JsArray$foldl = _JsArray_foldl;
 var $elm$core$Array$foldl = F3(
 	function (func, baseCase, _v0) {
@@ -6260,7 +6321,7 @@ var $author$project$Main$stay = F2(
 					return x.aT;
 				},
 				newHands));
-		return allStayed ? A2($author$project$Main$changeGameState, newModel, 4) : _Utils_Tuple2(newModel, $elm$core$Platform$Cmd$none);
+		return allStayed ? $author$project$Main$dealDealerCards(newModel) : _Utils_Tuple2(newModel, $elm$core$Platform$Cmd$none);
 	});
 var $author$project$Main$hit = F2(
 	function (model, hand) {
@@ -6463,9 +6524,11 @@ var $author$project$Main$update = F2(
 				case 14:
 					var hand = msg.a;
 					return A2($author$project$Main$hit, model, hand);
-				default:
+				case 15:
 					var hand = msg.a;
 					return A2($author$project$Main$stay, model, hand);
+				default:
+					return $author$project$Main$dealDealerCards(model);
 			}
 		}
 	});

@@ -137,6 +137,9 @@ update msg model =
         Stay hand ->
             stay model hand
 
+        DealDealerCards ->
+            dealDealerCards model
+
 
 changeBet : Model -> String -> ( Model, Cmd Msg )
 changeBet model betAsString =
@@ -290,10 +293,54 @@ stay model hand =
                 |> Array.foldl (&&) True
     in
     if allStayed then
-        changeGameState newModel Game.RoundEnd
+        dealDealerCards newModel
 
     else
         ( newModel, Cmd.none )
+
+
+dealDealerCards : Model -> ( Model, Cmd Msg )
+dealDealerCards model =
+    let
+        validCardCounts =
+            Game.getCardValues model.dealer.cards
+                |> Set.filter (\x -> x < 22)
+                |> Set.toList
+
+        maxCardCount =
+            validCardCounts
+                |> List.foldl
+                    (\max x ->
+                        if x > max then
+                            x
+
+                        else
+                            max
+                    )
+                    0
+    in
+    case ( validCardCounts, maxCardCount < 17, model.deck ) of
+        ( [], _, _ ) ->
+            changeGameState model Game.RoundEnd
+
+        ( _, True, [] ) ->
+            ( model, shuffleDiscard model DealDealerCards )
+
+        ( _, True, card :: cards ) ->
+            let
+                oldDealer =
+                    model.dealer
+
+                newCards =
+                    card :: oldDealer.cards
+
+                newDealer =
+                    { oldDealer | cards = newCards }
+            in
+            dealDealerCards { model | dealer = newDealer, deck = cards }
+
+        ( _, False, _ ) ->
+            changeGameState model Game.RoundEnd
 
 
 dealInitialCards : Model -> ( Model, Cmd Msg )
