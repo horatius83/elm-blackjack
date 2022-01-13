@@ -194,30 +194,70 @@ changeGameState model state =
 roundEnd : Model -> ( Model, Cmd Msg )
 roundEnd model =
     let
-        values =
-            Game.getCardValues model.dealer.cards
-                |> Set.filter (\x -> x < 22)
+        getMaxValue cards =
+            let
+                values =
+                    Game.getCardValues cards
+                        |> Set.filter (\x -> x < 22)
+                        |> Set.toList
+            in
+            case values of
+                [] ->
+                    Nothing
 
-        maxValue =
-            Set.foldl
-                (\max x ->
-                    if x > max then
-                        x
+                vs ->
+                    Just <|
+                        List.foldl
+                            (\max x ->
+                                if x > max then
+                                    x
 
-                    else
-                        max
-                )
-                0
-                values
+                                else
+                                    max
+                            )
+                            0
+                            vs
 
-        areAnyValidValues =
-            Set.isEmpty values |> not
+        maxDealerValue =
+            getMaxValue model.dealer.cards
+
+        didPlayerWin maxHandValue =
+            case ( maxHandValue, maxDealerValue ) of
+                ( Nothing, Nothing ) ->
+                    False
+
+                ( Nothing, Just x ) ->
+                    False
+
+                ( Just x, Nothing ) ->
+                    True
+
+                ( Just x, Just y ) ->
+                    x > y
+
+        playerWinnings =
+            Array.map (\hand -> ( hand.bet, getMaxValue hand.cards )) model.player.hands
+                |> Array.map (\( bet, maxValue ) -> ( bet, didPlayerWin maxValue ))
+                |> Array.foldl
+                    (\( bet, playerWon ) acc ->
+                        if playerWon then
+                            acc + bet
+
+                        else
+                            acc - bet
+                    )
+                    0
+
+        oldPlayer =
+            model.player
+
+        newPlayer =
+            { oldPlayer | money = oldPlayer.money + playerWinnings }
+
+        newModel =
+            { model | player = newPlayer }
     in
-    if areAnyValidValues then
-        ( model, Cmd.none )
-
-    else
-        ( model, Cmd.none )
+    ( newModel, Cmd.none )
 
 
 shuffleDiscard : Model -> Msg -> Cmd Msg

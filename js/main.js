@@ -784,11 +784,11 @@ function _Debug_crash_UNUSED(identifier, fact1, fact2, fact3, fact4)
 
 function _Debug_regionToString(region)
 {
-	if (region.J.y === region.P.y)
+	if (region.K.y === region.Q.y)
 	{
-		return 'on line ' + region.J.y;
+		return 'on line ' + region.K.y;
 	}
-	return 'on lines ' + region.J.y + ' through ' + region.P.y;
+	return 'on lines ' + region.K.y + ' through ' + region.Q.y;
 }
 
 
@@ -2705,8 +2705,8 @@ var _VirtualDom_mapEventRecord = F2(function(func, record)
 {
 	return {
 		n: func(record.n),
-		K: record.K,
-		G: record.G
+		L: record.L,
+		H: record.H
 	}
 });
 
@@ -2975,10 +2975,10 @@ function _VirtualDom_makeCallback(eventNode, initialHandler)
 
 		var value = result.a;
 		var message = !tag ? value : tag < 3 ? value.a : value.n;
-		var stopPropagation = tag == 1 ? value.b : tag == 3 && value.K;
+		var stopPropagation = tag == 1 ? value.b : tag == 3 && value.L;
 		var currentEventNode = (
 			stopPropagation && event.stopPropagation(),
-			(tag == 2 ? value.b : tag == 3 && value.G) && event.preventDefault(),
+			(tag == 2 ? value.b : tag == 3 && value.H) && event.preventDefault(),
 			eventNode
 		);
 		var tagger;
@@ -3968,7 +3968,7 @@ var _Browser_document = _Debugger_document || F4(function(impl, flagDecoder, deb
 		impl.aX,
 		impl.aU,
 		function(sendToApp, initialModel) {
-			var divertHrefToApp = impl.I && impl.I(sendToApp)
+			var divertHrefToApp = impl.J && impl.J(sendToApp)
 			var view = impl.aY;
 			var title = _VirtualDom_doc.title;
 			var bodyNode = _VirtualDom_doc.body;
@@ -4043,7 +4043,7 @@ function _Browser_application(impl)
 	var key = function() { key.a(onUrlChange(_Browser_getUrl())); };
 
 	return _Browser_document({
-		I: function(sendToApp)
+		J: function(sendToApp)
 		{
 			key.a = sendToApp;
 			_Browser_window.addEventListener('popstate', key);
@@ -4060,7 +4060,7 @@ function _Browser_application(impl)
 					sendToApp(onUrlRequest(
 						(next
 							&& curr.ad === next.ad
-							&& curr.T === next.T
+							&& curr.U === next.U
 							&& curr.aa.a === next.aa.a
 						)
 							? $elm$browser$Browser$Internal(next)
@@ -4237,7 +4237,7 @@ function _Browser_getViewport()
 			am: _Browser_window.pageXOffset,
 			an: _Browser_window.pageYOffset,
 			al: _Browser_doc.documentElement.clientWidth,
-			S: _Browser_doc.documentElement.clientHeight
+			T: _Browser_doc.documentElement.clientHeight
 		}
 	};
 }
@@ -4248,7 +4248,7 @@ function _Browser_getScene()
 	var elem = _Browser_doc.documentElement;
 	return {
 		al: Math.max(body.scrollWidth, body.offsetWidth, elem.scrollWidth, elem.offsetWidth, elem.clientWidth),
-		S: Math.max(body.scrollHeight, body.offsetHeight, elem.scrollHeight, elem.offsetHeight, elem.clientHeight)
+		T: Math.max(body.scrollHeight, body.offsetHeight, elem.scrollHeight, elem.offsetHeight, elem.clientHeight)
 	};
 }
 
@@ -4273,13 +4273,13 @@ function _Browser_getViewportOf(id)
 		return {
 			ah: {
 				al: node.scrollWidth,
-				S: node.scrollHeight
+				T: node.scrollHeight
 			},
 			ak: {
 				am: node.scrollLeft,
 				an: node.scrollTop,
 				al: node.clientWidth,
-				S: node.clientHeight
+				T: node.clientHeight
 			}
 		};
 	});
@@ -4314,13 +4314,13 @@ function _Browser_getElement(id)
 				am: x,
 				an: y,
 				al: _Browser_doc.documentElement.clientWidth,
-				S: _Browser_doc.documentElement.clientHeight
+				T: _Browser_doc.documentElement.clientHeight
 			},
 			aA: {
 				am: x + rect.left,
 				an: y + rect.top,
 				al: rect.width,
-				S: rect.height
+				T: rect.height
 			}
 		};
 	});
@@ -4942,7 +4942,7 @@ var $elm$url$Url$Http = 0;
 var $elm$url$Url$Https = 1;
 var $elm$url$Url$Url = F6(
 	function (protocol, host, port_, path, query, fragment) {
-		return {R: fragment, T: host, Z: path, aa: port_, ad: protocol, ae: query};
+		return {S: fragment, U: host, Z: path, aa: port_, ad: protocol, ae: query};
 	});
 var $elm$core$String$contains = _String_contains;
 var $elm$core$String$length = _String_length;
@@ -5243,7 +5243,7 @@ var $author$project$Game$default = A6(
 	0);
 var $author$project$Player$Player = F3(
 	function (name, hands, money) {
-		return {aC: hands, V: money, aJ: name};
+		return {aC: hands, E: money, aJ: name};
 	});
 var $author$project$Player$new = F2(
 	function (name, money) {
@@ -5355,7 +5355,7 @@ var $author$project$Game$Game = F6(
 var $author$project$Game$Init = 0;
 var $author$project$Card$Card = F2(
 	function (rank, suit) {
-		return {H: rank, L: suit};
+		return {I: rank, M: suit};
 	});
 var $elm$core$List$append = F2(
 	function (xs, ys) {
@@ -5971,17 +5971,26 @@ var $elm$core$Set$filter = F2(
 				}),
 			dict);
 	});
-var $elm$core$Set$foldl = F3(
-	function (func, initialState, _v0) {
-		var dict = _v0;
+var $elm$core$Elm$JsArray$foldl = _JsArray_foldl;
+var $elm$core$Array$foldl = F3(
+	function (func, baseCase, _v0) {
+		var tree = _v0.c;
+		var tail = _v0.d;
+		var helper = F2(
+			function (node, acc) {
+				if (!node.$) {
+					var subTree = node.a;
+					return A3($elm$core$Elm$JsArray$foldl, helper, acc, subTree);
+				} else {
+					var values = node.a;
+					return A3($elm$core$Elm$JsArray$foldl, func, acc, values);
+				}
+			});
 		return A3(
-			$elm$core$Dict$foldl,
-			F3(
-				function (key, _v1, state) {
-					return A2(func, key, state);
-				}),
-			initialState,
-			dict);
+			$elm$core$Elm$JsArray$foldl,
+			func,
+			A3($elm$core$Elm$JsArray$foldl, helper, baseCase, tree),
+			tail);
 	});
 var $elm$core$Set$empty = $elm$core$Dict$empty;
 var $elm$core$Set$insert = F2(
@@ -5993,8 +6002,8 @@ var $elm$core$Set$fromList = function (list) {
 	return A3($elm$core$List$foldl, $elm$core$Set$insert, $elm$core$Set$empty, list);
 };
 var $author$project$Card$values = function (_v0) {
-	var rank = _v0.H;
-	var suit = _v0.L;
+	var rank = _v0.I;
+	var suit = _v0.M;
 	switch (rank) {
 		case 0:
 			return _List_fromArray(
@@ -6067,35 +6076,114 @@ var $author$project$Game$getCardValues = function (deck) {
 	return $elm$core$Set$fromList(
 		getCardValuesAsList(deck));
 };
-var $elm$core$Dict$isEmpty = function (dict) {
-	if (dict.$ === -2) {
-		return true;
-	} else {
-		return false;
-	}
-};
-var $elm$core$Set$isEmpty = function (_v0) {
-	var dict = _v0;
-	return $elm$core$Dict$isEmpty(dict);
-};
-var $elm$core$Basics$not = _Basics_not;
+var $elm$core$Elm$JsArray$map = _JsArray_map;
+var $elm$core$Array$map = F2(
+	function (func, _v0) {
+		var len = _v0.a;
+		var startShift = _v0.b;
+		var tree = _v0.c;
+		var tail = _v0.d;
+		var helper = function (node) {
+			if (!node.$) {
+				var subTree = node.a;
+				return $elm$core$Array$SubTree(
+					A2($elm$core$Elm$JsArray$map, helper, subTree));
+			} else {
+				var values = node.a;
+				return $elm$core$Array$Leaf(
+					A2($elm$core$Elm$JsArray$map, func, values));
+			}
+		};
+		return A4(
+			$elm$core$Array$Array_elm_builtin,
+			len,
+			startShift,
+			A2($elm$core$Elm$JsArray$map, helper, tree),
+			A2($elm$core$Elm$JsArray$map, func, tail));
+	});
 var $author$project$Main$roundEnd = function (model) {
-	var values = A2(
-		$elm$core$Set$filter,
-		function (x) {
-			return x < 22;
-		},
-		$author$project$Game$getCardValues(model.au.D));
-	var maxValue = A3(
-		$elm$core$Set$foldl,
+	var oldPlayer = model.aP;
+	var getMaxValue = function (cards) {
+		var values = $elm$core$Set$toList(
+			A2(
+				$elm$core$Set$filter,
+				function (x) {
+					return x < 22;
+				},
+				$author$project$Game$getCardValues(cards)));
+		if (!values.b) {
+			return $elm$core$Maybe$Nothing;
+		} else {
+			var vs = values;
+			return $elm$core$Maybe$Just(
+				A3(
+					$elm$core$List$foldl,
+					F2(
+						function (max, x) {
+							return (_Utils_cmp(x, max) > 0) ? x : max;
+						}),
+					0,
+					vs));
+		}
+	};
+	var maxDealerValue = getMaxValue(model.au.D);
+	var didPlayerWin = function (maxHandValue) {
+		var _v2 = _Utils_Tuple2(maxHandValue, maxDealerValue);
+		if (_v2.a.$ === 1) {
+			if (_v2.b.$ === 1) {
+				var _v3 = _v2.a;
+				var _v4 = _v2.b;
+				return false;
+			} else {
+				var _v5 = _v2.a;
+				var x = _v2.b.a;
+				return false;
+			}
+		} else {
+			if (_v2.b.$ === 1) {
+				var x = _v2.a.a;
+				var _v6 = _v2.b;
+				return true;
+			} else {
+				var x = _v2.a.a;
+				var y = _v2.b.a;
+				return _Utils_cmp(x, y) > 0;
+			}
+		}
+	};
+	var playerWinnings = A3(
+		$elm$core$Array$foldl,
 		F2(
-			function (max, x) {
-				return (_Utils_cmp(x, max) > 0) ? x : max;
+			function (_v1, acc) {
+				var bet = _v1.a;
+				var playerWon = _v1.b;
+				return playerWon ? (acc + bet) : (acc - bet);
 			}),
 		0,
-		values);
-	var areAnyValidValues = !$elm$core$Set$isEmpty(values);
-	return areAnyValidValues ? _Utils_Tuple2(model, $elm$core$Platform$Cmd$none) : _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+		A2(
+			$elm$core$Array$map,
+			function (_v0) {
+				var bet = _v0.a;
+				var maxValue = _v0.b;
+				return _Utils_Tuple2(
+					bet,
+					didPlayerWin(maxValue));
+			},
+			A2(
+				$elm$core$Array$map,
+				function (hand) {
+					return _Utils_Tuple2(
+						hand.aq,
+						getMaxValue(hand.D));
+				},
+				model.aP.aC)));
+	var newPlayer = _Utils_update(
+		oldPlayer,
+		{E: oldPlayer.E + playerWinnings});
+	var newModel = _Utils_update(
+		model,
+		{aP: newPlayer});
+	return _Utils_Tuple2(newModel, $elm$core$Platform$Cmd$none);
 };
 var $author$project$Main$changeGameState = F2(
 	function (model, state) {
@@ -6195,6 +6283,17 @@ var $author$project$Main$dealDealerCards = function (model) {
 var $author$project$State$Hit = function (a) {
 	return {$: 14, a: a};
 };
+var $elm$core$Dict$isEmpty = function (dict) {
+	if (dict.$ === -2) {
+		return true;
+	} else {
+		return false;
+	}
+};
+var $elm$core$Set$isEmpty = function (_v0) {
+	var dict = _v0;
+	return $elm$core$Dict$isEmpty(dict);
+};
 var $author$project$Game$isBusted = function (deck) {
 	var values = $author$project$Game$getCardValues(deck);
 	var valuesUnder22 = A2(
@@ -6247,52 +6346,6 @@ var $elm$core$Array$set = F3(
 			startShift,
 			A4($elm$core$Array$setHelp, startShift, index, value, tree),
 			tail));
-	});
-var $elm$core$Elm$JsArray$foldl = _JsArray_foldl;
-var $elm$core$Array$foldl = F3(
-	function (func, baseCase, _v0) {
-		var tree = _v0.c;
-		var tail = _v0.d;
-		var helper = F2(
-			function (node, acc) {
-				if (!node.$) {
-					var subTree = node.a;
-					return A3($elm$core$Elm$JsArray$foldl, helper, acc, subTree);
-				} else {
-					var values = node.a;
-					return A3($elm$core$Elm$JsArray$foldl, func, acc, values);
-				}
-			});
-		return A3(
-			$elm$core$Elm$JsArray$foldl,
-			func,
-			A3($elm$core$Elm$JsArray$foldl, helper, baseCase, tree),
-			tail);
-	});
-var $elm$core$Elm$JsArray$map = _JsArray_map;
-var $elm$core$Array$map = F2(
-	function (func, _v0) {
-		var len = _v0.a;
-		var startShift = _v0.b;
-		var tree = _v0.c;
-		var tail = _v0.d;
-		var helper = function (node) {
-			if (!node.$) {
-				var subTree = node.a;
-				return $elm$core$Array$SubTree(
-					A2($elm$core$Elm$JsArray$map, helper, subTree));
-			} else {
-				var values = node.a;
-				return $elm$core$Array$Leaf(
-					A2($elm$core$Elm$JsArray$map, func, values));
-			}
-		};
-		return A4(
-			$elm$core$Array$Array_elm_builtin,
-			len,
-			startShift,
-			A2($elm$core$Elm$JsArray$map, helper, tree),
-			A2($elm$core$Elm$JsArray$map, func, tail));
 	});
 var $author$project$Main$stay = F2(
 	function (model, hand) {
@@ -6417,7 +6470,7 @@ var $author$project$Main$update = F2(
 								aP: _Utils_update(
 									player_,
 									{
-										V: A2(sToI, $author$project$Game$defaultPlayer.V, money)
+										E: A2(sToI, $author$project$Game$defaultPlayer.E, money)
 									})
 							}),
 						$elm$core$Platform$Cmd$none);
@@ -6685,7 +6738,7 @@ var $author$project$Page$Bet$view = function (model) {
 	var stepValue = $elm$core$Maybe$Just(10);
 	var minimumBet = $elm$core$Maybe$Just(model.aR.aI);
 	var maximumBet = $elm$core$Maybe$Just(
-		(_Utils_cmp(model.aR.aH, model.aP.V) < 0) ? model.aR.aH : model.aP.V);
+		(_Utils_cmp(model.aR.aH, model.aP.E) < 0) ? model.aR.aH : model.aP.E);
 	var bet = function () {
 		var _v0 = $elm$core$Array$toList(model.aP.aC);
 		if (_v0.b) {
@@ -6735,8 +6788,8 @@ var $author$project$Page$Bet$view = function (model) {
 			]));
 };
 var $author$project$Card$getCardFrontHex = function (_v0) {
-	var rank = _v0.H;
-	var suit = _v0.L;
+	var rank = _v0.I;
+	var suit = _v0.M;
 	var suitHex = function () {
 		switch (suit) {
 			case 3:
@@ -6796,8 +6849,8 @@ var $author$project$Card$getColor = function (suit) {
 	}
 };
 var $author$project$Controls$viewCard = function (_v0) {
-	var rank = _v0.H;
-	var suit = _v0.L;
+	var rank = _v0.I;
+	var suit = _v0.M;
 	var color = $author$project$Card$getColor(suit);
 	var cardClass = 'card ' + color;
 	var card = A2($author$project$Card$Card, rank, suit);
@@ -6900,6 +6953,18 @@ var $elm$html$Html$Attributes$boolProperty = F2(
 			$elm$json$Json$Encode$bool(bool));
 	});
 var $elm$html$Html$Attributes$disabled = $elm$html$Html$Attributes$boolProperty('disabled');
+var $elm$core$Set$foldl = F3(
+	function (func, initialState, _v0) {
+		var dict = _v0;
+		return A3(
+			$elm$core$Dict$foldl,
+			F3(
+				function (key, _v1, state) {
+					return A2(func, key, state);
+				}),
+			initialState,
+			dict);
+	});
 var $elm$core$Set$map = F2(
 	function (func, set) {
 		return $elm$core$Set$fromList(
@@ -7258,7 +7323,7 @@ var $author$project$Page$Rules$view = function (model) {
 						_List_Nil,
 						_List_fromArray(
 							[
-								A7($author$project$Controls$viewNumericInput, 'Starting money: ', 'money', model.aP.V, stepValue, $elm$core$Maybe$Nothing, stepValue, $author$project$State$ChangePlayerMoney)
+								A7($author$project$Controls$viewNumericInput, 'Starting money: ', 'money', model.aP.E, stepValue, $elm$core$Maybe$Nothing, stepValue, $author$project$State$ChangePlayerMoney)
 							])),
 						A2(
 						$elm$html$Html$div,
