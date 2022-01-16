@@ -83,6 +83,32 @@ getCardValues deck =
         |> Set.fromList
 
 
+getMaximumCardValue : Deck -> Maybe Int
+getMaximumCardValue deck =
+    let
+        cardValuesUnder22 =
+            getCardValues deck
+                |> Set.filter (\x -> x < 22)
+                |> Set.toList
+    in
+    case cardValuesUnder22 of
+        [] ->
+            Nothing
+
+        xs ->
+            Just <|
+                List.foldl
+                    (\x max ->
+                        if x > max then
+                            x
+
+                        else
+                            max
+                    )
+                    0
+                    xs
+
+
 isBusted : Deck -> Bool
 isBusted deck =
     let

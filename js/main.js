@@ -7113,14 +7113,117 @@ var $author$project$Page$Round$view = function (model) {
 				$elm$html$Html$text('Round')
 			]));
 };
-var $author$project$Page$RoundEnd$view = function (model) {
+var $author$project$Game$getMaximumCardValue = function (deck) {
+	var cardValuesUnder22 = $elm$core$Set$toList(
+		A2(
+			$elm$core$Set$filter,
+			function (x) {
+				return x < 22;
+			},
+			$author$project$Game$getCardValues(deck)));
+	if (!cardValuesUnder22.b) {
+		return $elm$core$Maybe$Nothing;
+	} else {
+		var xs = cardValuesUnder22;
+		return $elm$core$Maybe$Just(
+			A3(
+				$elm$core$List$foldl,
+				F2(
+					function (x, max) {
+						return (_Utils_cmp(x, max) > 0) ? x : max;
+					}),
+				0,
+				xs));
+	}
+};
+var $author$project$Page$RoundEnd$viewDealer = function (model) {
+	var maxScore = $author$project$Game$getMaximumCardValue(model.au.D);
+	var dealerStatus = function () {
+		if (maxScore.$ === 1) {
+			return 'Dealer Busted';
+		} else {
+			var score = maxScore.a;
+			return 'Dealer has ' + $elm$core$String$fromInt(score);
+		}
+	}();
+	var cards = $author$project$Controls$viewCards(model.au.D);
 	return A2(
 		$elm$html$Html$div,
 		_List_Nil,
 		_List_fromArray(
 			[
-				A2($author$project$Controls$viewDealer, model.au.D, true),
-				A2($author$project$Controls$viewPlayer, false, model.aP),
+				A2(
+				$elm$html$Html$h1,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(dealerStatus)
+					])),
+				A2($elm$html$Html$span, _List_Nil, cards)
+			]));
+};
+var $author$project$Page$RoundEnd$viewPlayerHand = F2(
+	function (dealerScore, _v0) {
+		var index = _v0.a;
+		var hand = _v0.b;
+		var maximumPlayerValue = $author$project$Game$getMaximumCardValue(hand.D);
+		var indexAsString = $elm$core$String$fromInt(index + 1);
+		var lostMessage = 'Hand # ' + (indexAsString + ' LOST');
+		var wonMessage = 'Hand # ' + (indexAsString + ' WON');
+		var handTitle = function () {
+			var _v1 = _Utils_Tuple2(dealerScore, maximumPlayerValue);
+			if (_v1.a.$ === 1) {
+				if (_v1.b.$ === 1) {
+					var _v2 = _v1.a;
+					var _v3 = _v1.b;
+					return lostMessage;
+				} else {
+					var _v5 = _v1.a;
+					return wonMessage;
+				}
+			} else {
+				if (_v1.b.$ === 1) {
+					var _v4 = _v1.b;
+					return lostMessage;
+				} else {
+					var dealer = _v1.a.a;
+					var player = _v1.b.a;
+					return (_Utils_cmp(player, dealer) > 0) ? wonMessage : lostMessage;
+				}
+			}
+		}();
+		var handTitleHtml = A2(
+			$elm$html$Html$div,
+			_List_Nil,
+			_List_fromArray(
+				[
+					$elm$html$Html$text(handTitle)
+				]));
+		var html = _Utils_ap(
+			_List_fromArray(
+				[handTitleHtml]),
+			$author$project$Controls$viewCards(hand.D));
+		return A2($elm$html$Html$div, _List_Nil, html);
+	});
+var $author$project$Page$RoundEnd$viewPlayerHands = F2(
+	function (dealerScore, hands) {
+		var vh = $author$project$Page$RoundEnd$viewPlayerHand(dealerScore);
+		var childElements = A2(
+			$elm$core$List$map,
+			vh,
+			$elm$core$Array$toIndexedList(hands));
+		return A2($elm$html$Html$div, _List_Nil, childElements);
+	});
+var $author$project$Page$RoundEnd$view = function (model) {
+	var dealerScore = $author$project$Game$getMaximumCardValue(model.au.D);
+	var hands = A2($author$project$Page$RoundEnd$viewPlayerHands, dealerScore, model.aP.aC);
+	return A2(
+		$elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				$author$project$Page$RoundEnd$viewDealer(model),
+				A2($author$project$Page$RoundEnd$viewPlayerHands, dealerScore, model.aP.aC),
 				A2(
 				$elm$html$Html$h1,
 				_List_Nil,
