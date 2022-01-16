@@ -5,3 +5,8 @@
 .red {
     color: red;
 }
+
+html {
+    max-width: 70ch;
+    margin: auto;
+}
