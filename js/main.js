@@ -7191,7 +7191,27 @@ var $author$project$Page$RoundEnd$viewPlayerHands = F2(
 			$elm$core$Array$toIndexedList(hands));
 		return A2($elm$html$Html$div, _List_Nil, childElements);
 	});
+var $elm$html$Html$h2 = _VirtualDom_node('h2');
+var $author$project$Page$RoundEnd$viewPlayerMoney = function (model) {
+	var moneyAsString = $elm$core$String$fromInt(model.aP.E);
+	var moneyAsHtml = $elm$html$Html$text('$' + moneyAsString);
+	return A2(
+		$elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$h2,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(model.aP.aJ)
+					])),
+				moneyAsHtml
+			]));
+};
 var $author$project$Page$RoundEnd$view = function (model) {
+	var newRound = $author$project$State$ChangeGameState(1);
 	var dealerScore = $author$project$Game$getMaximumCardValue(model.av.at);
 	var hands = A2($author$project$Page$RoundEnd$viewPlayerHands, dealerScore, model.aP.e);
 	return A2(
@@ -7201,12 +7221,16 @@ var $author$project$Page$RoundEnd$view = function (model) {
 			[
 				$author$project$Page$RoundEnd$viewDealer(model),
 				A2($author$project$Page$RoundEnd$viewPlayerHands, dealerScore, model.aP.e),
+				$author$project$Page$RoundEnd$viewPlayerMoney(model),
 				A2(
-				$elm$html$Html$h1,
-				_List_Nil,
+				$elm$html$Html$button,
 				_List_fromArray(
 					[
-						$elm$html$Html$text('Round End')
+						$elm$html$Html$Events$onClick(newRound)
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('New Round')
 					]))
 			]));
 };

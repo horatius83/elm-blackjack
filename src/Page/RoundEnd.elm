@@ -2,9 +2,10 @@ module Page.RoundEnd exposing (view)
 
 import Array exposing (Array)
 import Controls exposing (viewCards)
-import Game exposing (getMaximumCardValue)
+import Game exposing (Game, GameState, getMaximumCardValue)
 import Hand exposing (Hand)
-import Html exposing (Html, div, h1, span, text)
+import Html exposing (Html, button, div, h1, h2, span, text)
+import Html.Events exposing (onClick)
 import State exposing (Model, Msg)
 
 
@@ -86,6 +87,23 @@ viewPlayerHands dealerScore hands =
     div [] childElements
 
 
+viewPlayerMoney : Model -> Html Msg
+viewPlayerMoney model =
+    let
+        moneyAsString =
+            String.fromInt model.player.money
+
+        moneyAsHtml =
+            "$"
+                ++ moneyAsString
+                |> text
+    in
+    div []
+        [ h2 [] [ text model.player.name ]
+        , moneyAsHtml
+        ]
+
+
 view : Model -> Html Msg
 view model =
     let
@@ -95,9 +113,13 @@ view model =
         hands =
             model.player.hands
                 |> viewPlayerHands dealerScore
+
+        newRound =
+            State.ChangeGameState Game.PlaceBets
     in
     div []
         [ viewDealer model
         , viewPlayerHands dealerScore model.player.hands
-        , h1 [] [ text "Round End" ]
+        , viewPlayerMoney model
+        , button [ onClick newRound ] [ text "New Round" ]
         ]
