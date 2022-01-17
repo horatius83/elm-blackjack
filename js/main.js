@@ -5812,6 +5812,52 @@ var $author$project$Main$dealInitialCards = function (model) {
 		return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 	}
 };
+var $elm$core$Elm$JsArray$map = _JsArray_map;
+var $elm$core$Array$map = F2(
+	function (func, _v0) {
+		var len = _v0.a;
+		var startShift = _v0.b;
+		var tree = _v0.c;
+		var tail = _v0.d;
+		var helper = function (node) {
+			if (!node.$) {
+				var subTree = node.a;
+				return $elm$core$Array$SubTree(
+					A2($elm$core$Elm$JsArray$map, helper, subTree));
+			} else {
+				var values = node.a;
+				return $elm$core$Array$Leaf(
+					A2($elm$core$Elm$JsArray$map, func, values));
+			}
+		};
+		return A4(
+			$elm$core$Array$Array_elm_builtin,
+			len,
+			startShift,
+			A2($elm$core$Elm$JsArray$map, helper, tree),
+			A2($elm$core$Elm$JsArray$map, func, tail));
+	});
+var $elm$core$Elm$JsArray$foldl = _JsArray_foldl;
+var $elm$core$Array$foldl = F3(
+	function (func, baseCase, _v0) {
+		var tree = _v0.c;
+		var tail = _v0.d;
+		var helper = F2(
+			function (node, acc) {
+				if (!node.$) {
+					var subTree = node.a;
+					return A3($elm$core$Elm$JsArray$foldl, helper, acc, subTree);
+				} else {
+					var values = node.a;
+					return A3($elm$core$Elm$JsArray$foldl, func, acc, values);
+				}
+			});
+		return A3(
+			$elm$core$Elm$JsArray$foldl,
+			func,
+			A3($elm$core$Elm$JsArray$foldl, helper, baseCase, tree),
+			tail);
+	});
 var $elm$core$Set$Set_elm_builtin = $elm$core$Basics$identity;
 var $elm$core$Dict$RBEmpty_elm_builtin = {$: -2};
 var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
@@ -5971,27 +6017,6 @@ var $elm$core$Set$filter = F2(
 				}),
 			dict);
 	});
-var $elm$core$Elm$JsArray$foldl = _JsArray_foldl;
-var $elm$core$Array$foldl = F3(
-	function (func, baseCase, _v0) {
-		var tree = _v0.c;
-		var tail = _v0.d;
-		var helper = F2(
-			function (node, acc) {
-				if (!node.$) {
-					var subTree = node.a;
-					return A3($elm$core$Elm$JsArray$foldl, helper, acc, subTree);
-				} else {
-					var values = node.a;
-					return A3($elm$core$Elm$JsArray$foldl, func, acc, values);
-				}
-			});
-		return A3(
-			$elm$core$Elm$JsArray$foldl,
-			func,
-			A3($elm$core$Elm$JsArray$foldl, helper, baseCase, tree),
-			tail);
-	});
 var $elm$core$Set$empty = $elm$core$Dict$empty;
 var $elm$core$Set$insert = F2(
 	function (key, _v0) {
@@ -6076,57 +6101,32 @@ var $author$project$Game$getCardValues = function (deck) {
 	return $elm$core$Set$fromList(
 		getCardValuesAsList(deck));
 };
-var $elm$core$Elm$JsArray$map = _JsArray_map;
-var $elm$core$Array$map = F2(
-	function (func, _v0) {
-		var len = _v0.a;
-		var startShift = _v0.b;
-		var tree = _v0.c;
-		var tail = _v0.d;
-		var helper = function (node) {
-			if (!node.$) {
-				var subTree = node.a;
-				return $elm$core$Array$SubTree(
-					A2($elm$core$Elm$JsArray$map, helper, subTree));
-			} else {
-				var values = node.a;
-				return $elm$core$Array$Leaf(
-					A2($elm$core$Elm$JsArray$map, func, values));
-			}
-		};
-		return A4(
-			$elm$core$Array$Array_elm_builtin,
-			len,
-			startShift,
-			A2($elm$core$Elm$JsArray$map, helper, tree),
-			A2($elm$core$Elm$JsArray$map, func, tail));
-	});
+var $author$project$Game$getMaximumCardValue = function (deck) {
+	var cardValuesUnder22 = $elm$core$Set$toList(
+		A2(
+			$elm$core$Set$filter,
+			function (x) {
+				return x < 22;
+			},
+			$author$project$Game$getCardValues(deck)));
+	if (!cardValuesUnder22.b) {
+		return $elm$core$Maybe$Nothing;
+	} else {
+		var xs = cardValuesUnder22;
+		return $elm$core$Maybe$Just(
+			A3(
+				$elm$core$List$foldl,
+				F2(
+					function (x, max) {
+						return (_Utils_cmp(x, max) > 0) ? x : max;
+					}),
+				0,
+				xs));
+	}
+};
 var $author$project$Main$roundEnd = function (model) {
 	var oldPlayer = model.aP;
-	var getMaxValue = function (cards) {
-		var values = $elm$core$Set$toList(
-			A2(
-				$elm$core$Set$filter,
-				function (x) {
-					return x < 22;
-				},
-				$author$project$Game$getCardValues(cards)));
-		if (!values.b) {
-			return $elm$core$Maybe$Nothing;
-		} else {
-			var vs = values;
-			return $elm$core$Maybe$Just(
-				A3(
-					$elm$core$List$foldl,
-					F2(
-						function (max, x) {
-							return (_Utils_cmp(x, max) > 0) ? x : max;
-						}),
-					0,
-					vs));
-		}
-	};
-	var maxDealerValue = getMaxValue(model.av.at);
+	var maxDealerValue = $author$project$Game$getMaximumCardValue(model.av.at);
 	var didPlayerWin = function (maxHandValue) {
 		var _v2 = _Utils_Tuple2(maxHandValue, maxDealerValue);
 		if (_v2.a.$ === 1) {
@@ -6174,7 +6174,7 @@ var $author$project$Main$roundEnd = function (model) {
 				function (hand) {
 					return _Utils_Tuple2(
 						hand.aq,
-						getMaxValue(hand.at));
+						$author$project$Game$getMaximumCardValue(hand.at));
 				},
 				model.aP.e)));
 	var newPlayer = _Utils_update(
@@ -6189,7 +6189,25 @@ var $author$project$Main$changeGameState = F2(
 	function (model, state) {
 		switch (state) {
 			case 1:
+				var playerCards = A3(
+					$elm$core$List$foldl,
+					$elm$core$Basics$append,
+					_List_Nil,
+					$elm$core$Array$toList(
+						A2(
+							$elm$core$Array$map,
+							function (x) {
+								return x.at;
+							},
+							model.aP.e)));
 				var oldPlayer = model.aP;
+				var oldDealer = model.av;
+				var newDiscard = _Utils_ap(
+					playerCards,
+					_Utils_ap(model.av.at, model.ay));
+				var newDealer = _Utils_update(
+					oldDealer,
+					{at: _List_Nil});
 				var hand = A2($author$project$Hand$create, _List_Nil, model.aR.aI);
 				var newPlayer = _Utils_update(
 					oldPlayer,
@@ -6201,7 +6219,7 @@ var $author$project$Main$changeGameState = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{aP: newPlayer, aS: 1}),
+						{av: newDealer, ay: newDiscard, aP: newPlayer, aS: 1}),
 					$elm$core$Platform$Cmd$none);
 			case 2:
 				return $author$project$Main$dealInitialCards(model);
@@ -7089,29 +7107,6 @@ var $author$project$Page$Round$view = function (model) {
 				$author$project$Page$Round$viewPlayer(model.aP),
 				$elm$html$Html$text('Round')
 			]));
-};
-var $author$project$Game$getMaximumCardValue = function (deck) {
-	var cardValuesUnder22 = $elm$core$Set$toList(
-		A2(
-			$elm$core$Set$filter,
-			function (x) {
-				return x < 22;
-			},
-			$author$project$Game$getCardValues(deck)));
-	if (!cardValuesUnder22.b) {
-		return $elm$core$Maybe$Nothing;
-	} else {
-		var xs = cardValuesUnder22;
-		return $elm$core$Maybe$Just(
-			A3(
-				$elm$core$List$foldl,
-				F2(
-					function (x, max) {
-						return (_Utils_cmp(x, max) > 0) ? x : max;
-					}),
-				0,
-				xs));
-	}
 };
 var $author$project$Page$RoundEnd$viewDealer = function (model) {
 	var maxScore = $author$project$Game$getMaximumCardValue(model.av.at);

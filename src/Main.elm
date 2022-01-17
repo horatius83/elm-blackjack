@@ -5,7 +5,7 @@ import Browser
 import Card exposing (Card, Rank(..), Suit(..), cardBackHex, getCardFrontHex, getColor)
 import Controls exposing (viewCard, viewInput, viewNumericInput, viewPayoutInput)
 import Deck exposing (Deck)
-import Game exposing (Game, GameState, default, defaultPlayer, new)
+import Game exposing (Game, GameState, default, defaultPlayer, getMaximumCardValue, new)
 import Hand
 import Html exposing (..)
 import Html.Attributes exposing (attribute)
@@ -170,6 +170,15 @@ changeGameState model state =
     case state of
         Game.PlaceBets ->
             let
+                playerCards =
+                    model.player.hands
+                        |> Array.map (\x -> x.cards)
+                        |> Array.toList
+                        |> List.foldl (++) []
+
+                newDiscard =
+                    playerCards ++ model.dealer.cards ++ model.discard
+
                 hand =
                     Hand.create [] model.rules.minimumBet
 
@@ -178,8 +187,14 @@ changeGameState model state =
 
                 newPlayer =
                     { oldPlayer | hands = Array.fromList [ hand ] }
+
+                oldDealer =
+                    model.dealer
+
+                newDealer =
+                    { oldDealer | cards = [] }
             in
-            ( { model | state = Game.PlaceBets, player = newPlayer }, Cmd.none )
+            ( { model | state = Game.PlaceBets, player = newPlayer, discard = newDiscard, dealer = newDealer }, Cmd.none )
 
         Game.RoundStart ->
             dealInitialCards model
@@ -194,32 +209,8 @@ changeGameState model state =
 roundEnd : Model -> ( Model, Cmd Msg )
 roundEnd model =
     let
-        getMaxValue cards =
-            let
-                values =
-                    Game.getCardValues cards
-                        |> Set.filter (\x -> x < 22)
-                        |> Set.toList
-            in
-            case values of
-                [] ->
-                    Nothing
-
-                vs ->
-                    Just <|
-                        List.foldl
-                            (\max x ->
-                                if x > max then
-                                    x
-
-                                else
-                                    max
-                            )
-                            0
-                            vs
-
         maxDealerValue =
-            getMaxValue model.dealer.cards
+            getMaximumCardValue model.dealer.cards
 
         didPlayerWin maxHandValue =
             case ( maxHandValue, maxDealerValue ) of
@@ -236,7 +227,7 @@ roundEnd model =
                     x > y
 
         playerWinnings =
-            Array.map (\hand -> ( hand.bet, getMaxValue hand.cards )) model.player.hands
+            Array.map (\hand -> ( hand.bet, getMaximumCardValue hand.cards )) model.player.hands
                 |> Array.map (\( bet, maxValue ) -> ( bet, didPlayerWin maxValue ))
                 |> Array.foldl
                     (\( bet, playerWon ) acc ->
