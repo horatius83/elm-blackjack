@@ -6,7 +6,7 @@ import Card exposing (Card, Rank(..), Suit(..), cardBackHex, getCardFrontHex, ge
 import Controls exposing (viewCard, viewInput, viewNumericInput, viewPayoutInput)
 import Deck exposing (Deck)
 import Game exposing (Game, GameState, default, defaultPlayer, getMaximumCardValue, new)
-import Hand
+import Hand exposing (Hand)
 import Html exposing (..)
 import Html.Attributes exposing (attribute)
 import Html.Events exposing (onClick, onInput)
@@ -137,6 +137,9 @@ update msg model =
         Stay hand ->
             stay model hand
 
+        DoubleDown hand ->
+            doubleDown model hand
+
         DealDealerCards ->
             dealDealerCards model
 
@@ -261,51 +264,16 @@ defaultHand model =
     Hand.create [] model.rules.minimumBet
 
 
-hit : Model -> Int -> ( Model, Cmd Msg )
-hit model hand =
-    case model.deck of
-        [] ->
-            ( model, Hit hand |> shuffleDiscard model )
-
-        card :: cards ->
-            let
-                playerHand =
-                    model.player.hands
-                        |> Array.get hand
-                        |> Maybe.withDefault (defaultHand model)
-
-                newHand =
-                    { playerHand | cards = card :: playerHand.cards }
-
-                oldPlayer =
-                    model.player
-
-                newHands =
-                    Array.set hand newHand model.player.hands
-
-                newPlayer =
-                    { oldPlayer | hands = newHands }
-
-                newModel =
-                    { model | player = newPlayer, deck = cards }
-            in
-            if Game.isBusted newHand.cards then
-                stay newModel hand
-
-            else
-                ( newModel, Cmd.none )
-
-
-stay : Model -> Int -> ( Model, Cmd Msg )
-stay model hand =
+changePlayerHand : Model -> Int -> (Hand -> Hand) -> Model
+changePlayerHand model hand f =
     let
-        playerHand =
+        oldHand =
             model.player.hands
                 |> Array.get hand
                 |> Maybe.withDefault (defaultHand model)
 
         newHand =
-            { playerHand | stayed = True }
+            f oldHand
 
         oldPlayer =
             model.player
@@ -315,12 +283,49 @@ stay model hand =
 
         newPlayer =
             { oldPlayer | hands = newHands }
+    in
+    { model | player = newPlayer }
+
+
+hit : Model -> Int -> ( Model, Cmd Msg )
+hit model hand =
+    case model.deck of
+        [] ->
+            ( model, Hit hand |> shuffleDiscard model )
+
+        card :: cards ->
+            let
+                hitHand =
+                    \h -> { h | cards = card :: h.cards }
+
+                newModel =
+                    changePlayerHand model hand hitHand
+
+                isBusted =
+                    newModel.player.hands
+                        |> Array.get hand
+                        |> Maybe.withDefault (defaultHand model)
+                        |> (\x -> x.cards)
+                        |> Game.isBusted
+            in
+            if isBusted then
+                stay newModel hand
+
+            else
+                ( newModel, Cmd.none )
+
+
+stay : Model -> Int -> ( Model, Cmd Msg )
+stay model hand =
+    let
+        stayHand =
+            \h -> { h | stayed = True }
 
         newModel =
-            { model | player = newPlayer }
+            changePlayerHand model hand stayHand
 
         allStayed =
-            Array.map (\x -> x.stayed) newHands
+            Array.map (\x -> x.stayed) newModel.player.hands
                 |> Array.foldl (&&) True
     in
     if allStayed then
@@ -328,6 +333,22 @@ stay model hand =
 
     else
         ( newModel, Cmd.none )
+
+
+doubleDown : Model -> Int -> ( Model, Cmd Msg )
+doubleDown model hand =
+    let
+        newModel =
+            changePlayerHand model hand (\h -> { h | bet = h.bet * 2, doubleDown = True })
+    in
+    case model.deck of
+        [] ->
+            ( model, DoubleDown hand |> shuffleDiscard model )
+
+        card :: cards ->
+            hit model hand
+                |> Tuple.first
+                |> (\newNewModel -> stay newNewModel hand)
 
 
 dealDealerCards : Model -> ( Model, Cmd Msg )

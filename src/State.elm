@@ -30,4 +30,5 @@ type Msg
     | ShuffleDiscardIntoDeck Msg Deck.Deck
     | Hit Int
     | Stay Int
+    | DoubleDown Int
     | DealDealerCards

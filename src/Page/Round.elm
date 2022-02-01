@@ -58,7 +58,7 @@ viewHand ( whichHand, hand ) =
                         ]
                         [ text "Stay" ]
                     , button [] [ text "Insurance" ]
-                    , button [] [ text "Double Down" ]
+                    , button [ onClick (DoubleDown whichHand) ] [ text "Double Down" ]
                     , button [] [ text "Split" ]
                     , text valuesAsText
                     ]

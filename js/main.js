@@ -6236,7 +6236,7 @@ var $author$project$Main$changeGameState = F2(
 					$elm$core$Platform$Cmd$none);
 		}
 	});
-var $author$project$State$DealDealerCards = {$: 16};
+var $author$project$State$DealDealerCards = {$: 17};
 var $author$project$Game$RoundEnd = 4;
 var $author$project$Main$dealDealerCards = function (model) {
 	dealDealerCards:
@@ -6298,29 +6298,8 @@ var $author$project$Main$dealDealerCards = function (model) {
 		return A2($author$project$Main$changeGameState, model, 4);
 	}
 };
-var $author$project$State$Hit = function (a) {
-	return {$: 14, a: a};
-};
-var $elm$core$Dict$isEmpty = function (dict) {
-	if (dict.$ === -2) {
-		return true;
-	} else {
-		return false;
-	}
-};
-var $elm$core$Set$isEmpty = function (_v0) {
-	var dict = _v0;
-	return $elm$core$Dict$isEmpty(dict);
-};
-var $author$project$Game$isBusted = function (deck) {
-	var values = $author$project$Game$getCardValues(deck);
-	var valuesUnder22 = A2(
-		$elm$core$Set$filter,
-		function (x) {
-			return x < 22;
-		},
-		values);
-	return $elm$core$Set$isEmpty(valuesUnder22);
+var $author$project$State$DoubleDown = function (a) {
+	return {$: 16, a: a};
 };
 var $elm$core$Elm$JsArray$unsafeSet = _JsArray_unsafeSet;
 var $elm$core$Array$setHelp = F4(
@@ -6365,23 +6344,54 @@ var $elm$core$Array$set = F3(
 			A4($elm$core$Array$setHelp, startShift, index, value, tree),
 			tail));
 	});
-var $author$project$Main$stay = F2(
-	function (model, hand) {
-		var playerHand = A2(
+var $author$project$Main$changePlayerHand = F3(
+	function (model, hand, f) {
+		var oldPlayer = model.aP;
+		var oldHand = A2(
 			$elm$core$Maybe$withDefault,
 			$author$project$Main$defaultHand(model),
 			A2($elm$core$Array$get, hand, model.aP.e));
-		var oldPlayer = model.aP;
-		var newHand = _Utils_update(
-			playerHand,
-			{aT: true});
+		var newHand = f(oldHand);
 		var newHands = A3($elm$core$Array$set, hand, newHand, model.aP.e);
 		var newPlayer = _Utils_update(
 			oldPlayer,
 			{e: newHands});
-		var newModel = _Utils_update(
+		return _Utils_update(
 			model,
 			{aP: newPlayer});
+	});
+var $author$project$State$Hit = function (a) {
+	return {$: 14, a: a};
+};
+var $elm$core$Dict$isEmpty = function (dict) {
+	if (dict.$ === -2) {
+		return true;
+	} else {
+		return false;
+	}
+};
+var $elm$core$Set$isEmpty = function (_v0) {
+	var dict = _v0;
+	return $elm$core$Dict$isEmpty(dict);
+};
+var $author$project$Game$isBusted = function (deck) {
+	var values = $author$project$Game$getCardValues(deck);
+	var valuesUnder22 = A2(
+		$elm$core$Set$filter,
+		function (x) {
+			return x < 22;
+		},
+		values);
+	return $elm$core$Set$isEmpty(valuesUnder22);
+};
+var $author$project$Main$stay = F2(
+	function (model, hand) {
+		var stayHand = function (h) {
+			return _Utils_update(
+				h,
+				{aT: true});
+		};
+		var newModel = A3($author$project$Main$changePlayerHand, model, hand, stayHand);
 		var allStayed = A3(
 			$elm$core$Array$foldl,
 			$elm$core$Basics$and,
@@ -6391,7 +6401,7 @@ var $author$project$Main$stay = F2(
 				function (x) {
 					return x.aT;
 				},
-				newHands));
+				newModel.aP.e));
 		return allStayed ? $author$project$Main$dealDealerCards(newModel) : _Utils_Tuple2(newModel, $elm$core$Platform$Cmd$none);
 	});
 var $author$project$Main$hit = F2(
@@ -6407,24 +6417,51 @@ var $author$project$Main$hit = F2(
 		} else {
 			var card = _v0.a;
 			var cards = _v0.b;
-			var playerHand = A2(
-				$elm$core$Maybe$withDefault,
-				$author$project$Main$defaultHand(model),
-				A2($elm$core$Array$get, hand, model.aP.e));
-			var oldPlayer = model.aP;
-			var newHand = _Utils_update(
-				playerHand,
-				{
-					at: A2($elm$core$List$cons, card, playerHand.at)
-				});
-			var newHands = A3($elm$core$Array$set, hand, newHand, model.aP.e);
-			var newPlayer = _Utils_update(
-				oldPlayer,
-				{e: newHands});
-			var newModel = _Utils_update(
+			var hitHand = function (h) {
+				return _Utils_update(
+					h,
+					{
+						at: A2($elm$core$List$cons, card, h.at)
+					});
+			};
+			var newModel = A3($author$project$Main$changePlayerHand, model, hand, hitHand);
+			var isBusted = $author$project$Game$isBusted(
+				function (x) {
+					return x.at;
+				}(
+					A2(
+						$elm$core$Maybe$withDefault,
+						$author$project$Main$defaultHand(model),
+						A2($elm$core$Array$get, hand, newModel.aP.e))));
+			return isBusted ? A2($author$project$Main$stay, newModel, hand) : _Utils_Tuple2(newModel, $elm$core$Platform$Cmd$none);
+		}
+	});
+var $author$project$Main$doubleDown = F2(
+	function (model, hand) {
+		var newModel = A3(
+			$author$project$Main$changePlayerHand,
+			model,
+			hand,
+			function (h) {
+				return _Utils_update(
+					h,
+					{aq: h.aq * 2, az: true});
+			});
+		var _v0 = model.aw;
+		if (!_v0.b) {
+			return _Utils_Tuple2(
 				model,
-				{aw: cards, aP: newPlayer});
-			return $author$project$Game$isBusted(newHand.at) ? A2($author$project$Main$stay, newModel, hand) : _Utils_Tuple2(newModel, $elm$core$Platform$Cmd$none);
+				A2(
+					$author$project$Main$shuffleDiscard,
+					model,
+					$author$project$State$DoubleDown(hand)));
+		} else {
+			var card = _v0.a;
+			var cards = _v0.b;
+			return function (newNewModel) {
+				return A2($author$project$Main$stay, newNewModel, hand);
+			}(
+				A2($author$project$Main$hit, model, hand).a);
 		}
 	});
 var $author$project$Main$update = F2(
@@ -6598,6 +6635,9 @@ var $author$project$Main$update = F2(
 				case 15:
 					var hand = msg.a;
 					return A2($author$project$Main$stay, model, hand);
+				case 16:
+					var hand = msg.a;
+					return A2($author$project$Main$doubleDown, model, hand);
 				default:
 					return $author$project$Main$dealDealerCards(model);
 			}
@@ -7044,7 +7084,11 @@ var $author$project$Page$Round$viewHand = function (_v0) {
 							])),
 						A2(
 						$elm$html$Html$button,
-						_List_Nil,
+						_List_fromArray(
+							[
+								$elm$html$Html$Events$onClick(
+								$author$project$State$DoubleDown(whichHand))
+							]),
 						_List_fromArray(
 							[
 								$elm$html$Html$text('Double Down')
