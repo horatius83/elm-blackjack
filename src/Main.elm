@@ -334,7 +334,6 @@ stay model hand =
     else
         ( newModel, Cmd.none )
 
-
 doubleDown : Model -> Int -> ( Model, Cmd Msg )
 doubleDown model hand =
     let

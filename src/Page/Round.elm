@@ -30,8 +30,8 @@ viewDealer cards =
         ]
 
 
-viewHand : ( Int, Hand ) -> Html Msg
-viewHand ( whichHand, hand ) =
+viewHand : Player -> ( Int, Hand ) -> Html Msg
+viewHand player ( whichHand, hand ) =
     let
         handTitle =
             "Hand #" ++ String.fromInt (whichHand + 1)
@@ -58,7 +58,9 @@ viewHand ( whichHand, hand ) =
                         ]
                         [ text "Stay" ]
                     , button [] [ text "Insurance" ]
-                    , button [ onClick (DoubleDown whichHand) ] [ text "Double Down" ]
+                    , button [ onClick (DoubleDown whichHand) 
+                             , disabled (cannotDoubleDown player whichHand)
+                            ] [ text "Double Down" ]
                     , button [] [ text "Split" ]
                     , text valuesAsText
                     ]
@@ -70,17 +72,17 @@ viewHand ( whichHand, hand ) =
     div [] [ div [] html ]
 
 
-viewHands : Array Hand -> List (Html Msg)
-viewHands hands =
-    Array.toIndexedList hands
-        |> List.map viewHand
+viewHands : Player -> List (Html Msg)
+viewHands player =
+    Array.toIndexedList player.hands
+        |> List.map (viewHand player)
 
 
 viewPlayer : Player -> Html Msg
 viewPlayer player =
     let
         hands =
-            viewHands player.hands
+            viewHands player
     in
     div []
         [ h1 [] [ text player.name ]
@@ -95,3 +97,12 @@ view model =
         , viewPlayer model.player
         , text "Round"
         ]
+
+cannotDoubleDown : Player -> Int -> Bool
+cannotDoubleDown player hand =
+    let
+        playerHand = Array.get hand player.hands
+    in
+    case playerHand of
+        Just h -> (h.bet * 2) > player.money
+        Nothing -> True

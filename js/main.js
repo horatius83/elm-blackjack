@@ -6986,6 +6986,16 @@ var $elm$core$Array$toIndexedList = function (array) {
 var $author$project$State$Stay = function (a) {
 	return {$: 15, a: a};
 };
+var $author$project$Page$Round$cannotDoubleDown = F2(
+	function (player, hand) {
+		var playerHand = A2($elm$core$Array$get, hand, player.e);
+		if (!playerHand.$) {
+			var h = playerHand.a;
+			return _Utils_cmp(h.aq * 2, player.E) > 0;
+		} else {
+			return true;
+		}
+	});
 var $elm$json$Json$Encode$bool = _Json_wrap;
 var $elm$html$Html$Attributes$boolProperty = F2(
 	function (key, bool) {
@@ -7022,110 +7032,113 @@ var $elm$core$Set$map = F2(
 				_List_Nil,
 				set));
 	});
-var $author$project$Page$Round$viewHand = function (_v0) {
-	var whichHand = _v0.a;
-	var hand = _v0.b;
-	var valuesAsText = A2(
-		$elm$core$String$join,
-		', ',
-		$elm$core$Set$toList(
-			A2(
-				$elm$core$Set$map,
-				$elm$core$String$fromInt,
-				$author$project$Game$getCardValues(hand.at))));
-	var handTitle = 'Hand #' + $elm$core$String$fromInt(whichHand + 1);
-	var handTitleHtml = A2(
-		$elm$html$Html$div,
-		_List_Nil,
-		_List_fromArray(
-			[
-				$elm$html$Html$text(handTitle)
-			]));
-	var controls = A2(
-		$elm$html$Html$div,
-		_List_Nil,
-		_List_fromArray(
-			[
+var $author$project$Page$Round$viewHand = F2(
+	function (player, _v0) {
+		var whichHand = _v0.a;
+		var hand = _v0.b;
+		var valuesAsText = A2(
+			$elm$core$String$join,
+			', ',
+			$elm$core$Set$toList(
 				A2(
-				$elm$html$Html$span,
-				_List_Nil,
-				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$button,
-						_List_fromArray(
-							[
-								$elm$html$Html$Events$onClick(
-								$author$project$State$Hit(whichHand)),
-								$elm$html$Html$Attributes$disabled(
-								$author$project$Game$isBusted(hand.at))
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Hit')
-							])),
-						A2(
-						$elm$html$Html$button,
-						_List_fromArray(
-							[
-								$elm$html$Html$Events$onClick(
-								$author$project$State$Stay(whichHand))
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Stay')
-							])),
-						A2(
-						$elm$html$Html$button,
-						_List_Nil,
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Insurance')
-							])),
-						A2(
-						$elm$html$Html$button,
-						_List_fromArray(
-							[
-								$elm$html$Html$Events$onClick(
-								$author$project$State$DoubleDown(whichHand))
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Double Down')
-							])),
-						A2(
-						$elm$html$Html$button,
-						_List_Nil,
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Split')
-							])),
-						$elm$html$Html$text(valuesAsText)
-					]))
-			]));
-	var html = _Utils_ap(
-		_List_fromArray(
-			[handTitleHtml]),
-		_Utils_ap(
-			$author$project$Controls$viewCards(hand.at),
+					$elm$core$Set$map,
+					$elm$core$String$fromInt,
+					$author$project$Game$getCardValues(hand.at))));
+		var handTitle = 'Hand #' + $elm$core$String$fromInt(whichHand + 1);
+		var handTitleHtml = A2(
+			$elm$html$Html$div,
+			_List_Nil,
 			_List_fromArray(
-				[controls])));
-	return A2(
-		$elm$html$Html$div,
-		_List_Nil,
-		_List_fromArray(
-			[
-				A2($elm$html$Html$div, _List_Nil, html)
-			]));
-};
-var $author$project$Page$Round$viewHands = function (hands) {
+				[
+					$elm$html$Html$text(handTitle)
+				]));
+		var controls = A2(
+			$elm$html$Html$div,
+			_List_Nil,
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$span,
+					_List_Nil,
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$button,
+							_List_fromArray(
+								[
+									$elm$html$Html$Events$onClick(
+									$author$project$State$Hit(whichHand)),
+									$elm$html$Html$Attributes$disabled(
+									$author$project$Game$isBusted(hand.at))
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Hit')
+								])),
+							A2(
+							$elm$html$Html$button,
+							_List_fromArray(
+								[
+									$elm$html$Html$Events$onClick(
+									$author$project$State$Stay(whichHand))
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Stay')
+								])),
+							A2(
+							$elm$html$Html$button,
+							_List_Nil,
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Insurance')
+								])),
+							A2(
+							$elm$html$Html$button,
+							_List_fromArray(
+								[
+									$elm$html$Html$Events$onClick(
+									$author$project$State$DoubleDown(whichHand)),
+									$elm$html$Html$Attributes$disabled(
+									A2($author$project$Page$Round$cannotDoubleDown, player, whichHand))
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Double Down')
+								])),
+							A2(
+							$elm$html$Html$button,
+							_List_Nil,
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Split')
+								])),
+							$elm$html$Html$text(valuesAsText)
+						]))
+				]));
+		var html = _Utils_ap(
+			_List_fromArray(
+				[handTitleHtml]),
+			_Utils_ap(
+				$author$project$Controls$viewCards(hand.at),
+				_List_fromArray(
+					[controls])));
+		return A2(
+			$elm$html$Html$div,
+			_List_Nil,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$div, _List_Nil, html)
+				]));
+	});
+var $author$project$Page$Round$viewHands = function (player) {
 	return A2(
 		$elm$core$List$map,
-		$author$project$Page$Round$viewHand,
-		$elm$core$Array$toIndexedList(hands));
+		$author$project$Page$Round$viewHand(player),
+		$elm$core$Array$toIndexedList(player.e));
 };
 var $author$project$Page$Round$viewPlayer = function (player) {
-	var hands = $author$project$Page$Round$viewHands(player.e);
+	var hands = $author$project$Page$Round$viewHands(player);
 	return A2(
 		$elm$html$Html$div,
 		_List_Nil,
