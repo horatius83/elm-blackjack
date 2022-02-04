@@ -303,19 +303,20 @@ hit model hand =
 
                 newModel =
                     changePlayerHand model hand hitHand
+                newNewModel = { newModel | deck = cards }
 
                 isBusted =
-                    newModel.player.hands
+                    newNewModel.player.hands
                         |> Array.get hand
                         |> Maybe.withDefault (defaultHand model)
                         |> (\x -> x.cards)
                         |> Game.isBusted
             in
             if isBusted then
-                stay newModel hand
+                stay newNewModel hand
 
             else
-                ( newModel, Cmd.none )
+                ( newNewModel, Cmd.none )
 
 
 stay : Model -> Int -> ( Model, Cmd Msg )

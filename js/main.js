@@ -6425,6 +6425,9 @@ var $author$project$Main$hit = F2(
 					});
 			};
 			var newModel = A3($author$project$Main$changePlayerHand, model, hand, hitHand);
+			var newNewModel = _Utils_update(
+				newModel,
+				{aw: cards});
 			var isBusted = $author$project$Game$isBusted(
 				function (x) {
 					return x.at;
@@ -6432,8 +6435,8 @@ var $author$project$Main$hit = F2(
 					A2(
 						$elm$core$Maybe$withDefault,
 						$author$project$Main$defaultHand(model),
-						A2($elm$core$Array$get, hand, newModel.aP.d))));
-			return isBusted ? A2($author$project$Main$stay, newModel, hand) : _Utils_Tuple2(newModel, $elm$core$Platform$Cmd$none);
+						A2($elm$core$Array$get, hand, newNewModel.aP.d))));
+			return isBusted ? A2($author$project$Main$stay, newNewModel, hand) : _Utils_Tuple2(newNewModel, $elm$core$Platform$Cmd$none);
 		}
 	});
 var $author$project$Main$doubleDown = F2(
