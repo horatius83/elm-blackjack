@@ -32,3 +32,4 @@ type Msg
     | Stay Int
     | DoubleDown Int
     | DealDealerCards
+    | Split Int

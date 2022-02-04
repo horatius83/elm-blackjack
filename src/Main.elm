@@ -140,6 +140,9 @@ update msg model =
         DoubleDown hand ->
             doubleDown model hand
 
+        Split hand ->
+            split model hand
+
         DealDealerCards ->
             dealDealerCards model
 
@@ -348,6 +351,33 @@ doubleDown model hand =
             hit model hand
                 |> Tuple.first
                 |> (\newNewModel -> stay newNewModel hand)
+
+split : Model -> Int -> (Model, Cmd Msg)
+split model handIndex =
+    let
+        splitHand hand = case hand.cards of
+            card :: cards -> 
+                let
+                    handA = Hand.create [card] hand.bet
+                    handB = Hand.create cards hand.bet
+                in
+                Just (handA, handB)
+            [] -> Nothing
+        indexedList = Array.toIndexedList model.player.hands
+        appendHands (index, hand) newHands = if index == handIndex 
+            then case (splitHand hand) of
+                Just (handA, handB) -> List.append [handA, handB] newHands
+                Nothing -> hand :: newHands
+            else
+                hand :: newHands
+        newHands2 = List.foldl appendHands [] indexedList
+            |> Array.fromList
+        oldPlayer = model.player
+        newPlayer = { oldPlayer | hands = newHands2 }
+        newModel = { model | player = newPlayer }
+    in
+    (newModel, Cmd.none)
+    
 
 
 dealDealerCards : Model -> ( Model, Cmd Msg )

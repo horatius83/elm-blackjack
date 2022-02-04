@@ -61,7 +61,7 @@ viewHand player ( whichHand, hand ) =
                     , button [ onClick (DoubleDown whichHand) 
                              , disabled (cannotDoubleDown player whichHand)
                             ] [ text "Double Down" ]
-                    , button [] [ text "Split" ]
+                    , button [ onClick (Split whichHand)] [ text "Split" ]
                     , text valuesAsText
                     ]
                 ]
