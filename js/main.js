@@ -7048,12 +7048,122 @@ var $author$project$State$Split = function (a) {
 var $author$project$State$Stay = function (a) {
 	return {$: 15, a: a};
 };
+var $elm$core$Maybe$map = F2(
+	function (f, maybe) {
+		if (!maybe.$) {
+			var value = maybe.a;
+			return $elm$core$Maybe$Just(
+				f(value));
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $elm$core$Maybe$map2 = F3(
+	function (func, ma, mb) {
+		if (ma.$ === 1) {
+			return $elm$core$Maybe$Nothing;
+		} else {
+			var a = ma.a;
+			if (mb.$ === 1) {
+				return $elm$core$Maybe$Nothing;
+			} else {
+				var b = mb.a;
+				return $elm$core$Maybe$Just(
+					A2(func, a, b));
+			}
+		}
+	});
 var $author$project$Page$Round$cannotDoubleDown = F2(
-	function (player, hand) {
-		var playerHand = A2($elm$core$Array$get, hand, player.d);
-		if (!playerHand.$) {
-			var h = playerHand.a;
-			return _Utils_cmp(h.aq * 2, player.E) > 0;
+	function (player, handIndex) {
+		var playerHand = A2($elm$core$Array$get, handIndex, player.d);
+		var notEnoughMoney = A2(
+			$elm$core$Maybe$map,
+			function (h) {
+				return _Utils_cmp(h.aq * 2, player.E) > 0;
+			},
+			A2($elm$core$Array$get, handIndex, player.d));
+		var handIsBusted = A2(
+			$elm$core$Maybe$map,
+			function (h) {
+				return $author$project$Game$isBusted(h.at);
+			},
+			playerHand);
+		var _v0 = A3($elm$core$Maybe$map2, $elm$core$Basics$or, notEnoughMoney, handIsBusted);
+		if (!_v0.$) {
+			var x = _v0.a;
+			return x;
+		} else {
+			return true;
+		}
+	});
+var $author$project$Page$Round$cannotHit = F2(
+	function (player, handIndex) {
+		var hand = A2($elm$core$Array$get, handIndex, player.d);
+		var handIsBusted = A2(
+			$elm$core$Maybe$map,
+			function (h) {
+				return $author$project$Game$isBusted(h.at);
+			},
+			hand);
+		var handIsStayed = A2(
+			$elm$core$Maybe$map,
+			function (h) {
+				return h.aT;
+			},
+			hand);
+		var _v0 = _Utils_Tuple2(handIsBusted, handIsStayed);
+		if (_v0.a.$ === 1) {
+			var _v1 = _v0.a;
+			return true;
+		} else {
+			if (_v0.b.$ === 1) {
+				var _v2 = _v0.b;
+				return true;
+			} else {
+				var x = _v0.a.a;
+				var y = _v0.b.a;
+				return x || y;
+			}
+		}
+	});
+var $elm$core$Basics$not = _Basics_not;
+var $author$project$Page$Round$cannotSplit = F2(
+	function (player, handIndex) {
+		var hand = A2($elm$core$Array$get, handIndex, player.d);
+		var cardsAreSameValue = function (cards) {
+			if ((cards.b && cards.b.b) && (!cards.b.b.b)) {
+				var a = cards.a;
+				var _v2 = cards.b;
+				var b = _v2.a;
+				return _Utils_eq(a.I, b.I);
+			} else {
+				return false;
+			}
+		};
+		var hasCardsOfSameValue = A2(
+			$elm$core$Maybe$map,
+			function (h) {
+				return cardsAreSameValue(h.at);
+			},
+			hand);
+		if (!hasCardsOfSameValue.$) {
+			var x = hasCardsOfSameValue.a;
+			return !x;
+		} else {
+			return true;
+		}
+	});
+var $author$project$Page$Round$cannotStand = F2(
+	function (player, handIndex) {
+		var isStanding = A2(
+			$elm$core$Maybe$map,
+			function (h) {
+				return h.aT;
+			},
+			A2($elm$core$Array$get, handIndex, player.d));
+		if (!isStanding.$) {
+			var x = isStanding.a;
+			return x;
 		} else {
 			return true;
 		}
@@ -7131,7 +7241,7 @@ var $author$project$Page$Round$viewHand = F2(
 									$elm$html$Html$Events$onClick(
 									$author$project$State$Hit(whichHand)),
 									$elm$html$Html$Attributes$disabled(
-									$author$project$Game$isBusted(hand.at))
+									A2($author$project$Page$Round$cannotHit, player, whichHand))
 								]),
 							_List_fromArray(
 								[
@@ -7142,11 +7252,13 @@ var $author$project$Page$Round$viewHand = F2(
 							_List_fromArray(
 								[
 									$elm$html$Html$Events$onClick(
-									$author$project$State$Stay(whichHand))
+									$author$project$State$Stay(whichHand)),
+									$elm$html$Html$Attributes$disabled(
+									A2($author$project$Page$Round$cannotStand, player, whichHand))
 								]),
 							_List_fromArray(
 								[
-									$elm$html$Html$text('Stay')
+									$elm$html$Html$text('Stand')
 								])),
 							A2(
 							$elm$html$Html$button,
@@ -7173,7 +7285,9 @@ var $author$project$Page$Round$viewHand = F2(
 							_List_fromArray(
 								[
 									$elm$html$Html$Events$onClick(
-									$author$project$State$Split(whichHand))
+									$author$project$State$Split(whichHand)),
+									$elm$html$Html$Attributes$disabled(
+									A2($author$project$Page$Round$cannotSplit, player, whichHand))
 								]),
 							_List_fromArray(
 								[

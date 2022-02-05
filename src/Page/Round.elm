@@ -50,18 +50,21 @@ viewHand player ( whichHand, hand ) =
                 [ span []
                     [ button
                         [ onClick (Hit whichHand)
-                        , disabled (Game.isBusted hand.cards)
+                        , disabled (cannotHit player whichHand)
                         ]
                         [ text "Hit" ]
                     , button
                         [ onClick (Stay whichHand)
+                        , disabled (cannotStand player whichHand)
                         ]
-                        [ text "Stay" ]
+                        [ text "Stand" ]
                     , button [] [ text "Insurance" ]
                     , button [ onClick (DoubleDown whichHand) 
                              , disabled (cannotDoubleDown player whichHand)
                             ] [ text "Double Down" ]
-                    , button [ onClick (Split whichHand)] [ text "Split" ]
+                    , button [ onClick (Split whichHand)
+                             , disabled (cannotSplit  player whichHand)
+                        ] [ text "Split" ]
                     , text valuesAsText
                     ]
                 ]
@@ -99,10 +102,49 @@ view model =
         ]
 
 cannotDoubleDown : Player -> Int -> Bool
-cannotDoubleDown player hand =
+cannotDoubleDown player handIndex =
     let
-        playerHand = Array.get hand player.hands
+        playerHand = Array.get handIndex player.hands
+        notEnoughMoney = Array.get handIndex player.hands
+            |> Maybe.map (\h -> (h.bet * 2) > player.money)
+        handIsBusted = Maybe.map (\h -> Game.isBusted h.cards) playerHand
     in
-    case playerHand of
-        Just h -> (h.bet * 2) > player.money
+    case (Maybe.map2 (||) notEnoughMoney handIsBusted ) of
+        Just x -> x
+        Nothing -> True
+
+cannotHit : Player -> Int -> Bool
+cannotHit player handIndex =
+    let
+        hand = Array.get handIndex player.hands
+        handIsBusted = Maybe.map (\h -> Game.isBusted h.cards) hand
+        handIsStayed = Maybe.map (\h -> h.stayed) hand
+    in
+    case (handIsBusted, handIsStayed) of
+        (Nothing, _) -> True
+        (_, Nothing) -> True
+        (Just x, Just y) -> x || y
+
+
+cannotStand : Player -> Int -> Bool
+cannotStand player handIndex = 
+    let
+        isStanding = Array.get handIndex player.hands
+            |> Maybe.map (\h -> h.stayed)
+    in
+    case isStanding of
+        Just x -> x
+        Nothing -> True
+        
+cannotSplit : Player -> Int -> Bool
+cannotSplit player handIndex =
+    let
+        hand = Array.get handIndex player.hands
+        cardsAreSameValue cards = case cards of
+            a :: b :: [] -> a.rank == b.rank
+            _ -> False
+        hasCardsOfSameValue = Maybe.map (\h -> cardsAreSameValue h.cards) hand
+    in
+    case hasCardsOfSameValue of
+        Just x -> not x
         Nothing -> True
