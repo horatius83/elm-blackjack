@@ -44,6 +44,11 @@ type alias Game =
     , rules : Rules
     }
 
+type HandResult 
+    = Won
+    | Lost
+    | Pushed
+
 
 default : Rules
 default =

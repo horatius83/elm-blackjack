@@ -5837,6 +5837,9 @@ var $elm$core$Array$map = F2(
 			A2($elm$core$Elm$JsArray$map, helper, tree),
 			A2($elm$core$Elm$JsArray$map, func, tail));
 	});
+var $author$project$Game$Lost = 1;
+var $author$project$Game$Pushed = 2;
+var $author$project$Game$Won = 0;
 var $elm$core$Elm$JsArray$foldl = _JsArray_foldl;
 var $elm$core$Array$foldl = F3(
 	function (func, baseCase, _v0) {
@@ -6127,27 +6130,27 @@ var $author$project$Game$getMaximumCardValue = function (deck) {
 var $author$project$Main$roundEnd = function (model) {
 	var oldPlayer = model.aP;
 	var maxDealerValue = $author$project$Game$getMaximumCardValue(model.av.at);
-	var didPlayerWin = function (maxHandValue) {
-		var _v2 = _Utils_Tuple2(maxHandValue, maxDealerValue);
-		if (_v2.a.$ === 1) {
-			if (_v2.b.$ === 1) {
-				var _v3 = _v2.a;
-				var _v4 = _v2.b;
-				return false;
+	var getHandResult = function (maxHandValue) {
+		var _v3 = _Utils_Tuple2(maxHandValue, maxDealerValue);
+		if (_v3.a.$ === 1) {
+			if (_v3.b.$ === 1) {
+				var _v4 = _v3.a;
+				var _v5 = _v3.b;
+				return 1;
 			} else {
-				var _v5 = _v2.a;
-				var x = _v2.b.a;
-				return false;
+				var _v6 = _v3.a;
+				var x = _v3.b.a;
+				return 1;
 			}
 		} else {
-			if (_v2.b.$ === 1) {
-				var x = _v2.a.a;
-				var _v6 = _v2.b;
-				return true;
+			if (_v3.b.$ === 1) {
+				var x = _v3.a.a;
+				var _v7 = _v3.b;
+				return 0;
 			} else {
-				var x = _v2.a.a;
-				var y = _v2.b.a;
-				return _Utils_cmp(x, y) > 0;
+				var x = _v3.a.a;
+				var y = _v3.b.a;
+				return (_Utils_cmp(x, y) > 0) ? 0 : (_Utils_eq(x, y) ? 2 : 1);
 			}
 		}
 	};
@@ -6156,8 +6159,15 @@ var $author$project$Main$roundEnd = function (model) {
 		F2(
 			function (_v1, acc) {
 				var bet = _v1.a;
-				var playerWon = _v1.b;
-				return playerWon ? (acc + bet) : (acc - bet);
+				var handResult = _v1.b;
+				switch (handResult) {
+					case 0:
+						return acc + bet;
+					case 1:
+						return acc - bet;
+					default:
+						return acc;
+				}
 			}),
 		0,
 		A2(
@@ -6167,7 +6177,7 @@ var $author$project$Main$roundEnd = function (model) {
 				var maxValue = _v0.b;
 				return _Utils_Tuple2(
 					bet,
-					didPlayerWin(maxValue));
+					getHandResult(maxValue));
 			},
 			A2(
 				$elm$core$Array$map,

@@ -5,7 +5,7 @@ import Browser
 import Card exposing (Card, Rank(..), Suit(..), cardBackHex, getCardFrontHex, getColor)
 import Controls exposing (viewCard, viewInput, viewNumericInput, viewPayoutInput)
 import Deck exposing (Deck)
-import Game exposing (Game, GameState, default, defaultPlayer, getMaximumCardValue, new)
+import Game exposing (Game, GameState, default, defaultPlayer, getMaximumCardValue, new, HandResult)
 import Hand exposing (Hand)
 import Html exposing (..)
 import Html.Attributes exposing (attribute)
@@ -221,30 +221,31 @@ roundEnd model =
         maxDealerValue =
             getMaximumCardValue model.dealer.cards
 
-        didPlayerWin maxHandValue =
+        getHandResult maxHandValue =
             case ( maxHandValue, maxDealerValue ) of
                 ( Nothing, Nothing ) ->
-                    False
+                    Game.Lost
 
                 ( Nothing, Just x ) ->
-                    False
+                    Game.Lost
 
                 ( Just x, Nothing ) ->
-                    True
+                    Game.Won
 
                 ( Just x, Just y ) ->
-                    x > y
+                    if x > y then Game.Won
+                    else if x == y then Game.Pushed
+                    else Game.Lost
 
         playerWinnings =
             Array.map (\hand -> ( hand.bet, getMaximumCardValue hand.cards )) model.player.hands
-                |> Array.map (\( bet, maxValue ) -> ( bet, didPlayerWin maxValue ))
+                |> Array.map (\( bet, maxValue ) -> ( bet, getHandResult maxValue ))
                 |> Array.foldl
-                    (\( bet, playerWon ) acc ->
-                        if playerWon then
-                            acc + bet
-
-                        else
-                            acc - bet
+                    (\( bet, handResult ) acc ->
+                        case handResult of
+                            Game.Won -> acc + bet
+                            Game.Lost -> acc - bet
+                            Game.Pushed -> acc
                     )
                     0
 
@@ -382,8 +383,6 @@ split model handIndex =
     in
     (newModel, Cmd.none)
     
-
-
 dealDealerCards : Model -> ( Model, Cmd Msg )
 dealDealerCards model =
     let
