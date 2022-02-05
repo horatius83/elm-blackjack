@@ -33,3 +33,4 @@ type Msg
     | DoubleDown Int
     | DealDealerCards
     | Split Int
+    | NewRound

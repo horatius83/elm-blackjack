@@ -113,13 +113,10 @@ view model =
         hands =
             model.player.hands
                 |> viewPlayerHands dealerScore
-
-        newRound =
-            State.ChangeGameState Game.PlaceBets
     in
     div []
         [ viewDealer model
         , viewPlayerHands dealerScore model.player.hands
         , viewPlayerMoney model
-        , button [ onClick newRound ] [ text "New Round" ]
+        , button [ onClick State.NewRound ] [ text "New Round" ]
         ]

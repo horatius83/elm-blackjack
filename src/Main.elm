@@ -146,6 +146,9 @@ update msg model =
         DealDealerCards ->
             dealDealerCards model
 
+        NewRound ->
+            newRound model
+
 
 changeBet : Model -> String -> ( Model, Cmd Msg )
 changeBet model betAsString =
@@ -479,6 +482,14 @@ dealInitialCards model =
         ( _, _, _ ) ->
             ( model, Cmd.none )
 
+newRound : Model -> (Model, Cmd Msg)
+newRound model =
+    let
+        isPlayerOutOfMoney = model.player.money <= 0
+    in
+    if isPlayerOutOfMoney 
+        then changeGameState model Game.GameOver
+        else changeGameState model Game.PlaceBets
 
 main : Program () Model Msg
 main =

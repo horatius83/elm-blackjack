@@ -5243,7 +5243,7 @@ var $author$project$Game$default = A6(
 	0);
 var $author$project$Player$Player = F3(
 	function (name, hands, money) {
-		return {d: hands, E: money, aJ: name};
+		return {d: hands, A: money, aJ: name};
 	});
 var $author$project$Player$new = F2(
 	function (name, money) {
@@ -6179,7 +6179,7 @@ var $author$project$Main$roundEnd = function (model) {
 				model.aP.d)));
 	var newPlayer = _Utils_update(
 		oldPlayer,
-		{E: oldPlayer.E + playerWinnings});
+		{A: oldPlayer.A + playerWinnings});
 	var newModel = _Utils_update(
 		model,
 		{aP: newPlayer});
@@ -6467,6 +6467,11 @@ var $author$project$Main$doubleDown = F2(
 				A2($author$project$Main$hit, model, hand).a);
 		}
 	});
+var $author$project$Game$GameOver = 5;
+var $author$project$Main$newRound = function (model) {
+	var isPlayerOutOfMoney = model.aP.A <= 0;
+	return isPlayerOutOfMoney ? A2($author$project$Main$changeGameState, model, 5) : A2($author$project$Main$changeGameState, model, 1);
+};
 var $elm$core$Array$toIndexedList = function (array) {
 	var len = array.a;
 	var helper = F2(
@@ -6600,7 +6605,7 @@ var $author$project$Main$update = F2(
 								aP: _Utils_update(
 									player_,
 									{
-										E: A2(sToI, $author$project$Game$defaultPlayer.E, money)
+										A: A2(sToI, $author$project$Game$defaultPlayer.A, money)
 									})
 							}),
 						$elm$core$Platform$Cmd$none);
@@ -6716,8 +6721,10 @@ var $author$project$Main$update = F2(
 				case 18:
 					var hand = msg.a;
 					return A2($author$project$Main$split, model, hand);
-				default:
+				case 17:
 					return $author$project$Main$dealDealerCards(model);
+				default:
+					return $author$project$Main$newRound(model);
 			}
 		}
 	});
@@ -6874,7 +6881,7 @@ var $author$project$Page$Bet$view = function (model) {
 	var stepValue = $elm$core$Maybe$Just(10);
 	var minimumBet = $elm$core$Maybe$Just(model.aR.aI);
 	var maximumBet = $elm$core$Maybe$Just(
-		(_Utils_cmp(model.aR.aH, model.aP.E) < 0) ? model.aR.aH : model.aP.E);
+		(_Utils_cmp(model.aR.aH, model.aP.A) < 0) ? model.aR.aH : model.aP.A);
 	var bet = function () {
 		var _v0 = $elm$core$Array$toList(model.aP.d);
 		if (_v0.b) {
@@ -7079,7 +7086,7 @@ var $author$project$Page$Round$cannotDoubleDown = F2(
 		var notEnoughMoney = A2(
 			$elm$core$Maybe$map,
 			function (h) {
-				return _Utils_cmp(h.aq * 2, player.E) > 0;
+				return _Utils_cmp(h.aq * 2, player.A) > 0;
 			},
 			A2($elm$core$Array$get, handIndex, player.d));
 		var handIsBusted = A2(
@@ -7345,6 +7352,7 @@ var $author$project$Page$Round$view = function (model) {
 				$elm$html$Html$text('Round')
 			]));
 };
+var $author$project$State$NewRound = {$: 19};
 var $author$project$Page$RoundEnd$viewDealer = function (model) {
 	var maxScore = $author$project$Game$getMaximumCardValue(model.av.at);
 	var dealerStatus = function () {
@@ -7425,7 +7433,7 @@ var $author$project$Page$RoundEnd$viewPlayerHands = F2(
 	});
 var $elm$html$Html$h2 = _VirtualDom_node('h2');
 var $author$project$Page$RoundEnd$viewPlayerMoney = function (model) {
-	var moneyAsString = $elm$core$String$fromInt(model.aP.E);
+	var moneyAsString = $elm$core$String$fromInt(model.aP.A);
 	var moneyAsHtml = $elm$html$Html$text('$' + moneyAsString);
 	return A2(
 		$elm$html$Html$div,
@@ -7443,7 +7451,6 @@ var $author$project$Page$RoundEnd$viewPlayerMoney = function (model) {
 			]));
 };
 var $author$project$Page$RoundEnd$view = function (model) {
-	var newRound = $author$project$State$ChangeGameState(1);
 	var dealerScore = $author$project$Game$getMaximumCardValue(model.av.at);
 	var hands = A2($author$project$Page$RoundEnd$viewPlayerHands, dealerScore, model.aP.d);
 	return A2(
@@ -7458,7 +7465,7 @@ var $author$project$Page$RoundEnd$view = function (model) {
 				$elm$html$Html$button,
 				_List_fromArray(
 					[
-						$elm$html$Html$Events$onClick(newRound)
+						$elm$html$Html$Events$onClick($author$project$State$NewRound)
 					]),
 				_List_fromArray(
 					[
@@ -7659,7 +7666,7 @@ var $author$project$Page$Rules$view = function (model) {
 						_List_Nil,
 						_List_fromArray(
 							[
-								A7($author$project$Controls$viewNumericInput, 'Starting money: ', 'money', model.aP.E, stepValue, $elm$core$Maybe$Nothing, stepValue, $author$project$State$ChangePlayerMoney)
+								A7($author$project$Controls$viewNumericInput, 'Starting money: ', 'money', model.aP.A, stepValue, $elm$core$Maybe$Nothing, stepValue, $author$project$State$ChangePlayerMoney)
 							])),
 						A2(
 						$elm$html$Html$div,
