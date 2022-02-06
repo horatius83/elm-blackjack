@@ -1,7 +1,7 @@
 module State exposing (..)
 
 import Deck
-import Game exposing (Game, GameState)
+import Game exposing (Game, GameState, SurrenderRules)
 
 
 type alias Model =
@@ -20,6 +20,7 @@ type Msg
     | ChangePayoutDenominator String
     | ChangeNumberOfSplits String
     | ChangeBet String
+    | ChangeSurrenderRules SurrenderRules
     | NewDeck Deck.Deck
     | ChangeGameState GameState
     | ShuffleDiscardIntoDeck Msg Deck.Deck

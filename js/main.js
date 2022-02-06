@@ -5222,7 +5222,7 @@ var $elm$core$Task$perform = F2(
 	});
 var $elm$browser$Browser$element = _Browser_element;
 var $author$project$State$NewDeck = function (a) {
-	return {$: 11, a: a};
+	return {$: 12, a: a};
 };
 var $author$project$Game$BlackJackPayout = F2(
 	function (numerator, denominator) {
@@ -5675,9 +5675,9 @@ var $author$project$Main$changeBet = F2(
 			$elm$core$Platform$Cmd$none);
 	});
 var $author$project$State$ChangeGameState = function (a) {
-	return {$: 12, a: a};
+	return {$: 13, a: a};
 };
-var $author$project$State$DealDealerCards = {$: 18};
+var $author$project$State$DealDealerCards = {$: 19};
 var $author$project$Game$PlaceBets = 1;
 var $author$project$Game$RoundEnd = 4;
 var $author$project$Game$RoundStart = 2;
@@ -6131,7 +6131,7 @@ var $author$project$Main$roundEnd = function (model) {
 };
 var $author$project$State$ShuffleDiscardIntoDeck = F2(
 	function (a, b) {
-		return {$: 13, a: a, b: b};
+		return {$: 14, a: a, b: b};
 	});
 var $author$project$Main$shuffleDiscard = F2(
 	function (model, nextMsg) {
@@ -6408,10 +6408,10 @@ var $author$project$Main$stay = F2(
 		return allStayed ? $author$project$Main$dealDealerCards(newModel) : _Utils_Tuple2(newModel, $elm$core$Platform$Cmd$none);
 	});
 var $author$project$State$DoubleDown = function (a) {
-	return {$: 16, a: a};
+	return {$: 17, a: a};
 };
 var $author$project$State$Hit = function (a) {
-	return {$: 14, a: a};
+	return {$: 15, a: a};
 };
 var $elm$core$Dict$isEmpty = function (dict) {
 	if (dict.$ === -2) {
@@ -6630,7 +6630,7 @@ var $author$project$Main$update = F2(
 							$elm$random$Random$generate,
 							$author$project$State$NewDeck,
 							$elm_community$random_extra$Random$List$shuffle(model.aw)));
-				case 11:
+				case 12:
 					var cards = msg.a;
 					return _Utils_Tuple2(
 						_Utils_update(
@@ -6748,10 +6748,21 @@ var $author$project$Main$update = F2(
 				case 10:
 					var bet = msg.a;
 					return A2($author$project$Main$changeBet, model, bet);
-				case 12:
+				case 11:
+					var rule = msg.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								aS: _Utils_update(
+									rules_,
+									{aW: rule})
+							}),
+						$elm$core$Platform$Cmd$none);
+				case 13:
 					var state = msg.a;
 					return A2($author$project$Main$changeGameState, model, state);
-				case 13:
+				case 14:
 					var nextMsg = msg.a;
 					var deck = msg.b;
 					var $temp$msg = nextMsg,
@@ -6761,23 +6772,23 @@ var $author$project$Main$update = F2(
 					msg = $temp$msg;
 					model = $temp$model;
 					continue update;
-				case 14:
-					var hand = msg.a;
-					return A2($author$project$Main$hit, model, hand);
 				case 15:
 					var hand = msg.a;
-					return A2($author$project$Main$stay, model, hand);
+					return A2($author$project$Main$hit, model, hand);
 				case 16:
 					var hand = msg.a;
+					return A2($author$project$Main$stay, model, hand);
+				case 17:
+					var hand = msg.a;
 					return A2($author$project$Main$doubleDown, model, hand);
-				case 19:
+				case 20:
 					var hand = msg.a;
 					return A2($author$project$Main$split, model, hand);
-				case 17:
-					return $author$project$Main$surrender(model);
-				case 20:
-					return $author$project$Main$insure(model);
 				case 18:
+					return $author$project$Main$surrender(model);
+				case 21:
+					return $author$project$Main$insure(model);
+				case 19:
 					return $author$project$Main$dealDealerCards(model);
 				default:
 					return $author$project$Main$newRound(model);
@@ -7105,12 +7116,12 @@ var $author$project$Page$Round$viewDealer = function (cards) {
 				A2($elm$html$Html$span, _List_Nil, cardsAsHtml)
 			]));
 };
-var $author$project$State$Insure = {$: 20};
+var $author$project$State$Insure = {$: 21};
 var $author$project$State$Split = function (a) {
-	return {$: 19, a: a};
+	return {$: 20, a: a};
 };
 var $author$project$State$Stay = function (a) {
-	return {$: 15, a: a};
+	return {$: 16, a: a};
 };
 var $elm$core$Maybe$map = F2(
 	function (f, maybe) {
@@ -7467,7 +7478,7 @@ var $author$project$Page$Round$view = function (model) {
 				$elm$html$Html$text('Round')
 			]));
 };
-var $author$project$State$NewRound = {$: 21};
+var $author$project$State$NewRound = {$: 22};
 var $author$project$Page$RoundEnd$viewDealer = function (model) {
 	var maxScore = $author$project$Game$getMaximumCardValue(model.av.at);
 	var dealerStatus = function () {
@@ -7606,6 +7617,11 @@ var $author$project$State$ChangePlayerMoney = function (a) {
 var $author$project$State$ChangePlayerName = function (a) {
 	return {$: 2, a: a};
 };
+var $author$project$State$ChangeSurrenderRules = function (a) {
+	return {$: 11, a: a};
+};
+var $author$project$Game$Early = 1;
+var $author$project$Game$Late = 2;
 var $author$project$Controls$viewInput = F5(
 	function (label_, id_, value_, type_, toMsg) {
 		return A2(
@@ -7683,7 +7699,63 @@ var $author$project$Controls$viewPayoutInput = F2(
 					_List_Nil)
 				]));
 	});
+var $elm$html$Html$option = _VirtualDom_node('option');
+var $elm$html$Html$select = _VirtualDom_node('select');
+var $author$project$Page$Rules$viewSelect = F3(
+	function (id, labelText, options) {
+		var viewOption = function (_v0) {
+			var msg = _v0.a;
+			var txt = _v0.b;
+			return A2(
+				$elm$html$Html$option,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$attribute, 'value', txt)
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text(txt)
+					]));
+		};
+		var optionsAsHtml = A2($elm$core$List$map, viewOption, options);
+		return A2(
+			$elm$html$Html$div,
+			_List_Nil,
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$label,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$attribute, 'for', id)
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(labelText)
+						])),
+					A2(
+					$elm$html$Html$select,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$attribute, 'name', id),
+							A2($elm$html$Html$Attributes$attribute, 'id', id)
+						]),
+					optionsAsHtml)
+				]));
+	});
 var $author$project$Page$Rules$view = function (model) {
+	var surrenderOptions = _List_fromArray(
+		[
+			_Utils_Tuple2(
+			$author$project$State$ChangeSurrenderRules(0),
+			'No'),
+			_Utils_Tuple2(
+			$author$project$State$ChangeSurrenderRules(1),
+			'Early'),
+			_Utils_Tuple2(
+			$author$project$State$ChangeSurrenderRules(2),
+			'Late')
+		]);
 	var stepValue = $elm$core$Maybe$Just(10);
 	return A2(
 		$elm$html$Html$div,
@@ -7783,6 +7855,7 @@ var $author$project$Page$Rules$view = function (model) {
 							[
 								A7($author$project$Controls$viewNumericInput, 'Starting money: ', 'money', model.aQ.A, stepValue, $elm$core$Maybe$Nothing, stepValue, $author$project$State$ChangePlayerMoney)
 							])),
+						A3($author$project$Page$Rules$viewSelect, 'surrender-rules', 'Surrender', surrenderOptions),
 						A2(
 						$elm$html$Html$div,
 						_List_Nil,

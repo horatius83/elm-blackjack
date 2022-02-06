@@ -125,6 +125,9 @@ update msg model =
         ChangeBet bet ->
             changeBet model bet
 
+        ChangeSurrenderRules rule ->
+            ( { model | rules = { rules_ | surrenderRules = rule } }, Cmd.none )
+
         ChangeGameState state ->
             changeGameState model state
 
