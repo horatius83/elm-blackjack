@@ -6052,69 +6052,75 @@ var $elm$core$Array$map = F2(
 			A2($elm$core$Elm$JsArray$map, helper, tree),
 			A2($elm$core$Elm$JsArray$map, func, tail));
 	});
-var $author$project$Game$Lost = 1;
-var $author$project$Game$Pushed = 2;
-var $author$project$Game$Won = 0;
+var $elm$core$Basics$round = _Basics_round;
 var $author$project$Main$roundEnd = function (model) {
 	var oldPlayer = model.aP;
 	var maxDealerValue = $author$project$Game$getMaximumCardValue(model.av.at);
-	var getHandResult = function (maxHandValue) {
-		var _v3 = _Utils_Tuple2(maxHandValue, maxDealerValue);
-		if (_v3.a.$ === 1) {
-			if (_v3.b.$ === 1) {
-				var _v4 = _v3.a;
-				var _v5 = _v3.b;
-				return 1;
+	var getBetResult = function (hand) {
+		var surrenderBet = function (x) {
+			return x * (-1);
+		}(
+			$elm$core$Basics$round(
+				function (x) {
+					return x / 2;
+				}(hand.aq)));
+		var maxHandValue = $author$project$Game$getMaximumCardValue(hand.at);
+		var _v0 = _Utils_Tuple2(maxHandValue, maxDealerValue);
+		if (_v0.a.$ === 1) {
+			if (_v0.b.$ === 1) {
+				var _v1 = _v0.a;
+				var _v2 = _v0.b;
+				return -hand.aq;
 			} else {
-				var _v6 = _v3.a;
-				var x = _v3.b.a;
-				return 1;
+				var _v3 = _v0.a;
+				var dealerMaxvalue = _v0.b.a;
+				return -hand.aq;
 			}
 		} else {
-			if (_v3.b.$ === 1) {
-				var x = _v3.a.a;
-				var _v7 = _v3.b;
-				return 0;
+			if (_v0.b.$ === 1) {
+				var playerMaxValue = _v0.a.a;
+				var _v4 = _v0.b;
+				return hand.aW ? surrenderBet : hand.aq;
 			} else {
-				var x = _v3.a.a;
-				var y = _v3.b.a;
-				return (_Utils_cmp(x, y) > 0) ? 0 : (_Utils_eq(x, y) ? 2 : 1);
+				var playerMaxValue = _v0.a.a;
+				var dealerMaxValue = _v0.b.a;
+				var _v5 = _Utils_Tuple3(
+					_Utils_cmp(playerMaxValue, dealerMaxValue) > 0,
+					_Utils_eq(playerMaxValue, dealerMaxValue),
+					hand.aW);
+				if (!_v5.a) {
+					if (_v5.b) {
+						if (!_v5.c) {
+							return 0;
+						} else {
+							return surrenderBet;
+						}
+					} else {
+						if (!_v5.c) {
+							return -hand.aq;
+						} else {
+							return surrenderBet;
+						}
+					}
+				} else {
+					if (!_v5.b) {
+						if (!_v5.c) {
+							return hand.aq;
+						} else {
+							return surrenderBet;
+						}
+					} else {
+						return 0;
+					}
+				}
 			}
 		}
 	};
 	var playerWinnings = A3(
 		$elm$core$Array$foldl,
-		F2(
-			function (_v1, acc) {
-				var bet = _v1.a;
-				var handResult = _v1.b;
-				switch (handResult) {
-					case 0:
-						return acc + bet;
-					case 1:
-						return acc - bet;
-					default:
-						return acc;
-				}
-			}),
+		$elm$core$Basics$add,
 		0,
-		A2(
-			$elm$core$Array$map,
-			function (_v0) {
-				var bet = _v0.a;
-				var maxValue = _v0.b;
-				return _Utils_Tuple2(
-					bet,
-					getHandResult(maxValue));
-			},
-			A2(
-				$elm$core$Array$map,
-				function (hand) {
-					return _Utils_Tuple2(
-						hand.aq,
-						$author$project$Game$getMaximumCardValue(hand.at));
-				},
-				model.aP.d)));
+		A2($elm$core$Array$map, getBetResult, model.aP.d));
 	var newPlayer = _Utils_update(
 		oldPlayer,
 		{A: oldPlayer.A + playerWinnings});
