@@ -9,12 +9,13 @@ type alias Player =
     { name : String
     , hands : Array.Array Hand
     , money : Int
+    , insured : Bool
     }
 
 
 new : String -> Int -> Player
 new name money =
-    Player name Array.empty money
+    Player name Array.empty money False
 
 
 addCardToHand : Player -> Int -> Card -> Maybe Player

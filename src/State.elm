@@ -29,4 +29,5 @@ type Msg
     | Surrender
     | DealDealerCards
     | Split Int
+    | Insure
     | NewRound

@@ -146,11 +146,29 @@ update msg model =
         Surrender ->
             surrender model
 
+        Insure ->
+            insure model
+
         DealDealerCards ->
             dealDealerCards model
 
         NewRound ->
             newRound model
+
+
+insure : Model -> ( Model, Cmd Msg )
+insure model =
+    let
+        oldPlayer =
+            model.player
+
+        newPlayer =
+            { oldPlayer | insured = True }
+
+        newModel =
+            { model | player = newPlayer }
+    in
+    ( newModel, Cmd.none )
 
 
 changeBet : Model -> String -> ( Model, Cmd Msg )
@@ -226,31 +244,56 @@ roundEnd model =
 
         getBetResult hand =
             let
-                maxHandValue = getMaximumCardValue hand.cards
-                surrenderBet = hand.bet 
-                    |> toFloat 
-                    |> (\x -> x / 2) 
-                    |> round 
-                    |> (\x -> x * -1)
-            in
-            case ( maxHandValue, maxDealerValue) of
-                ( Nothing, Nothing) -> -hand.bet
-                ( Nothing, Just dealerMaxvalue ) -> -hand.bet
-                ( Just playerMaxValue, Nothing) -> if hand.surrendered 
-                    then surrenderBet
-                    else hand.bet
-                ( Just playerMaxValue, Just dealerMaxValue ) ->
-                    case (playerMaxValue > dealerMaxValue, playerMaxValue == dealerMaxValue, hand.surrendered) of
-                        (True, False, False) -> hand.bet
-                        (True, False, True) -> surrenderBet
-                        (False, True, False) -> 0
-                        (False, True, True) -> surrenderBet
-                        (False, False, False) -> -hand.bet
-                        (False, False, True) -> surrenderBet
-                        (True, True, _) -> 0
+                maxHandValue =
+                    getMaximumCardValue hand.cards
 
-        playerWinnings = Array.map getBetResult model.player.hands
-            |> Array.foldl (+) 0
+                surrenderBet =
+                    hand.bet
+                        |> toFloat
+                        |> (\x -> x / 2)
+                        |> round
+                        |> (\x -> x * -1)
+            in
+            case ( maxHandValue, maxDealerValue ) of
+                ( Nothing, Nothing ) ->
+                    -hand.bet
+
+                ( Nothing, Just dealerMaxvalue ) ->
+                    -hand.bet
+
+                ( Just playerMaxValue, Nothing ) ->
+                    if hand.surrendered then
+                        surrenderBet
+
+                    else
+                        hand.bet
+
+                ( Just playerMaxValue, Just dealerMaxValue ) ->
+                    case ( playerMaxValue > dealerMaxValue, playerMaxValue == dealerMaxValue, hand.surrendered ) of
+                        ( True, False, False ) ->
+                            hand.bet
+
+                        ( True, False, True ) ->
+                            surrenderBet
+
+                        ( False, True, False ) ->
+                            0
+
+                        ( False, True, True ) ->
+                            surrenderBet
+
+                        ( False, False, False ) ->
+                            -hand.bet
+
+                        ( False, False, True ) ->
+                            surrenderBet
+
+                        ( True, True, _ ) ->
+                            0
+
+        playerWinnings =
+            Array.map getBetResult model.player.hands
+                |> Array.foldl (+) 0
 
         oldPlayer =
             model.player

@@ -30,15 +30,9 @@ viewDealer cards =
         ]
 
 
-viewHand : Player -> ( Int, Hand ) -> Html Msg
-viewHand player ( whichHand, hand ) =
+viewHand : Model -> ( Int, Hand ) -> Html Msg
+viewHand model ( whichHand, hand ) =
     let
-        handTitle =
-            "Hand #" ++ String.fromInt (whichHand + 1)
-
-        handTitleHtml =
-            div [] [ text handTitle ]
-
         valuesAsText =
             getCardValues hand.cards
                 |> Set.map String.fromInt
@@ -50,23 +44,27 @@ viewHand player ( whichHand, hand ) =
                 [ span []
                     [ button
                         [ onClick (Hit whichHand)
-                        , disabled (cannotHit player whichHand)
+                        , disabled (cannotHit model.player whichHand)
                         ]
                         [ text "Hit" ]
                     , button
                         [ onClick (Stay whichHand)
-                        , disabled (cannotStand player whichHand)
+                        , disabled (cannotStand model.player whichHand)
                         ]
                         [ text "Stand" ]
-                    , button [] [ text "Insurance" ]
+                    , button
+                        [ onClick Insure
+                        , disabled (cannotInsure model)
+                        ]
+                        [ text "Insurance" ]
                     , button
                         [ onClick (DoubleDown whichHand)
-                        , disabled (cannotDoubleDown player whichHand)
+                        , disabled (cannotDoubleDown model.player whichHand)
                         ]
                         [ text "Double Down" ]
                     , button
                         [ onClick (Split whichHand)
-                        , disabled (cannotSplit player whichHand)
+                        , disabled (cannotSplit model.player whichHand)
                         ]
                         [ text "Split" ]
                     , text valuesAsText
@@ -74,25 +72,25 @@ viewHand player ( whichHand, hand ) =
                 ]
 
         html =
-            [ handTitleHtml ] ++ viewCards hand.cards ++ [ controls ]
+            viewCards hand.cards ++ [ controls ]
     in
     div [] [ div [] html ]
 
 
-viewHands : Player -> List (Html Msg)
-viewHands player =
-    Array.toIndexedList player.hands
-        |> List.map (viewHand player)
+viewHands : Model -> List (Html Msg)
+viewHands model =
+    Array.toIndexedList model.player.hands
+        |> List.map (viewHand model)
 
 
-viewPlayer : Player -> Html Msg
-viewPlayer player =
+viewPlayer : Model -> Html Msg
+viewPlayer model =
     let
         hands =
-            viewHands player
+            viewHands model
     in
     div []
-        [ h1 [] [ text player.name ]
+        [ h1 [] [ text model.player.name ]
         , div [] hands
         ]
 
@@ -101,7 +99,7 @@ view : Model -> Html Msg
 view model =
     div []
         [ viewDealer model.dealer.cards
-        , viewPlayer model.player
+        , viewPlayer model
         , text "Round"
         ]
 
@@ -188,3 +186,55 @@ cannotSplit player handIndex =
 
         Nothing ->
             True
+
+
+cannotInsure : Model -> Bool
+cannotInsure model =
+    let
+        getUpCard cards =
+            case cards of
+                [] ->
+                    Nothing
+
+                x :: [] ->
+                    Nothing
+
+                x :: y :: _ ->
+                    Just y
+
+        hand =
+            Array.get 0 model.player.hands
+
+        getHalfBet h =
+            h.bet
+                |> toFloat
+                |> (\bet -> bet / 2)
+                |> round
+
+        halfBet =
+            Maybe.map getHalfBet hand
+
+        currentBet =
+            Maybe.map (\h -> h.bet) hand
+
+        totalBet =
+            Maybe.map2 (\c h -> c + h) currentBet halfBet
+
+        canBet =
+            Maybe.map (\t -> t >= model.player.money) totalBet
+
+        upCard =
+            getUpCard model.dealer.cards
+    in
+    case ( canBet, upCard ) of
+        ( Nothing, _ ) ->
+            True
+
+        ( _, Nothing ) ->
+            True
+
+        ( Just False, _ ) ->
+            True
+
+        ( Just True, Just card ) ->
+            card.rank /= Card.Ace
