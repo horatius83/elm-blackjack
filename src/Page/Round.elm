@@ -5,7 +5,7 @@ import Card exposing (Card)
 import Controls exposing (viewCardBack, viewCards)
 import Game exposing (getCardValues)
 import Hand exposing (Hand)
-import Html exposing (Html, button, div, h1, span, text)
+import Html exposing (Html, button, div, h1, h2, span, text)
 import Html.Attributes exposing (attribute, disabled)
 import Html.Events exposing (onClick, onInput)
 import Player exposing (Player)
@@ -67,6 +67,11 @@ viewHand model ( whichHand, hand ) =
                         , disabled (cannotSplit model.player whichHand)
                         ]
                         [ text "Split" ]
+                    , button
+                        [ onClick Surrender
+                        , disabled (cannotSurrender model)
+                        ]
+                        [ text "Surrender" ]
                     , text valuesAsText
                     ]
                 ]
@@ -95,13 +100,67 @@ viewPlayer model =
         ]
 
 
+viewRules : Model -> Html Msg
+viewRules model =
+    let
+        blackjackPayoutAsString =
+            String.fromInt model.rules.blackJackPayout.numerator ++ " : " ++ String.fromInt model.rules.blackJackPayout.denominator
+
+        surrenderRulesAsString =
+            case model.rules.surrenderRules of
+                Game.No ->
+                    "No"
+
+                Game.Early ->
+                    "Early"
+
+                Game.Late ->
+                    "Late"
+    in
+    div []
+        [ h2 [] [ text "Rules" ]
+        , div [] [ text ("Minimum Bet: " ++ String.fromInt model.rules.minimumBet) ]
+        , div [] [ text ("Maximum Bet: " ++ String.fromInt model.rules.maximumBet) ]
+        , div [] [ text ("Blackjack Payout: " ++ blackjackPayoutAsString) ]
+        , div [] [ text ("Max Number of Splits: " ++ String.fromInt model.rules.numberOfSplits) ]
+        , div [] [ text ("Numer of Decks: " ++ String.fromInt model.rules.numberOfDecks) ]
+        , div [] [ text ("Surrender Rules: " ++ surrenderRulesAsString) ]
+        ]
+
+
 view : Model -> Html Msg
 view model =
     div []
         [ viewDealer model.dealer.cards
         , viewPlayer model
-        , text "Round"
+        , viewRules model
         ]
+
+
+cannotSurrender : Model -> Bool
+cannotSurrender model =
+    let
+        handCount =
+            Array.length model.player.hands
+
+        hasInitialCards =
+            Array.toList model.player.hands
+                |> List.head
+                |> Maybe.map (\x -> List.length x.cards)
+                |> Maybe.map (\x -> x == 2)
+
+        hasInitialHand =
+            handCount == 1
+
+        isSurrenderAllowed =
+            model.rules.surrenderRules /= Game.No
+    in
+    case ( hasInitialHand, hasInitialCards, isSurrenderAllowed ) of
+        ( True, Just True, True ) ->
+            False
+
+        ( _, _, _ ) ->
+            True
 
 
 cannotDoubleDown : Player -> Int -> Bool

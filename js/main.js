@@ -7123,6 +7123,7 @@ var $author$project$State$Split = function (a) {
 var $author$project$State$Stay = function (a) {
 	return {$: 16, a: a};
 };
+var $author$project$State$Surrender = {$: 18};
 var $elm$core$Maybe$map = F2(
 	function (f, maybe) {
 		if (!maybe.$) {
@@ -7307,6 +7308,42 @@ var $author$project$Page$Round$cannotStand = F2(
 			return true;
 		}
 	});
+var $elm$core$List$head = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return $elm$core$Maybe$Just(x);
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
+var $elm$core$Array$length = function (_v0) {
+	var len = _v0.a;
+	return len;
+};
+var $author$project$Page$Round$cannotSurrender = function (model) {
+	var isSurrenderAllowed = !(!model.aS.aW);
+	var hasInitialCards = A2(
+		$elm$core$Maybe$map,
+		function (x) {
+			return x === 2;
+		},
+		A2(
+			$elm$core$Maybe$map,
+			function (x) {
+				return $elm$core$List$length(x.at);
+			},
+			$elm$core$List$head(
+				$elm$core$Array$toList(model.aQ.d))));
+	var handCount = $elm$core$Array$length(model.aQ.d);
+	var hasInitialHand = handCount === 1;
+	var _v0 = _Utils_Tuple3(hasInitialHand, hasInitialCards, isSurrenderAllowed);
+	if (((_v0.a && (!_v0.b.$)) && _v0.b.a) && _v0.c) {
+		return false;
+	} else {
+		return true;
+	}
+};
 var $elm$json$Json$Encode$bool = _Json_wrap;
 var $elm$html$Html$Attributes$boolProperty = F2(
 	function (key, bool) {
@@ -7429,6 +7466,18 @@ var $author$project$Page$Round$viewHand = F2(
 								[
 									$elm$html$Html$text('Split')
 								])),
+							A2(
+							$elm$html$Html$button,
+							_List_fromArray(
+								[
+									$elm$html$Html$Events$onClick($author$project$State$Surrender),
+									$elm$html$Html$Attributes$disabled(
+									$author$project$Page$Round$cannotSurrender(model))
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Surrender')
+								])),
 							$elm$html$Html$text(valuesAsText)
 						]))
 				]));
@@ -7467,6 +7516,80 @@ var $author$project$Page$Round$viewPlayer = function (model) {
 				A2($elm$html$Html$div, _List_Nil, hands)
 			]));
 };
+var $elm$html$Html$h2 = _VirtualDom_node('h2');
+var $author$project$Page$Round$viewRules = function (model) {
+	var surrenderRulesAsString = function () {
+		var _v0 = model.aS.aW;
+		switch (_v0) {
+			case 0:
+				return 'No';
+			case 1:
+				return 'Early';
+			default:
+				return 'Late';
+		}
+	}();
+	var blackjackPayoutAsString = $elm$core$String$fromInt(model.aS.ar.aM) + (' : ' + $elm$core$String$fromInt(model.aS.ar.ax));
+	return A2(
+		$elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$h2,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Rules')
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						'Minimum Bet: ' + $elm$core$String$fromInt(model.aS.aJ))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						'Maximum Bet: ' + $elm$core$String$fromInt(model.aS.aI))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Blackjack Payout: ' + blackjackPayoutAsString)
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						'Max Number of Splits: ' + $elm$core$String$fromInt(model.aS.aL))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						'Numer of Decks: ' + $elm$core$String$fromInt(model.aS.X))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Surrender Rules: ' + surrenderRulesAsString)
+					]))
+			]));
+};
 var $author$project$Page$Round$view = function (model) {
 	return A2(
 		$elm$html$Html$div,
@@ -7475,7 +7598,7 @@ var $author$project$Page$Round$view = function (model) {
 			[
 				$author$project$Page$Round$viewDealer(model.av.at),
 				$author$project$Page$Round$viewPlayer(model),
-				$elm$html$Html$text('Round')
+				$author$project$Page$Round$viewRules(model)
 			]));
 };
 var $author$project$State$NewRound = {$: 22};
@@ -7557,7 +7680,6 @@ var $author$project$Page$RoundEnd$viewPlayerHands = F2(
 			$elm$core$Array$toIndexedList(hands));
 		return A2($elm$html$Html$div, _List_Nil, childElements);
 	});
-var $elm$html$Html$h2 = _VirtualDom_node('h2');
 var $author$project$Page$RoundEnd$viewPlayerMoney = function (model) {
 	var moneyAsString = $elm$core$String$fromInt(model.aQ.A);
 	var moneyAsHtml = $elm$html$Html$text('$' + moneyAsString);
