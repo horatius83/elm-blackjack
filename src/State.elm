@@ -8,11 +8,6 @@ type alias Model =
     Game
 
 
-type CardRecipient
-    = Dealer
-    | Player
-
-
 type Msg
     = ShuffleDeck
     | ShuffleDiscard
@@ -31,6 +26,7 @@ type Msg
     | Hit Int
     | Stay Int
     | DoubleDown Int
+    | Surrender
     | DealDealerCards
     | Split Int
     | NewRound

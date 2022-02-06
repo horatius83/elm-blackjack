@@ -5,7 +5,7 @@ import Browser
 import Card exposing (Card, Rank(..), Suit(..), cardBackHex, getCardFrontHex, getColor)
 import Controls exposing (viewCard, viewInput, viewNumericInput, viewPayoutInput)
 import Deck exposing (Deck)
-import Game exposing (Game, GameState, default, defaultPlayer, getMaximumCardValue, new, HandResult)
+import Game exposing (Game, GameState, HandResult, default, defaultPlayer, getMaximumCardValue, new)
 import Hand exposing (Hand)
 import Html exposing (..)
 import Html.Attributes exposing (attribute)
@@ -143,6 +143,9 @@ update msg model =
         Split hand ->
             split model hand
 
+        Surrender ->
+            surrender model
+
         DealDealerCards ->
             dealDealerCards model
 
@@ -233,9 +236,14 @@ roundEnd model =
                     Game.Won
 
                 ( Just x, Just y ) ->
-                    if x > y then Game.Won
-                    else if x == y then Game.Pushed
-                    else Game.Lost
+                    if x > y then
+                        Game.Won
+
+                    else if x == y then
+                        Game.Pushed
+
+                    else
+                        Game.Lost
 
         playerWinnings =
             Array.map (\hand -> ( hand.bet, getMaximumCardValue hand.cards )) model.player.hands
@@ -243,9 +251,14 @@ roundEnd model =
                 |> Array.foldl
                     (\( bet, handResult ) acc ->
                         case handResult of
-                            Game.Won -> acc + bet
-                            Game.Lost -> acc - bet
-                            Game.Pushed -> acc
+                            Game.Won ->
+                                acc + bet
+
+                            Game.Lost ->
+                                acc - bet
+
+                            Game.Pushed ->
+                                acc
                     )
                     0
 
@@ -307,7 +320,9 @@ hit model hand =
 
                 newModel =
                     changePlayerHand model hand hitHand
-                newNewModel = { newModel | deck = cards }
+
+                newNewModel =
+                    { newModel | deck = cards }
 
                 isBusted =
                     newNewModel.player.hands
@@ -342,6 +357,7 @@ stay model hand =
     else
         ( newModel, Cmd.none )
 
+
 doubleDown : Model -> Int -> ( Model, Cmd Msg )
 doubleDown model hand =
     let
@@ -357,32 +373,65 @@ doubleDown model hand =
                 |> Tuple.first
                 |> (\newNewModel -> stay newNewModel hand)
 
-split : Model -> Int -> (Model, Cmd Msg)
+
+split : Model -> Int -> ( Model, Cmd Msg )
 split model handIndex =
     let
-        splitHand hand = case hand.cards of
-            card :: cards -> 
-                let
-                    handA = Hand.create [card] hand.bet
-                    handB = Hand.create cards hand.bet
-                in
-                Just (handA, handB)
-            [] -> Nothing
-        indexedList = Array.toIndexedList model.player.hands
-        appendHands (index, hand) newHands = if index == handIndex 
-            then case (splitHand hand) of
-                Just (handA, handB) -> List.append [handA, handB] newHands
-                Nothing -> hand :: newHands
+        splitHand hand =
+            case hand.cards of
+                card :: cards ->
+                    let
+                        handA =
+                            Hand.create [ card ] hand.bet
+
+                        handB =
+                            Hand.create cards hand.bet
+                    in
+                    Just ( handA, handB )
+
+                [] ->
+                    Nothing
+
+        indexedList =
+            Array.toIndexedList model.player.hands
+
+        appendHands ( index, hand ) newHands =
+            if index == handIndex then
+                case splitHand hand of
+                    Just ( handA, handB ) ->
+                        List.append [ handA, handB ] newHands
+
+                    Nothing ->
+                        hand :: newHands
+
             else
                 hand :: newHands
-        newHands2 = List.foldl appendHands [] indexedList
-            |> Array.fromList
-        oldPlayer = model.player
-        newPlayer = { oldPlayer | hands = newHands2 }
-        newModel = { model | player = newPlayer }
+
+        newHands2 =
+            List.foldl appendHands [] indexedList
+                |> Array.fromList
+
+        oldPlayer =
+            model.player
+
+        newPlayer =
+            { oldPlayer | hands = newHands2 }
+
+        newModel =
+            { model | player = newPlayer }
     in
-    (newModel, Cmd.none)
-    
+    ( newModel, Cmd.none )
+
+
+surrender : Model -> ( Model, Cmd Msg )
+surrender model =
+    let
+        newModel =
+            changePlayerHand model 0 (\h -> { h | surrendered = True })
+    in
+    stay newModel 0
+
+
 dealDealerCards : Model -> ( Model, Cmd Msg )
 dealDealerCards model =
     let
@@ -444,51 +493,68 @@ dealInitialCards model =
         ( [], _, _ ) ->
             ( model, ChangeGameState Game.RoundStart |> shuffleDiscard model )
 
-        ( x :: xs, [], [] ) ->
+        ( card :: cards, [], [] ) ->
             let
                 newDealer =
-                    { oldDealer | cards = [ x ] }
+                    { oldDealer | cards = [ card ] }
             in
-            dealInitialCards { model | dealer = newDealer, deck = xs }
+            dealInitialCards { model | dealer = newDealer, deck = cards }
 
-        ( x :: xs, y :: [], [] ) ->
+        ( card :: cards, dealerCard :: [], [] ) ->
             let
                 newHand =
-                    { hand | cards = [ x ] }
+                    { hand | cards = [ card ] }
 
                 newPlayer =
                     { oldPlayer | hands = Array.fromList [ newHand ] }
             in
-            dealInitialCards { model | player = newPlayer, deck = xs }
+            dealInitialCards { model | player = newPlayer, deck = cards }
 
-        ( x :: xs, y :: [], z :: [] ) ->
+        ( card :: cards, dealerCard :: [], playerCard :: [] ) ->
             let
                 newDealer =
-                    { oldDealer | cards = x :: [ y ] }
+                    { oldDealer | cards = card :: [ dealerCard ] }
             in
-            dealInitialCards { model | dealer = newDealer, deck = xs }
+            dealInitialCards { model | dealer = newDealer, deck = cards }
 
-        ( x :: xs, _, z :: [] ) ->
+        ( card :: cards, dealerCards, playerCard :: [] ) ->
             let
                 newHand =
-                    { hand | cards = x :: hand.cards }
+                    { hand | cards = card :: hand.cards }
 
                 newPlayer =
                     { oldPlayer | hands = Array.fromList [ newHand ] }
+
+                dealerHasBlackJack =
+                    case getMaximumCardValue dealerCards of
+                        Just 21 ->
+                            True
+
+                        _ ->
+                            False
             in
-            ( { model | player = newPlayer, deck = xs, state = Game.RoundStart }, Cmd.none )
+            if dealerHasBlackJack then
+                stay { model | player = newPlayer, deck = cards } 0
+
+            else
+                ( { model | player = newPlayer, deck = cards, state = Game.RoundStart }, Cmd.none )
 
         ( _, _, _ ) ->
             ( model, Cmd.none )
 
-newRound : Model -> (Model, Cmd Msg)
+
+newRound : Model -> ( Model, Cmd Msg )
 newRound model =
     let
-        isPlayerOutOfMoney = model.player.money <= 0
+        isPlayerOutOfMoney =
+            model.player.money <= 0
     in
-    if isPlayerOutOfMoney 
-        then changeGameState model Game.GameOver
-        else changeGameState model Game.PlaceBets
+    if isPlayerOutOfMoney then
+        changeGameState model Game.GameOver
+
+    else
+        changeGameState model Game.PlaceBets
+
 
 main : Program () Model Msg
 main =

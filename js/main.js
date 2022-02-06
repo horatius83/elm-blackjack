@@ -1858,7 +1858,7 @@ var _Platform_worker = F4(function(impl, flagDecoder, debugMetadata, args)
 		flagDecoder,
 		args,
 		impl.aF,
-		impl.aX,
+		impl.aY,
 		impl.aU,
 		function() { return function() {} }
 	);
@@ -3929,10 +3929,10 @@ var _Browser_element = _Debugger_element || F4(function(impl, flagDecoder, debug
 		flagDecoder,
 		args,
 		impl.aF,
-		impl.aX,
+		impl.aY,
 		impl.aU,
 		function(sendToApp, initialModel) {
-			var view = impl.aY;
+			var view = impl.aZ;
 			/**/
 			var domNode = args['node'];
 			//*/
@@ -3965,11 +3965,11 @@ var _Browser_document = _Debugger_document || F4(function(impl, flagDecoder, deb
 		flagDecoder,
 		args,
 		impl.aF,
-		impl.aX,
+		impl.aY,
 		impl.aU,
 		function(sendToApp, initialModel) {
 			var divertHrefToApp = impl.J && impl.J(sendToApp)
-			var view = impl.aY;
+			var view = impl.aZ;
 			var title = _VirtualDom_doc.title;
 			var bodyNode = _VirtualDom_doc.body;
 			var currNode = _VirtualDom_virtualize(bodyNode);
@@ -3982,7 +3982,7 @@ var _Browser_document = _Debugger_document || F4(function(impl, flagDecoder, deb
 				bodyNode = _VirtualDom_applyPatches(bodyNode, currNode, patches, sendToApp);
 				currNode = nextNode;
 				_VirtualDom_divertHrefToApp = 0;
-				(title !== doc.aW) && (_VirtualDom_doc.title = title = doc.aW);
+				(title !== doc.aX) && (_VirtualDom_doc.title = title = doc.aX);
 			});
 		}
 	);
@@ -4073,8 +4073,8 @@ function _Browser_application(impl)
 		{
 			return A3(impl.aF, flags, _Browser_getUrl(), key);
 		},
+		aZ: impl.aZ,
 		aY: impl.aY,
-		aX: impl.aX,
 		aU: impl.aU
 	});
 }
@@ -5546,13 +5546,13 @@ var $author$project$Main$init = function (_v0) {
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
-var $author$project$Hand$Hand = F5(
-	function (cards, bet, insurance, stayed, doubleDown) {
-		return {aq: bet, at: cards, az: doubleDown, aG: insurance, aT: stayed};
+var $author$project$Hand$Hand = F6(
+	function (cards, bet, insurance, stayed, doubleDown, surrendered) {
+		return {aq: bet, at: cards, az: doubleDown, aG: insurance, aT: stayed, aW: surrendered};
 	});
 var $author$project$Hand$create = F2(
 	function (deck, bet) {
-		return A5($author$project$Hand$Hand, deck, bet, false, false, false);
+		return A6($author$project$Hand$Hand, deck, bet, false, false, false, false);
 	});
 var $author$project$Main$defaultHand = function (model) {
 	return A2($author$project$Hand$create, _List_Nil, model.aR.aI);
@@ -5674,192 +5674,71 @@ var $author$project$Main$changeBet = F2(
 				{aP: newPlayer}),
 			$elm$core$Platform$Cmd$none);
 	});
-var $author$project$Game$PlaceBets = 1;
 var $author$project$State$ChangeGameState = function (a) {
 	return {$: 12, a: a};
 };
+var $author$project$State$DealDealerCards = {$: 18};
+var $author$project$Game$PlaceBets = 1;
+var $author$project$Game$RoundEnd = 4;
 var $author$project$Game$RoundStart = 2;
-var $author$project$State$ShuffleDiscardIntoDeck = F2(
-	function (a, b) {
-		return {$: 13, a: a, b: b};
-	});
-var $author$project$Main$shuffleDiscard = F2(
-	function (model, nextMsg) {
-		return A2(
-			$elm$random$Random$generate,
-			$author$project$State$ShuffleDiscardIntoDeck(nextMsg),
-			$elm_community$random_extra$Random$List$shuffle(model.ay));
-	});
-var $author$project$Main$dealInitialCards = function (model) {
-	dealInitialCards:
-	while (true) {
-		var oldPlayer = model.aP;
-		var oldDealer = model.av;
-		var hand = A2(
-			$elm$core$Maybe$withDefault,
-			$author$project$Main$defaultHand(model),
-			A2($elm$core$Array$get, 0, model.aP.d));
-		var _v0 = _Utils_Tuple3(model.aw, model.av.at, hand.at);
-		_v0$5:
-		while (true) {
-			if (!_v0.a.b) {
-				return _Utils_Tuple2(
-					model,
-					A2(
-						$author$project$Main$shuffleDiscard,
-						model,
-						$author$project$State$ChangeGameState(2)));
-			} else {
-				if (!_v0.c.b) {
-					if (!_v0.b.b) {
-						var _v1 = _v0.a;
-						var x = _v1.a;
-						var xs = _v1.b;
-						var newDealer = _Utils_update(
-							oldDealer,
-							{
-								at: _List_fromArray(
-									[x])
-							});
-						var $temp$model = _Utils_update(
-							model,
-							{av: newDealer, aw: xs});
-						model = $temp$model;
-						continue dealInitialCards;
-					} else {
-						if (!_v0.b.b.b) {
-							var _v2 = _v0.a;
-							var x = _v2.a;
-							var xs = _v2.b;
-							var _v3 = _v0.b;
-							var y = _v3.a;
-							var newHand = _Utils_update(
-								hand,
-								{
-									at: _List_fromArray(
-										[x])
-								});
-							var newPlayer = _Utils_update(
-								oldPlayer,
-								{
-									d: $elm$core$Array$fromList(
-										_List_fromArray(
-											[newHand]))
-								});
-							var $temp$model = _Utils_update(
-								model,
-								{aw: xs, aP: newPlayer});
-							model = $temp$model;
-							continue dealInitialCards;
-						} else {
-							break _v0$5;
-						}
-					}
-				} else {
-					if (!_v0.c.b.b) {
-						if (_v0.b.b && (!_v0.b.b.b)) {
-							var _v4 = _v0.a;
-							var x = _v4.a;
-							var xs = _v4.b;
-							var _v5 = _v0.b;
-							var y = _v5.a;
-							var _v6 = _v0.c;
-							var z = _v6.a;
-							var newDealer = _Utils_update(
-								oldDealer,
-								{
-									at: A2(
-										$elm$core$List$cons,
-										x,
-										_List_fromArray(
-											[y]))
-								});
-							var $temp$model = _Utils_update(
-								model,
-								{av: newDealer, aw: xs});
-							model = $temp$model;
-							continue dealInitialCards;
-						} else {
-							var _v7 = _v0.a;
-							var x = _v7.a;
-							var xs = _v7.b;
-							var _v8 = _v0.c;
-							var z = _v8.a;
-							var newHand = _Utils_update(
-								hand,
-								{
-									at: A2($elm$core$List$cons, x, hand.at)
-								});
-							var newPlayer = _Utils_update(
-								oldPlayer,
-								{
-									d: $elm$core$Array$fromList(
-										_List_fromArray(
-											[newHand]))
-								});
-							return _Utils_Tuple2(
-								_Utils_update(
-									model,
-									{aw: xs, aP: newPlayer, aS: 2}),
-								$elm$core$Platform$Cmd$none);
-						}
-					} else {
-						break _v0$5;
-					}
-				}
-			}
+var $elm$core$Elm$JsArray$unsafeSet = _JsArray_unsafeSet;
+var $elm$core$Array$setHelp = F4(
+	function (shift, index, value, tree) {
+		var pos = $elm$core$Array$bitMask & (index >>> shift);
+		var _v0 = A2($elm$core$Elm$JsArray$unsafeGet, pos, tree);
+		if (!_v0.$) {
+			var subTree = _v0.a;
+			var newSub = A4($elm$core$Array$setHelp, shift - $elm$core$Array$shiftStep, index, value, subTree);
+			return A3(
+				$elm$core$Elm$JsArray$unsafeSet,
+				pos,
+				$elm$core$Array$SubTree(newSub),
+				tree);
+		} else {
+			var values = _v0.a;
+			var newLeaf = A3($elm$core$Elm$JsArray$unsafeSet, $elm$core$Array$bitMask & index, value, values);
+			return A3(
+				$elm$core$Elm$JsArray$unsafeSet,
+				pos,
+				$elm$core$Array$Leaf(newLeaf),
+				tree);
 		}
-		return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
-	}
-};
-var $elm$core$Elm$JsArray$map = _JsArray_map;
-var $elm$core$Array$map = F2(
-	function (func, _v0) {
-		var len = _v0.a;
-		var startShift = _v0.b;
-		var tree = _v0.c;
-		var tail = _v0.d;
-		var helper = function (node) {
-			if (!node.$) {
-				var subTree = node.a;
-				return $elm$core$Array$SubTree(
-					A2($elm$core$Elm$JsArray$map, helper, subTree));
-			} else {
-				var values = node.a;
-				return $elm$core$Array$Leaf(
-					A2($elm$core$Elm$JsArray$map, func, values));
-			}
-		};
-		return A4(
+	});
+var $elm$core$Array$set = F3(
+	function (index, value, array) {
+		var len = array.a;
+		var startShift = array.b;
+		var tree = array.c;
+		var tail = array.d;
+		return ((index < 0) || (_Utils_cmp(index, len) > -1)) ? array : ((_Utils_cmp(
+			index,
+			$elm$core$Array$tailIndex(len)) > -1) ? A4(
 			$elm$core$Array$Array_elm_builtin,
 			len,
 			startShift,
-			A2($elm$core$Elm$JsArray$map, helper, tree),
-			A2($elm$core$Elm$JsArray$map, func, tail));
+			tree,
+			A3($elm$core$Elm$JsArray$unsafeSet, $elm$core$Array$bitMask & index, value, tail)) : A4(
+			$elm$core$Array$Array_elm_builtin,
+			len,
+			startShift,
+			A4($elm$core$Array$setHelp, startShift, index, value, tree),
+			tail));
 	});
-var $author$project$Game$Lost = 1;
-var $author$project$Game$Pushed = 2;
-var $author$project$Game$Won = 0;
-var $elm$core$Elm$JsArray$foldl = _JsArray_foldl;
-var $elm$core$Array$foldl = F3(
-	function (func, baseCase, _v0) {
-		var tree = _v0.c;
-		var tail = _v0.d;
-		var helper = F2(
-			function (node, acc) {
-				if (!node.$) {
-					var subTree = node.a;
-					return A3($elm$core$Elm$JsArray$foldl, helper, acc, subTree);
-				} else {
-					var values = node.a;
-					return A3($elm$core$Elm$JsArray$foldl, func, acc, values);
-				}
-			});
-		return A3(
-			$elm$core$Elm$JsArray$foldl,
-			func,
-			A3($elm$core$Elm$JsArray$foldl, helper, baseCase, tree),
-			tail);
+var $author$project$Main$changePlayerHand = F3(
+	function (model, hand, f) {
+		var oldPlayer = model.aP;
+		var oldHand = A2(
+			$elm$core$Maybe$withDefault,
+			$author$project$Main$defaultHand(model),
+			A2($elm$core$Array$get, hand, model.aP.d));
+		var newHand = f(oldHand);
+		var newHands = A3($elm$core$Array$set, hand, newHand, model.aP.d);
+		var newPlayer = _Utils_update(
+			oldPlayer,
+			{d: newHands});
+		return _Utils_update(
+			model,
+			{aP: newPlayer});
 	});
 var $elm$core$Set$Set_elm_builtin = $elm$core$Basics$identity;
 var $elm$core$Dict$RBEmpty_elm_builtin = {$: -2};
@@ -6020,6 +5899,27 @@ var $elm$core$Set$filter = F2(
 				}),
 			dict);
 	});
+var $elm$core$Elm$JsArray$foldl = _JsArray_foldl;
+var $elm$core$Array$foldl = F3(
+	function (func, baseCase, _v0) {
+		var tree = _v0.c;
+		var tail = _v0.d;
+		var helper = F2(
+			function (node, acc) {
+				if (!node.$) {
+					var subTree = node.a;
+					return A3($elm$core$Elm$JsArray$foldl, helper, acc, subTree);
+				} else {
+					var values = node.a;
+					return A3($elm$core$Elm$JsArray$foldl, func, acc, values);
+				}
+			});
+		return A3(
+			$elm$core$Elm$JsArray$foldl,
+			func,
+			A3($elm$core$Elm$JsArray$foldl, helper, baseCase, tree),
+			tail);
+	});
 var $elm$core$Set$empty = $elm$core$Dict$empty;
 var $elm$core$Set$insert = F2(
 	function (key, _v0) {
@@ -6127,6 +6027,34 @@ var $author$project$Game$getMaximumCardValue = function (deck) {
 				xs));
 	}
 };
+var $elm$core$Elm$JsArray$map = _JsArray_map;
+var $elm$core$Array$map = F2(
+	function (func, _v0) {
+		var len = _v0.a;
+		var startShift = _v0.b;
+		var tree = _v0.c;
+		var tail = _v0.d;
+		var helper = function (node) {
+			if (!node.$) {
+				var subTree = node.a;
+				return $elm$core$Array$SubTree(
+					A2($elm$core$Elm$JsArray$map, helper, subTree));
+			} else {
+				var values = node.a;
+				return $elm$core$Array$Leaf(
+					A2($elm$core$Elm$JsArray$map, func, values));
+			}
+		};
+		return A4(
+			$elm$core$Array$Array_elm_builtin,
+			len,
+			startShift,
+			A2($elm$core$Elm$JsArray$map, helper, tree),
+			A2($elm$core$Elm$JsArray$map, func, tail));
+	});
+var $author$project$Game$Lost = 1;
+var $author$project$Game$Pushed = 2;
+var $author$project$Game$Won = 0;
 var $author$project$Main$roundEnd = function (model) {
 	var oldPlayer = model.aP;
 	var maxDealerValue = $author$project$Game$getMaximumCardValue(model.av.at);
@@ -6195,6 +6123,17 @@ var $author$project$Main$roundEnd = function (model) {
 		{aP: newPlayer});
 	return _Utils_Tuple2(newModel, $elm$core$Platform$Cmd$none);
 };
+var $author$project$State$ShuffleDiscardIntoDeck = F2(
+	function (a, b) {
+		return {$: 13, a: a, b: b};
+	});
+var $author$project$Main$shuffleDiscard = F2(
+	function (model, nextMsg) {
+		return A2(
+			$elm$random$Random$generate,
+			$author$project$State$ShuffleDiscardIntoDeck(nextMsg),
+			$elm_community$random_extra$Random$List$shuffle(model.ay));
+	});
 var $author$project$Main$changeGameState = F2(
 	function (model, state) {
 		switch (state) {
@@ -6246,8 +6185,6 @@ var $author$project$Main$changeGameState = F2(
 					$elm$core$Platform$Cmd$none);
 		}
 	});
-var $author$project$State$DealDealerCards = {$: 17};
-var $author$project$Game$RoundEnd = 4;
 var $author$project$Main$dealDealerCards = function (model) {
 	dealDealerCards:
 	while (true) {
@@ -6266,25 +6203,25 @@ var $author$project$Main$dealDealerCards = function (model) {
 				}),
 			0,
 			validCardCounts);
-		var _v0 = _Utils_Tuple3(validCardCounts, maxCardCount < 17, model.aw);
-		_v0$0:
+		var _v10 = _Utils_Tuple3(validCardCounts, maxCardCount < 17, model.aw);
+		_v10$0:
 		while (true) {
-			if (_v0.b) {
-				if (!_v0.c.b) {
-					if (!_v0.a.b) {
-						break _v0$0;
+			if (_v10.b) {
+				if (!_v10.c.b) {
+					if (!_v10.a.b) {
+						break _v10$0;
 					} else {
 						return _Utils_Tuple2(
 							model,
 							A2($author$project$Main$shuffleDiscard, model, $author$project$State$DealDealerCards));
 					}
 				} else {
-					if (!_v0.a.b) {
-						break _v0$0;
+					if (!_v10.a.b) {
+						break _v10$0;
 					} else {
-						var _v1 = _v0.c;
-						var card = _v1.a;
-						var cards = _v1.b;
+						var _v11 = _v10.c;
+						var card = _v11.a;
+						var cards = _v11.b;
 						var oldDealer = model.av;
 						var newCards = A2($elm$core$List$cons, card, oldDealer.at);
 						var newDealer = _Utils_update(
@@ -6298,8 +6235,8 @@ var $author$project$Main$dealDealerCards = function (model) {
 					}
 				}
 			} else {
-				if (!_v0.a.b) {
-					break _v0$0;
+				if (!_v10.a.b) {
+					break _v10$0;
 				} else {
 					return A2($author$project$Main$changeGameState, model, 4);
 				}
@@ -6308,68 +6245,165 @@ var $author$project$Main$dealDealerCards = function (model) {
 		return A2($author$project$Main$changeGameState, model, 4);
 	}
 };
+var $author$project$Main$dealInitialCards = function (model) {
+	dealInitialCards:
+	while (true) {
+		var oldPlayer = model.aP;
+		var oldDealer = model.av;
+		var hand = A2(
+			$elm$core$Maybe$withDefault,
+			$author$project$Main$defaultHand(model),
+			A2($elm$core$Array$get, 0, model.aP.d));
+		var _v0 = _Utils_Tuple3(model.aw, model.av.at, hand.at);
+		_v0$5:
+		while (true) {
+			if (!_v0.a.b) {
+				return _Utils_Tuple2(
+					model,
+					A2(
+						$author$project$Main$shuffleDiscard,
+						model,
+						$author$project$State$ChangeGameState(2)));
+			} else {
+				if (!_v0.c.b) {
+					if (!_v0.b.b) {
+						var _v1 = _v0.a;
+						var card = _v1.a;
+						var cards = _v1.b;
+						var newDealer = _Utils_update(
+							oldDealer,
+							{
+								at: _List_fromArray(
+									[card])
+							});
+						var $temp$model = _Utils_update(
+							model,
+							{av: newDealer, aw: cards});
+						model = $temp$model;
+						continue dealInitialCards;
+					} else {
+						if (!_v0.b.b.b) {
+							var _v2 = _v0.a;
+							var card = _v2.a;
+							var cards = _v2.b;
+							var _v3 = _v0.b;
+							var dealerCard = _v3.a;
+							var newHand = _Utils_update(
+								hand,
+								{
+									at: _List_fromArray(
+										[card])
+								});
+							var newPlayer = _Utils_update(
+								oldPlayer,
+								{
+									d: $elm$core$Array$fromList(
+										_List_fromArray(
+											[newHand]))
+								});
+							var $temp$model = _Utils_update(
+								model,
+								{aw: cards, aP: newPlayer});
+							model = $temp$model;
+							continue dealInitialCards;
+						} else {
+							break _v0$5;
+						}
+					}
+				} else {
+					if (!_v0.c.b.b) {
+						if (_v0.b.b && (!_v0.b.b.b)) {
+							var _v4 = _v0.a;
+							var card = _v4.a;
+							var cards = _v4.b;
+							var _v5 = _v0.b;
+							var dealerCard = _v5.a;
+							var _v6 = _v0.c;
+							var playerCard = _v6.a;
+							var newDealer = _Utils_update(
+								oldDealer,
+								{
+									at: A2(
+										$elm$core$List$cons,
+										card,
+										_List_fromArray(
+											[dealerCard]))
+								});
+							var $temp$model = _Utils_update(
+								model,
+								{av: newDealer, aw: cards});
+							model = $temp$model;
+							continue dealInitialCards;
+						} else {
+							var _v7 = _v0.a;
+							var card = _v7.a;
+							var cards = _v7.b;
+							var dealerCards = _v0.b;
+							var _v8 = _v0.c;
+							var playerCard = _v8.a;
+							var newHand = _Utils_update(
+								hand,
+								{
+									at: A2($elm$core$List$cons, card, hand.at)
+								});
+							var newPlayer = _Utils_update(
+								oldPlayer,
+								{
+									d: $elm$core$Array$fromList(
+										_List_fromArray(
+											[newHand]))
+								});
+							var dealerHasBlackJack = function () {
+								var _v9 = $author$project$Game$getMaximumCardValue(dealerCards);
+								if ((!_v9.$) && (_v9.a === 21)) {
+									return true;
+								} else {
+									return false;
+								}
+							}();
+							return dealerHasBlackJack ? A2(
+								$author$project$Main$stay,
+								_Utils_update(
+									model,
+									{aw: cards, aP: newPlayer}),
+								0) : _Utils_Tuple2(
+								_Utils_update(
+									model,
+									{aw: cards, aP: newPlayer, aS: 2}),
+								$elm$core$Platform$Cmd$none);
+						}
+					} else {
+						break _v0$5;
+					}
+				}
+			}
+		}
+		return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+	}
+};
+var $author$project$Main$stay = F2(
+	function (model, hand) {
+		var stayHand = function (h) {
+			return _Utils_update(
+				h,
+				{aT: true});
+		};
+		var newModel = A3($author$project$Main$changePlayerHand, model, hand, stayHand);
+		var allStayed = A3(
+			$elm$core$Array$foldl,
+			$elm$core$Basics$and,
+			true,
+			A2(
+				$elm$core$Array$map,
+				function (x) {
+					return x.aT;
+				},
+				newModel.aP.d));
+		return allStayed ? $author$project$Main$dealDealerCards(newModel) : _Utils_Tuple2(newModel, $elm$core$Platform$Cmd$none);
+	});
 var $author$project$State$DoubleDown = function (a) {
 	return {$: 16, a: a};
 };
-var $elm$core$Elm$JsArray$unsafeSet = _JsArray_unsafeSet;
-var $elm$core$Array$setHelp = F4(
-	function (shift, index, value, tree) {
-		var pos = $elm$core$Array$bitMask & (index >>> shift);
-		var _v0 = A2($elm$core$Elm$JsArray$unsafeGet, pos, tree);
-		if (!_v0.$) {
-			var subTree = _v0.a;
-			var newSub = A4($elm$core$Array$setHelp, shift - $elm$core$Array$shiftStep, index, value, subTree);
-			return A3(
-				$elm$core$Elm$JsArray$unsafeSet,
-				pos,
-				$elm$core$Array$SubTree(newSub),
-				tree);
-		} else {
-			var values = _v0.a;
-			var newLeaf = A3($elm$core$Elm$JsArray$unsafeSet, $elm$core$Array$bitMask & index, value, values);
-			return A3(
-				$elm$core$Elm$JsArray$unsafeSet,
-				pos,
-				$elm$core$Array$Leaf(newLeaf),
-				tree);
-		}
-	});
-var $elm$core$Array$set = F3(
-	function (index, value, array) {
-		var len = array.a;
-		var startShift = array.b;
-		var tree = array.c;
-		var tail = array.d;
-		return ((index < 0) || (_Utils_cmp(index, len) > -1)) ? array : ((_Utils_cmp(
-			index,
-			$elm$core$Array$tailIndex(len)) > -1) ? A4(
-			$elm$core$Array$Array_elm_builtin,
-			len,
-			startShift,
-			tree,
-			A3($elm$core$Elm$JsArray$unsafeSet, $elm$core$Array$bitMask & index, value, tail)) : A4(
-			$elm$core$Array$Array_elm_builtin,
-			len,
-			startShift,
-			A4($elm$core$Array$setHelp, startShift, index, value, tree),
-			tail));
-	});
-var $author$project$Main$changePlayerHand = F3(
-	function (model, hand, f) {
-		var oldPlayer = model.aP;
-		var oldHand = A2(
-			$elm$core$Maybe$withDefault,
-			$author$project$Main$defaultHand(model),
-			A2($elm$core$Array$get, hand, model.aP.d));
-		var newHand = f(oldHand);
-		var newHands = A3($elm$core$Array$set, hand, newHand, model.aP.d);
-		var newPlayer = _Utils_update(
-			oldPlayer,
-			{d: newHands});
-		return _Utils_update(
-			model,
-			{aP: newPlayer});
-	});
 var $author$project$State$Hit = function (a) {
 	return {$: 14, a: a};
 };
@@ -6394,26 +6428,6 @@ var $author$project$Game$isBusted = function (deck) {
 		values);
 	return $elm$core$Set$isEmpty(valuesUnder22);
 };
-var $author$project$Main$stay = F2(
-	function (model, hand) {
-		var stayHand = function (h) {
-			return _Utils_update(
-				h,
-				{aT: true});
-		};
-		var newModel = A3($author$project$Main$changePlayerHand, model, hand, stayHand);
-		var allStayed = A3(
-			$elm$core$Array$foldl,
-			$elm$core$Basics$and,
-			true,
-			A2(
-				$elm$core$Array$map,
-				function (x) {
-					return x.aT;
-				},
-				newModel.aP.d));
-		return allStayed ? $author$project$Main$dealDealerCards(newModel) : _Utils_Tuple2(newModel, $elm$core$Platform$Cmd$none);
-	});
 var $author$project$Main$hit = F2(
 	function (model, hand) {
 		var _v0 = model.aw;
@@ -6554,6 +6568,18 @@ var $author$project$Main$split = F2(
 			{aP: newPlayer});
 		return _Utils_Tuple2(newModel, $elm$core$Platform$Cmd$none);
 	});
+var $author$project$Main$surrender = function (model) {
+	var newModel = A3(
+		$author$project$Main$changePlayerHand,
+		model,
+		0,
+		function (h) {
+			return _Utils_update(
+				h,
+				{aW: true});
+		});
+	return A2($author$project$Main$stay, newModel, 0);
+};
 var $author$project$Main$update = F2(
 	function (msg, model) {
 		update:
@@ -6728,10 +6754,12 @@ var $author$project$Main$update = F2(
 				case 16:
 					var hand = msg.a;
 					return A2($author$project$Main$doubleDown, model, hand);
-				case 18:
+				case 19:
 					var hand = msg.a;
 					return A2($author$project$Main$split, model, hand);
 				case 17:
+					return $author$project$Main$surrender(model);
+				case 18:
 					return $author$project$Main$dealDealerCards(model);
 				default:
 					return $author$project$Main$newRound(model);
@@ -7060,7 +7088,7 @@ var $author$project$Page$Round$viewDealer = function (cards) {
 			]));
 };
 var $author$project$State$Split = function (a) {
-	return {$: 18, a: a};
+	return {$: 19, a: a};
 };
 var $author$project$State$Stay = function (a) {
 	return {$: 15, a: a};
@@ -7362,7 +7390,7 @@ var $author$project$Page$Round$view = function (model) {
 				$elm$html$Html$text('Round')
 			]));
 };
-var $author$project$State$NewRound = {$: 19};
+var $author$project$State$NewRound = {$: 20};
 var $author$project$Page$RoundEnd$viewDealer = function (model) {
 	var maxScore = $author$project$Game$getMaximumCardValue(model.av.at);
 	var dealerStatus = function () {
@@ -7748,8 +7776,8 @@ var $author$project$Main$main = $elm$browser$Browser$element(
 		aU: function (_v0) {
 			return $elm$core$Platform$Sub$none;
 		},
-		aX: $author$project$Main$update,
-		aY: $author$project$Main$view
+		aY: $author$project$Main$update,
+		aZ: $author$project$Main$view
 	});
 _Platform_export({'Main':{'init':$author$project$Main$main(
 	$elm$json$Json$Decode$succeed(0))(0)}});}(this));

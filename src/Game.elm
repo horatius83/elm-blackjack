@@ -44,7 +44,8 @@ type alias Game =
     , rules : Rules
     }
 
-type HandResult 
+
+type HandResult
     = Won
     | Lost
     | Pushed

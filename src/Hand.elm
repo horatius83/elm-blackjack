@@ -9,9 +9,10 @@ type alias Hand =
     , insurance : Bool
     , stayed : Bool
     , doubleDown : Bool
+    , surrendered : Bool
     }
 
 
 create : Deck -> Int -> Hand
 create deck bet =
-    Hand deck bet False False False
+    Hand deck bet False False False False
