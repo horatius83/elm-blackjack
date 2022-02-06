@@ -1,30 +1,11 @@
 module Page.Rules exposing (..)
 
-import Controls exposing (viewInput, viewNumericInput, viewPayoutInput)
+import Controls exposing (viewInput, viewNumericInput, viewPayoutInput, viewSelect)
 import Game
-import Html exposing (Html, button, div, h1, label, option, select, text)
+import Html exposing (Html, button, div, h1, label, text)
 import Html.Attributes exposing (attribute, disabled)
 import Html.Events exposing (onClick)
 import State exposing (Model, Msg(..))
-
-
-viewSelect : String -> String -> List ( Msg, String ) -> Html Msg
-viewSelect id labelText options =
-    let
-        viewOption ( msg, txt ) =
-            option [ attribute "value" txt ] [ text txt ]
-
-        optionsAsHtml =
-            List.map viewOption options
-    in
-    div []
-        [ label [ attribute "for" id ] [ text labelText ]
-        , select
-            [ attribute "name" id
-            , attribute "id" id
-            ]
-            optionsAsHtml
-        ]
 
 
 view : Model -> Html Msg

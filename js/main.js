@@ -7701,7 +7701,7 @@ var $author$project$Controls$viewPayoutInput = F2(
 	});
 var $elm$html$Html$option = _VirtualDom_node('option');
 var $elm$html$Html$select = _VirtualDom_node('select');
-var $author$project$Page$Rules$viewSelect = F3(
+var $author$project$Controls$viewSelect = F3(
 	function (id, labelText, options) {
 		var viewOption = function (_v0) {
 			var msg = _v0.a;
@@ -7855,7 +7855,7 @@ var $author$project$Page$Rules$view = function (model) {
 							[
 								A7($author$project$Controls$viewNumericInput, 'Starting money: ', 'money', model.aQ.A, stepValue, $elm$core$Maybe$Nothing, stepValue, $author$project$State$ChangePlayerMoney)
 							])),
-						A3($author$project$Page$Rules$viewSelect, 'surrender-rules', 'Surrender', surrenderOptions),
+						A3($author$project$Controls$viewSelect, 'surrender-rules', 'Surrender', surrenderOptions),
 						A2(
 						$elm$html$Html$div,
 						_List_Nil,

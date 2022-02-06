@@ -4,13 +4,32 @@ import Array
 import Card exposing (Card, cardBackHex, getCardFrontHex, getColor)
 import Game
 import Hand exposing (Hand)
-import Html exposing (Html, button, div, h1, input, label, span, text)
+import Html exposing (Html, button, div, h1, input, label, option, select, span, text)
 import Html.Attributes exposing (attribute, disabled)
 import Html.Events exposing (onClick, onInput)
 import List
 import Player exposing (Player)
 import Set
 import State exposing (Model, Msg(..))
+
+
+viewSelect : String -> String -> List ( Msg, String ) -> Html Msg
+viewSelect id labelText options =
+    let
+        viewOption ( msg, txt ) =
+            option [ attribute "value" txt ] [ text txt ]
+
+        optionsAsHtml =
+            List.map viewOption options
+    in
+    div []
+        [ label [ attribute "for" id ] [ text labelText ]
+        , select
+            [ attribute "name" id
+            , attribute "id" id
+            ]
+            optionsAsHtml
+        ]
 
 
 viewInput : String -> String -> String -> String -> (String -> Msg) -> Html Msg
