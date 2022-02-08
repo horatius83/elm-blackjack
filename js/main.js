@@ -7106,13 +7106,6 @@ var $author$project$Page$Round$viewDealer = function (cards) {
 		_List_Nil,
 		_List_fromArray(
 			[
-				A2(
-				$elm$html$Html$h1,
-				_List_Nil,
-				_List_fromArray(
-					[
-						$elm$html$Html$text('Dealer')
-					])),
 				A2($elm$html$Html$span, _List_Nil, cardsAsHtml)
 			]));
 };
@@ -7506,13 +7499,6 @@ var $author$project$Page$Round$viewPlayer = function (model) {
 		_List_Nil,
 		_List_fromArray(
 			[
-				A2(
-				$elm$html$Html$h1,
-				_List_Nil,
-				_List_fromArray(
-					[
-						$elm$html$Html$text(model.aQ.aK)
-					])),
 				A2($elm$html$Html$div, _List_Nil, hands)
 			]));
 };

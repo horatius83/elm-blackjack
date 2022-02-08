@@ -8,7 +8,6 @@ import Html exposing (Html, button, div, h1, h2, span, text)
 import Html.Events exposing (onClick)
 import State exposing (Model, Msg)
 
-
 viewDealer : Model -> Html Msg
 viewDealer model =
     let
@@ -102,7 +101,6 @@ viewPlayerMoney model =
         [ h2 [] [ text model.player.name ]
         , moneyAsHtml
         ]
-
 
 view : Model -> Html Msg
 view model =

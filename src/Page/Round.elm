@@ -25,8 +25,7 @@ viewDealer cards =
                     [ viewCardBack ] ++ viewCards xs
     in
     div []
-        [ h1 [] [ text "Dealer" ]
-        , span [] cardsAsHtml
+        [ span [] cardsAsHtml
         ]
 
 
@@ -95,8 +94,7 @@ viewPlayer model =
             viewHands model
     in
     div []
-        [ h1 [] [ text model.player.name ]
-        , div [] hands
+        [ div [] hands
         ]
 
 

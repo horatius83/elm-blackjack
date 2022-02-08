@@ -1,12 +1,15 @@
 .card {
-    font-size: 5em;
+    font-size: 14em;
 }
 
 .red {
-    color: red;
+    color: #d90429;
 }
 
-html {
-    max-width: 70ch;
-    margin: auto;
+button {
+    margin-right: 0.5em;
+}
+
+:root {
+    --accent: #ef233c;
 }
