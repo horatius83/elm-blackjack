@@ -7823,11 +7823,9 @@ var $author$project$Controls$viewPayoutInput = F2(
 	});
 var $elm$html$Html$option = _VirtualDom_node('option');
 var $elm$html$Html$select = _VirtualDom_node('select');
-var $author$project$Controls$viewSelect = F3(
-	function (id, labelText, options) {
-		var viewOption = function (_v0) {
-			var msg = _v0.a;
-			var txt = _v0.b;
+var $author$project$Controls$viewSelect = F4(
+	function (id, labelText, options, stringToMsg) {
+		var viewOption = function (txt) {
 			return A2(
 				$elm$html$Html$option,
 				_List_fromArray(
@@ -7860,25 +7858,29 @@ var $author$project$Controls$viewSelect = F3(
 					_List_fromArray(
 						[
 							A2($elm$html$Html$Attributes$attribute, 'name', id),
-							A2($elm$html$Html$Attributes$attribute, 'id', id)
+							A2($elm$html$Html$Attributes$attribute, 'id', id),
+							$elm$html$Html$Events$onInput(stringToMsg)
 						]),
 					optionsAsHtml)
 				]));
 	});
 var $author$project$Page$Rules$view = function (model) {
 	var surrenderOptions = _List_fromArray(
-		[
-			_Utils_Tuple2(
-			$author$project$State$ChangeSurrenderRules(0),
-			'No'),
-			_Utils_Tuple2(
-			$author$project$State$ChangeSurrenderRules(1),
-			'Early'),
-			_Utils_Tuple2(
-			$author$project$State$ChangeSurrenderRules(2),
-			'Late')
-		]);
+		['No', 'Early', 'Late']);
 	var stepValue = $elm$core$Maybe$Just(10);
+	var optionToMsg = function (option) {
+		return $author$project$State$ChangeSurrenderRules(
+			function () {
+				switch (option) {
+					case 'Early':
+						return 1;
+					case 'Late':
+						return 2;
+					default:
+						return 0;
+				}
+			}());
+	};
 	return A2(
 		$elm$html$Html$div,
 		_List_Nil,
@@ -7977,7 +7979,7 @@ var $author$project$Page$Rules$view = function (model) {
 							[
 								A7($author$project$Controls$viewNumericInput, 'Starting money: ', 'money', model.aQ.A, stepValue, $elm$core$Maybe$Nothing, stepValue, $author$project$State$ChangePlayerMoney)
 							])),
-						A3($author$project$Controls$viewSelect, 'surrender-rules', 'Surrender', surrenderOptions),
+						A4($author$project$Controls$viewSelect, 'surrender-rules', 'Surrender', surrenderOptions, optionToMsg),
 						A2(
 						$elm$html$Html$div,
 						_List_Nil,

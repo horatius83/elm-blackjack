@@ -13,12 +13,11 @@ view model =
     let
         stepValue =
             Just 10
-
-        surrenderOptions =
-            [ ( ChangeSurrenderRules Game.No, "No" )
-            , ( ChangeSurrenderRules Game.Early, "Early" )
-            , ( ChangeSurrenderRules Game.Late, "Late" )
-            ]
+        optionToMsg option = ChangeSurrenderRules <| case option of 
+            "Early" -> Game.Early
+            "Late" -> Game.Late
+            _ -> Game.No
+        surrenderOptions = ["No", "Early", "Late"]
     in
     div []
         [ h1 [] [ text "Game Rules" ]
@@ -30,7 +29,7 @@ view model =
             , div [] [ viewPayoutInput model.rules.blackJackPayout.numerator model.rules.blackJackPayout.denominator ]
             , div [] [ viewNumericInput "Number of Splits: " "number_of_splits" model.rules.numberOfSplits (Just 1) Nothing Nothing ChangeNumberOfSplits ]
             , div [] [ viewNumericInput "Starting money: " "money" model.player.money stepValue Nothing stepValue ChangePlayerMoney ]
-            , viewSelect "surrender-rules" "Surrender" surrenderOptions
+            , viewSelect "surrender-rules" "Surrender" surrenderOptions optionToMsg
             , div [] [ button [ onClick (ChangeGameState Game.PlaceBets) ] [ text "Start Game" ] ]
             ]
         ]

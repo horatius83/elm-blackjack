@@ -5,7 +5,7 @@ import Browser
 import Card exposing (Card, Rank(..), Suit(..), cardBackHex, getCardFrontHex, getColor)
 import Controls exposing (viewCard, viewInput, viewNumericInput, viewPayoutInput)
 import Deck exposing (Deck)
-import Game exposing (Game, GameState, HandResult, default, defaultPlayer, getMaximumCardValue, new)
+import Game exposing (Game, GameState, default, defaultPlayer, getMaximumCardValue, new)
 import Hand exposing (Hand)
 import Html exposing (..)
 import Html.Attributes exposing (attribute)

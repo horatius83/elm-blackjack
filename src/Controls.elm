@@ -13,10 +13,10 @@ import Set
 import State exposing (Model, Msg(..))
 
 
-viewSelect : String -> String -> List ( Msg, String ) -> Html Msg
-viewSelect id labelText options =
+viewSelect : String -> String -> List String -> (String -> Msg) -> Html Msg
+viewSelect id labelText options stringToMsg =
     let
-        viewOption ( msg, txt ) =
+        viewOption txt  =
             option [ attribute "value" txt ] [ text txt ]
 
         optionsAsHtml =
@@ -27,6 +27,7 @@ viewSelect id labelText options =
         , select
             [ attribute "name" id
             , attribute "id" id
+            , onInput stringToMsg
             ]
             optionsAsHtml
         ]
