@@ -16,7 +16,7 @@ import State exposing (Model, Msg(..))
 viewSelect : String -> String -> List String -> (String -> Msg) -> Html Msg
 viewSelect id labelText options stringToMsg =
     let
-        viewOption txt  =
+        viewOption txt =
             option [ attribute "value" txt ] [ text txt ]
 
         optionsAsHtml =

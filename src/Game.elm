@@ -15,6 +15,7 @@ type SurrenderRules
 type alias BlackJackPayout =
     { numerator : Int, denominator : Int }
 
+
 type alias Rules =
     { minimumBet : Int
     , maximumBet : Int
@@ -24,6 +25,7 @@ type alias Rules =
     , surrenderRules : SurrenderRules
     }
 
+
 type GameState
     = Init
     | PlaceBets
@@ -31,6 +33,7 @@ type GameState
     | PlayerStart
     | RoundEnd
     | GameOver
+
 
 type alias Game =
     { dealer : { cards : Deck }
@@ -40,6 +43,7 @@ type alias Game =
     , state : GameState
     , rules : Rules
     }
+
 
 default : Rules
 default =

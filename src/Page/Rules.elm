@@ -3,7 +3,7 @@ module Page.Rules exposing (..)
 import Controls exposing (viewInput, viewNumericInput, viewPayoutInput, viewSelect)
 import Game
 import Html exposing (Html, button, div, h1, label, text)
-import Html.Attributes exposing (attribute, disabled, class)
+import Html.Attributes exposing (attribute, class, disabled)
 import Html.Events exposing (onClick)
 import State exposing (Model, Msg(..))
 
@@ -13,11 +13,21 @@ view model =
     let
         stepValue =
             Just 10
-        optionToMsg option = ChangeSurrenderRules <| case option of 
-            "Early" -> Game.Early
-            "Late" -> Game.Late
-            _ -> Game.No
-        surrenderOptions = ["No", "Early", "Late"]
+
+        optionToMsg option =
+            ChangeSurrenderRules <|
+                case option of
+                    "Early" ->
+                        Game.Early
+
+                    "Late" ->
+                        Game.Late
+
+                    _ ->
+                        Game.No
+
+        surrenderOptions =
+            [ "No", "Early", "Late" ]
     in
     div []
         [ h1 [] [ text "Game Rules" ]
@@ -30,7 +40,11 @@ view model =
             , div [] [ viewNumericInput "Number of Splits: " "number_of_splits" model.rules.numberOfSplits (Just 1) Nothing Nothing ChangeNumberOfSplits ]
             , div [] [ viewNumericInput "Starting money: " "money" model.player.money stepValue Nothing stepValue ChangePlayerMoney ]
             , viewSelect "surrender-rules" "Surrender" surrenderOptions optionToMsg
-            , div [] [ button [ onClick (ChangeGameState Game.PlaceBets) 
-                            ] [ text "Start Game" ] ]
+            , div []
+                [ button
+                    [ onClick (ChangeGameState Game.PlaceBets)
+                    ]
+                    [ text "Start Game" ]
+                ]
             ]
         ]
