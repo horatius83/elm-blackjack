@@ -5,6 +5,7 @@ import Controls exposing (viewCards)
 import Game exposing (Game, GameState, getMaximumCardValue)
 import Hand exposing (Hand)
 import Html exposing (Html, button, div, h1, h2, span, text)
+import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
 import State exposing (Model, Msg)
 
@@ -14,22 +15,8 @@ viewDealer model =
     let
         cards =
             viewCards model.dealer.cards
-
-        maxScore =
-            getMaximumCardValue model.dealer.cards
-
-        dealerStatus =
-            case maxScore of
-                Nothing ->
-                    "Dealer Busted"
-
-                Just score ->
-                    "Dealer has " ++ String.fromInt score
     in
-    div []
-        [ h1 [] [ text dealerStatus ]
-        , span [] cards
-        ]
+    div [ class "dealer-area" ] <| cards
 
 
 viewPlayerHand : Maybe Int -> ( Int, Hand ) -> Html Msg
@@ -40,38 +27,8 @@ viewPlayerHand dealerScore ( index, hand ) =
 
         indexAsString =
             String.fromInt (index + 1)
-
-        lostMessage =
-            "Hand # " ++ indexAsString ++ " LOST"
-
-        wonMessage =
-            "Hand # " ++ indexAsString ++ " WON"
-
-        handTitle =
-            case ( dealerScore, maximumPlayerValue ) of
-                ( Nothing, Nothing ) ->
-                    lostMessage
-
-                ( Just _, Nothing ) ->
-                    lostMessage
-
-                ( Nothing, Just _ ) ->
-                    wonMessage
-
-                ( Just dealer, Just player ) ->
-                    if player > dealer then
-                        wonMessage
-
-                    else
-                        lostMessage
-
-        handTitleHtml =
-            div [] [ text handTitle ]
-
-        html =
-            [ handTitleHtml ] ++ viewCards hand.cards
     in
-    div [] html
+    div [ class "player-area" ] <| viewCards hand.cards
 
 
 viewPlayerHands : Maybe Int -> Array Hand -> Html Msg

@@ -5,7 +5,7 @@ import Card exposing (Card, cardBackHex, getCardFrontHex, getColor)
 import Game
 import Hand exposing (Hand)
 import Html exposing (Html, button, div, h1, input, label, option, select, span, text)
-import Html.Attributes exposing (attribute, disabled)
+import Html.Attributes exposing (attribute, class, disabled)
 import Html.Events exposing (onClick, onInput)
 import List
 import Player exposing (Player)

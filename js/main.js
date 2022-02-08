@@ -6997,6 +6997,15 @@ var $author$project$Page$Bet$view = function (model) {
 					]))
 			]));
 };
+var $elm$json$Json$Encode$string = _Json_wrap;
+var $elm$html$Html$Attributes$stringProperty = F2(
+	function (key, string) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$string(string));
+	});
+var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
 var $author$project$Controls$viewCardBack = A2(
 	$elm$html$Html$span,
 	_List_fromArray(
@@ -7103,7 +7112,10 @@ var $author$project$Page$Round$viewDealer = function (cards) {
 	}();
 	return A2(
 		$elm$html$Html$div,
-		_List_Nil,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('dealer-area')
+			]),
 		_List_fromArray(
 			[
 				A2($elm$html$Html$span, _List_Nil, cardsAsHtml)
@@ -7387,7 +7399,10 @@ var $author$project$Page$Round$viewHand = F2(
 					$author$project$Game$getCardValues(hand.at))));
 		var controls = A2(
 			$elm$html$Html$div,
-			_List_Nil,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('player-controls')
+				]),
 			_List_fromArray(
 				[
 					A2(
@@ -7474,17 +7489,18 @@ var $author$project$Page$Round$viewHand = F2(
 							$elm$html$Html$text(valuesAsText)
 						]))
 				]));
-		var html = _Utils_ap(
-			$author$project$Controls$viewCards(hand.at),
-			_List_fromArray(
-				[controls]));
-		return A2(
+		var cards = A2(
 			$elm$html$Html$div,
 			_List_Nil,
+			$author$project$Controls$viewCards(hand.at));
+		return A2(
+			$elm$html$Html$div,
 			_List_fromArray(
 				[
-					A2($elm$html$Html$div, _List_Nil, html)
-				]));
+					$elm$html$Html$Attributes$class('player-area')
+				]),
+			_List_fromArray(
+				[cards, controls]));
 	});
 var $author$project$Page$Round$viewHands = function (model) {
 	return A2(
@@ -7589,30 +7605,14 @@ var $author$project$Page$Round$view = function (model) {
 };
 var $author$project$State$NewRound = {$: 22};
 var $author$project$Page$RoundEnd$viewDealer = function (model) {
-	var maxScore = $author$project$Game$getMaximumCardValue(model.av.at);
-	var dealerStatus = function () {
-		if (maxScore.$ === 1) {
-			return 'Dealer Busted';
-		} else {
-			var score = maxScore.a;
-			return 'Dealer has ' + $elm$core$String$fromInt(score);
-		}
-	}();
 	var cards = $author$project$Controls$viewCards(model.av.at);
 	return A2(
 		$elm$html$Html$div,
-		_List_Nil,
 		_List_fromArray(
 			[
-				A2(
-				$elm$html$Html$h1,
-				_List_Nil,
-				_List_fromArray(
-					[
-						$elm$html$Html$text(dealerStatus)
-					])),
-				A2($elm$html$Html$span, _List_Nil, cards)
-			]));
+				$elm$html$Html$Attributes$class('dealer-area')
+			]),
+		cards);
 };
 var $author$project$Page$RoundEnd$viewPlayerHand = F2(
 	function (dealerScore, _v0) {
@@ -7620,42 +7620,13 @@ var $author$project$Page$RoundEnd$viewPlayerHand = F2(
 		var hand = _v0.b;
 		var maximumPlayerValue = $author$project$Game$getMaximumCardValue(hand.at);
 		var indexAsString = $elm$core$String$fromInt(index + 1);
-		var lostMessage = 'Hand # ' + (indexAsString + ' LOST');
-		var wonMessage = 'Hand # ' + (indexAsString + ' WON');
-		var handTitle = function () {
-			var _v1 = _Utils_Tuple2(dealerScore, maximumPlayerValue);
-			if (_v1.a.$ === 1) {
-				if (_v1.b.$ === 1) {
-					var _v2 = _v1.a;
-					var _v3 = _v1.b;
-					return lostMessage;
-				} else {
-					var _v5 = _v1.a;
-					return wonMessage;
-				}
-			} else {
-				if (_v1.b.$ === 1) {
-					var _v4 = _v1.b;
-					return lostMessage;
-				} else {
-					var dealer = _v1.a.a;
-					var player = _v1.b.a;
-					return (_Utils_cmp(player, dealer) > 0) ? wonMessage : lostMessage;
-				}
-			}
-		}();
-		var handTitleHtml = A2(
+		return A2(
 			$elm$html$Html$div,
-			_List_Nil,
 			_List_fromArray(
 				[
-					$elm$html$Html$text(handTitle)
-				]));
-		var html = _Utils_ap(
-			_List_fromArray(
-				[handTitleHtml]),
+					$elm$html$Html$Attributes$class('player-area')
+				]),
 			$author$project$Controls$viewCards(hand.at));
-		return A2($elm$html$Html$div, _List_Nil, html);
 	});
 var $author$project$Page$RoundEnd$viewPlayerHands = F2(
 	function (dealerScore, hands) {

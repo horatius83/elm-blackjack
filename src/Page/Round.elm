@@ -6,7 +6,7 @@ import Controls exposing (viewCardBack, viewCards)
 import Game exposing (getCardValues)
 import Hand exposing (Hand)
 import Html exposing (Html, button, div, h1, h2, span, text)
-import Html.Attributes exposing (attribute, disabled)
+import Html.Attributes exposing (attribute, class, disabled)
 import Html.Events exposing (onClick, onInput)
 import Player exposing (Player)
 import Set
@@ -24,7 +24,7 @@ viewDealer cards =
                 _ :: xs ->
                     [ viewCardBack ] ++ viewCards xs
     in
-    div []
+    div [ class "dealer-area" ]
         [ span [] cardsAsHtml
         ]
 
@@ -39,7 +39,7 @@ viewHand model ( whichHand, hand ) =
                 |> String.join ", "
 
         controls =
-            div []
+            div [ class "player-controls" ]
                 [ span []
                     [ button
                         [ onClick (Hit whichHand)
@@ -75,10 +75,13 @@ viewHand model ( whichHand, hand ) =
                     ]
                 ]
 
-        html =
-            viewCards hand.cards ++ [ controls ]
+        cards =
+            div [] <| viewCards hand.cards
     in
-    div [] [ div [] html ]
+    div [ class "player-area" ]
+        [ cards
+        , controls
+        ]
 
 
 viewHands : Model -> List (Html Msg)

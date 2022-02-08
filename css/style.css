@@ -1,15 +1,47 @@
+/* https://coolors.co/palette/e63946-f1faee-a8dadc-457b9d-1d3557 */
+
 .card {
     font-size: 14em;
+    line-height: 1;
+    margin-bottom: 1.5em;
+}
+
+.player-controls {
+    margin-top: 1em;
 }
 
 .red {
-    color: #d90429;
+    color: #e63946;
+}
+
+.dealer-area {
+    background-color: #a8dadc;
+    padding-bottom: 1em;
+    padding-left: 1.75em;
+    border-radius: 0.5em;
+}
+
+.player-area {
+    background-color: #457b9d;
+    padding-bottom: 1em;
+    padding-left: 1.75em;
+    border-radius: 0.5em;
 }
 
 button {
     margin-right: 0.5em;
+    font-weight: bold;
 }
 
 :root {
-    --accent: #ef233c;
+    --accent: #e63946;
+    --bg: #a8dadc;
+    --text: #1d3557;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #1d3557;
+        --text: #f1faee;
+    }
 }
