@@ -25,7 +25,8 @@ viewDealer cards =
                     [ viewCardBack ] ++ viewCards xs
     in
     div [ class "dealer-area" ]
-        [ span [] cardsAsHtml
+        [ h2 [] [ text "Dealer" ]
+        , span [] cardsAsHtml
         ]
 
 

@@ -19,6 +19,7 @@
     padding-bottom: 1em;
     padding-left: 1.75em;
     border-radius: 0.5em;
+    color: #1d3557;
 }
 
 .player-area {
@@ -26,6 +27,14 @@
     padding-bottom: 1em;
     padding-left: 1.75em;
     border-radius: 0.5em;
+}
+
+.hand-won {
+    color: #457b9d;
+}
+
+.hand-lost {
+    color: #e63946;
 }
 
 button {

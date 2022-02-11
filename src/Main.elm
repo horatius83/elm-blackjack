@@ -245,54 +245,8 @@ roundEnd model =
         maxDealerValue =
             getMaximumCardValue model.dealer.cards
 
-        getBetResult hand =
-            let
-                maxHandValue =
-                    getMaximumCardValue hand.cards
-
-                surrenderBet =
-                    hand.bet
-                        |> toFloat
-                        |> (\x -> x / 2)
-                        |> round
-                        |> (\x -> x * -1)
-            in
-            case ( maxHandValue, maxDealerValue ) of
-                ( Nothing, Nothing ) ->
-                    -hand.bet
-
-                ( Nothing, Just dealerMaxvalue ) ->
-                    -hand.bet
-
-                ( Just playerMaxValue, Nothing ) ->
-                    if hand.surrendered then
-                        surrenderBet
-
-                    else
-                        hand.bet
-
-                ( Just playerMaxValue, Just dealerMaxValue ) ->
-                    case ( playerMaxValue > dealerMaxValue, playerMaxValue == dealerMaxValue, hand.surrendered ) of
-                        ( True, False, False ) ->
-                            hand.bet
-
-                        ( True, False, True ) ->
-                            surrenderBet
-
-                        ( False, True, False ) ->
-                            0
-
-                        ( False, True, True ) ->
-                            surrenderBet
-
-                        ( False, False, False ) ->
-                            -hand.bet
-
-                        ( False, False, True ) ->
-                            surrenderBet
-
-                        ( True, True, _ ) ->
-                            0
+        getBetResult =
+            Game.getBetResult maxDealerValue
 
         playerWinnings =
             Array.map getBetResult model.player.hands

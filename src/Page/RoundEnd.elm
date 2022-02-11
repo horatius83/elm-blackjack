@@ -2,12 +2,13 @@ module Page.RoundEnd exposing (view)
 
 import Array exposing (Array)
 import Controls exposing (viewCards)
-import Game exposing (Game, GameState, getMaximumCardValue)
+import Game exposing (Game, GameState, getBetResult, getMaximumCardValue)
 import Hand exposing (Hand)
 import Html exposing (Html, button, div, h1, h2, span, text)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
 import State exposing (Model, Msg)
+import Tuple exposing (second)
 
 
 viewDealer : Model -> Html Msg
@@ -44,21 +45,64 @@ viewPlayerHands dealerScore hands =
     div [] childElements
 
 
-viewPlayerMoney : Model -> Html Msg
-viewPlayerMoney model =
+viewResults : Model -> Html Msg
+viewResults model =
     let
-        moneyAsString =
-            String.fromInt model.player.money
+        getResultClass result =
+            if result > 0 then
+                "hand-won"
 
-        moneyAsHtml =
-            "$"
-                ++ moneyAsString
-                |> text
+            else if result == 0 then
+                "hand-pushed"
+
+            else
+                "hand-lost"
+
+        formatResult result =
+            let
+                resultAsString =
+                    String.fromInt <| abs result
+            in
+            if result > 0 then
+                "+$" ++ resultAsString
+
+            else if result == 0 then
+                " $" ++ resultAsString
+
+            else
+                "-$" ++ resultAsString
+
+        dealerScore =
+            getMaximumCardValue model.dealer.cards
+
+        handResults =
+            model.player.hands
+                |> Array.toList
+                |> List.indexedMap (\i h -> ( i, getBetResult dealerScore h ))
+
+        totalResult =
+            List.map second handResults
+                |> List.foldl (+) 0
+
+        results =
+            case handResults of
+                ( _, result ) :: [] ->
+                    [ span [ class (getResultClass result) ] [ text (formatResult result) ] ]
+
+                ( index, result ) :: otherResults ->
+                    List.map (\( i, r ) -> span [ class (getResultClass r) ] [ text (formatResult r) ]) handResults
+
+                [] ->
+                    []
+
+        playerMoney =
+            "$" ++ String.fromInt model.player.money
+
+        viewTotalResult =
+            span [ class (getResultClass totalResult) ] [ text (formatResult totalResult) ]
     in
-    div []
-        [ h2 [] [ text model.player.name ]
-        , moneyAsHtml
-        ]
+    div [ class "round-results" ]
+        ([ text playerMoney ] ++ results)
 
 
 view : Model -> Html Msg
@@ -74,6 +118,6 @@ view model =
     div []
         [ viewDealer model
         , viewPlayerHands dealerScore model.player.hands
-        , viewPlayerMoney model
+        , viewResults model
         , button [ onClick State.NewRound ] [ text "New Round" ]
         ]

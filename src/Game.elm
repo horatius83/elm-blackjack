@@ -2,6 +2,7 @@ module Game exposing (..)
 
 import Card
 import Deck exposing (Deck)
+import Hand exposing (Hand)
 import Player exposing (Player)
 import Set exposing (Set)
 
@@ -119,3 +120,48 @@ isBusted deck =
             Set.filter (\x -> x < 22) values
     in
     Set.isEmpty valuesUnder22
+
+
+getSurrenderBet : Int -> Int
+getSurrenderBet bet =
+    bet
+        |> toFloat
+        |> (\x -> x / 2)
+        |> round
+        |> (\x -> x * -1)
+
+
+getBetResult : Maybe Int -> Hand -> Int
+getBetResult dealerHandValue hand =
+    let
+        playerHandValue =
+            getMaximumCardValue hand.cards
+
+        surrenderBet =
+            getSurrenderBet hand.bet
+    in
+    case ( playerHandValue, dealerHandValue, hand.surrendered ) of
+        ( Nothing, Nothing, _ ) ->
+            -hand.bet
+
+        ( Nothing, Just dhv, _ ) ->
+            -hand.bet
+
+        ( Just phv, Nothing, True ) ->
+            surrenderBet
+
+        ( Just phv, Nothing, False ) ->
+            -hand.bet
+
+        ( Just phv, Just dhv, True ) ->
+            surrenderBet
+
+        ( Just phv, Just dhv, False ) ->
+            if phv > dhv then
+                hand.bet
+
+            else if phv == dhv then
+                0
+
+            else
+                -hand.bet
