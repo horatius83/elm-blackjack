@@ -6086,7 +6086,7 @@ var $author$project$Game$getBetResult = F2(
 				} else {
 					var phv = _v0.a.a;
 					var _v5 = _v0.b;
-					return -hand.v;
+					return hand.v;
 				}
 			} else {
 				if (_v0.c) {
@@ -7136,8 +7136,8 @@ var $elm$core$Maybe$map = F2(
 			return $elm$core$Maybe$Nothing;
 		}
 	});
-var $elm$core$Maybe$map2 = F3(
-	function (func, ma, mb) {
+var $elm$core$Maybe$map3 = F4(
+	function (func, ma, mb, mc) {
 		if (ma.$ === 1) {
 			return $elm$core$Maybe$Nothing;
 		} else {
@@ -7146,8 +7146,13 @@ var $elm$core$Maybe$map2 = F3(
 				return $elm$core$Maybe$Nothing;
 			} else {
 				var b = mb.a;
-				return $elm$core$Maybe$Just(
-					A2(func, a, b));
+				if (mc.$ === 1) {
+					return $elm$core$Maybe$Nothing;
+				} else {
+					var c = mc.a;
+					return $elm$core$Maybe$Just(
+						A3(func, a, b, c));
+				}
 			}
 		}
 	});
@@ -7166,7 +7171,21 @@ var $author$project$Page$Round$cannotDoubleDown = F2(
 				return $author$project$Game$isBusted(h.P);
 			},
 			playerHand);
-		var _v0 = A3($elm$core$Maybe$map2, $elm$core$Basics$or, notEnoughMoney, handIsBusted);
+		var alreadyDoubledDown = A2(
+			$elm$core$Maybe$map,
+			function (h) {
+				return h.az;
+			},
+			playerHand);
+		var _v0 = A4(
+			$elm$core$Maybe$map3,
+			F3(
+				function (x, y, z) {
+					return x || (y || z);
+				}),
+			notEnoughMoney,
+			handIsBusted,
+			alreadyDoubledDown);
 		if (!_v0.$) {
 			var x = _v0.a;
 			return x;
@@ -7201,6 +7220,21 @@ var $author$project$Page$Round$cannotHit = F2(
 				var x = _v0.a.a;
 				var y = _v0.b.a;
 				return x || y;
+			}
+		}
+	});
+var $elm$core$Maybe$map2 = F3(
+	function (func, ma, mb) {
+		if (ma.$ === 1) {
+			return $elm$core$Maybe$Nothing;
+		} else {
+			var a = ma.a;
+			if (mb.$ === 1) {
+				return $elm$core$Maybe$Nothing;
+			} else {
+				var b = mb.a;
+				return $elm$core$Maybe$Just(
+					A2(func, a, b));
 			}
 		}
 	});
@@ -7515,6 +7549,8 @@ var $author$project$Page$Round$viewPlayer = function (model) {
 				A2($elm$html$Html$div, _List_Nil, hands)
 			]));
 };
+var $elm$html$Html$details = _VirtualDom_node('details');
+var $elm$html$Html$summary = _VirtualDom_node('summary');
 var $author$project$Page$Round$viewRules = function (model) {
 	var surrenderRulesAsString = function () {
 		var _v0 = model.aS.aW;
@@ -7529,12 +7565,12 @@ var $author$project$Page$Round$viewRules = function (model) {
 	}();
 	var blackjackPayoutAsString = $elm$core$String$fromInt(model.aS.as.aM) + (' : ' + $elm$core$String$fromInt(model.aS.as.ax));
 	return A2(
-		$elm$html$Html$div,
+		$elm$html$Html$details,
 		_List_Nil,
 		_List_fromArray(
 			[
 				A2(
-				$elm$html$Html$h2,
+				$elm$html$Html$summary,
 				_List_Nil,
 				_List_fromArray(
 					[

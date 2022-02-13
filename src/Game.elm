@@ -151,7 +151,7 @@ getBetResult dealerHandValue hand =
             surrenderBet
 
         ( Just phv, Nothing, False ) ->
-            -hand.bet
+            hand.bet
 
         ( Just phv, Just dhv, True ) ->
             surrenderBet
