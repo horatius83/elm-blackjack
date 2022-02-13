@@ -203,31 +203,10 @@ changeGameState model state =
     case state of
         Game.PlaceBets ->
             let
-                playerCards =
-                    model.player.hands
-                        |> Array.map (\x -> x.cards)
-                        |> Array.toList
-                        |> List.foldl (++) []
-
-                newDiscard =
-                    playerCards ++ model.dealer.cards ++ model.discard
-
-                hand =
-                    Hand.create [] model.rules.minimumBet
-
-                oldPlayer =
-                    model.player
-
-                newPlayer =
-                    { oldPlayer | hands = Array.fromList [ hand ] }
-
-                oldDealer =
-                    model.dealer
-
-                newDealer =
-                    { oldDealer | cards = [] }
+                newModel =
+                    cleanup model
             in
-            ( { model | state = Game.PlaceBets, player = newPlayer, discard = newDiscard, dealer = newDealer }, Cmd.none )
+            changeGameState newModel Game.RoundStart
 
         Game.RoundStart ->
             dealInitialCards model
@@ -237,6 +216,36 @@ changeGameState model state =
 
         _ ->
             ( { model | state = state }, Cmd.none )
+
+
+cleanup : Model -> Model
+cleanup model =
+    let
+        playerCards =
+            model.player.hands
+                |> Array.map (\h -> h.cards)
+                |> Array.toList
+                |> List.concat
+
+        newDiscard =
+            playerCards ++ model.dealer.cards ++ model.discard
+
+        hand =
+            Hand.create [] model.rules.minimumBet
+
+        oldPlayer =
+            model.player
+
+        newPlayer =
+            { oldPlayer | hands = Array.fromList [ hand ] }
+
+        oldDealer =
+            model.dealer
+
+        newDealer =
+            { oldDealer | cards = [] }
+    in
+    { model | player = newPlayer, discard = newDiscard, dealer = newDealer }
 
 
 roundEnd : Model -> ( Model, Cmd Msg )
@@ -469,6 +478,15 @@ dealDealerCards model =
 dealInitialCards : Model -> ( Model, Cmd Msg )
 dealInitialCards model =
     let
+        playerCards =
+            model.player.hands
+                |> Array.map (\x -> x.cards)
+                |> Array.toList
+                |> List.foldl (++) []
+
+        newDiscard =
+            playerCards ++ model.dealer.cards ++ model.discard
+
         hand =
             Array.get 0 model.player.hands
                 |> Maybe.withDefault (defaultHand model)

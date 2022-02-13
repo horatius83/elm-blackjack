@@ -1,5 +1,6 @@
 module Page.Rules exposing (..)
 
+import Array
 import Controls exposing (viewInput, viewNumericInput, viewPayoutInput, viewSelect)
 import Game
 import Html exposing (Html, button, div, h1, label, text)
@@ -28,6 +29,25 @@ view model =
 
         surrenderOptions =
             [ "No", "Early", "Late" ]
+
+        minimumBet =
+            Just model.rules.minimumBet
+
+        maximumBet =
+            Just <|
+                if model.rules.maximumBet < model.player.money then
+                    model.rules.maximumBet
+
+                else
+                    model.player.money
+
+        bet =
+            case Array.toList model.player.hands of
+                hand :: hands ->
+                    hand.bet
+
+                _ ->
+                    model.rules.minimumBet
     in
     div []
         [ h1 [] [ text "Game Rules" ]
@@ -40,9 +60,10 @@ view model =
             , div [] [ viewNumericInput "Number of Splits: " "number_of_splits" model.rules.numberOfSplits (Just 1) Nothing Nothing ChangeNumberOfSplits ]
             , div [] [ viewNumericInput "Starting money: " "money" model.player.money stepValue Nothing stepValue ChangePlayerMoney ]
             , viewSelect "surrender-rules" "Surrender" surrenderOptions optionToMsg
+            , div [] [ viewNumericInput "Bet: " "bet" bet minimumBet maximumBet stepValue ChangeBet ]
             , div []
                 [ button
-                    [ onClick (ChangeGameState Game.PlaceBets)
+                    [ onClick (ChangeGameState Game.RoundStart)
                     ]
                     [ text "Start Game" ]
                 ]

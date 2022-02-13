@@ -1,13 +1,13 @@
 module Page.RoundEnd exposing (view)
 
 import Array exposing (Array)
-import Controls exposing (viewCards)
+import Controls exposing (viewCards, viewNumericInput)
 import Game exposing (Game, GameState, getBetResult, getMaximumCardValue)
 import Hand exposing (Hand)
 import Html exposing (Html, button, div, h1, h2, span, text)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
-import State exposing (Model, Msg)
+import State exposing (Model, Msg(..))
 import Tuple exposing (second)
 
 
@@ -114,10 +114,33 @@ view model =
         hands =
             model.player.hands
                 |> viewPlayerHands dealerScore
+
+        stepValue =
+            Just 10
+
+        minimumBet =
+            Just model.rules.minimumBet
+
+        maximumBet =
+            Just <|
+                if model.rules.maximumBet < model.player.money then
+                    model.rules.maximumBet
+
+                else
+                    model.player.money
+
+        bet =
+            case Array.toList model.player.hands of
+                h :: _ ->
+                    h.bet
+
+                _ ->
+                    model.rules.minimumBet
     in
     div []
         [ viewDealer model
         , viewPlayerHands dealerScore model.player.hands
         , viewResults model
+        , div [] [ viewNumericInput "Bet: " "bet" bet minimumBet maximumBet stepValue ChangeBet ]
         , button [ onClick State.NewRound ] [ text "New Round" ]
         ]

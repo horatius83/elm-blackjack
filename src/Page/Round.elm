@@ -5,7 +5,7 @@ import Card exposing (Card)
 import Controls exposing (viewCardBack, viewCards)
 import Game exposing (getCardValues)
 import Hand exposing (Hand)
-import Html exposing (Html, button, div, h1, h2, span, text, details, summary)
+import Html exposing (Html, button, details, div, h1, h2, span, summary, text)
 import Html.Attributes exposing (attribute, class, disabled)
 import Html.Events exposing (onClick, onInput)
 import Player exposing (Player)
@@ -120,14 +120,14 @@ viewRules model =
                     "Late"
     in
     details []
-        [summary [] [text "Rules" ]
+        [ summary [] [ text "Rules" ]
         , div [] [ text ("Minimum Bet: " ++ String.fromInt model.rules.minimumBet) ]
         , div [] [ text ("Maximum Bet: " ++ String.fromInt model.rules.maximumBet) ]
         , div [] [ text ("Blackjack Payout: " ++ blackjackPayoutAsString) ]
         , div [] [ text ("Max Number of Splits: " ++ String.fromInt model.rules.numberOfSplits) ]
         , div [] [ text ("Numer of Decks: " ++ String.fromInt model.rules.numberOfDecks) ]
         , div [] [ text ("Surrender Rules: " ++ surrenderRulesAsString) ]
-        ] 
+        ]
 
 
 view : Model -> Html Msg
@@ -164,6 +164,7 @@ cannotSurrender model =
         ( _, _, _ ) ->
             True
 
+
 cannotDoubleDown : Player -> Int -> Bool
 cannotDoubleDown player handIndex =
     let
@@ -177,7 +178,8 @@ cannotDoubleDown player handIndex =
         handIsBusted =
             Maybe.map (\h -> Game.isBusted h.cards) playerHand
 
-        alreadyDoubledDown = Maybe.map (\h -> h.doubleDown) playerHand
+        alreadyDoubledDown =
+            Maybe.map (\h -> h.doubleDown) playerHand
     in
     case Maybe.map3 (\x y z -> x || y || z) notEnoughMoney handIsBusted alreadyDoubledDown of
         Just x ->
