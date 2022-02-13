@@ -122,46 +122,76 @@ isBusted deck =
     Set.isEmpty valuesUnder22
 
 
-getSurrenderBet : Int -> Int
-getSurrenderBet bet =
+getHalfBet : Int -> Int
+getHalfBet bet =
     bet
         |> toFloat
         |> (\x -> x / 2)
         |> round
-        |> (\x -> x * -1)
 
 
-getBetResult : Maybe Int -> Hand -> Int
-getBetResult dealerHandValue hand =
+getBetResult : Deck -> Hand -> Int
+getBetResult dealerHand hand =
     let
+        dealerHandValue =
+            getMaximumCardValue dealerHand
+
         playerHandValue =
             getMaximumCardValue hand.cards
 
-        surrenderBet =
-            getSurrenderBet hand.bet
+        halfBet =
+            getHalfBet hand.bet
+
+        doesDealerHaveBlackJack =
+            let
+                hasTwoCards =
+                    List.length dealerHand == 2
+
+                hasAnAce =
+                    List.foldl (\c x -> x || c.rank == Card.Ace) False dealerHand
+
+                hasATenCard =
+                    List.map Card.values dealerHand
+                        |> List.map (\vs -> List.foldl (\cardValue x -> x || cardValue == 10) False vs)
+                        |> List.foldl (||) False
+            in
+            hasTwoCards && hasAnAce && hasATenCard
+
+        insuranceBet =
+            case ( hand.insurance, doesDealerHaveBlackJack ) of
+                ( False, _ ) ->
+                    0
+
+                ( True, True ) ->
+                    hand.bet
+
+                ( True, False ) ->
+                    -halfBet
     in
-    case ( playerHandValue, dealerHandValue, hand.surrendered ) of
-        ( Nothing, Nothing, _ ) ->
-            -hand.bet
+    insuranceBet
+        + (case ( playerHandValue, dealerHandValue, hand.surrendered ) of
+            ( Nothing, Nothing, _ ) ->
+                -hand.bet
 
-        ( Nothing, Just dhv, _ ) ->
-            -hand.bet
+            ( Nothing, Just dhv, _ ) ->
+                -hand.bet
 
-        ( Just phv, Nothing, True ) ->
-            surrenderBet
+            ( Just phv, Nothing, True ) ->
+                -halfBet
 
-        ( Just phv, Nothing, False ) ->
-            hand.bet
-
-        ( Just phv, Just dhv, True ) ->
-            surrenderBet
-
-        ( Just phv, Just dhv, False ) ->
-            if phv > dhv then
+            ( Just phv, Nothing, False ) ->
                 hand.bet
 
-            else if phv == dhv then
-                0
+            ( Just phv, Just dhv, True ) ->
+                -halfBet
 
-            else
-                -hand.bet
+            ( Just phv, Just dhv, False ) ->
+                if phv > dhv then
+                    hand.bet
+
+                else if phv == dhv then
+                    0
+
+                else
+                    -hand.bet
+          )

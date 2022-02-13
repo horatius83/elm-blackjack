@@ -247,11 +247,8 @@ cleanup model =
 roundEnd : Model -> ( Model, Cmd Msg )
 roundEnd model =
     let
-        maxDealerValue =
-            getMaximumCardValue model.dealer.cards
-
         getBetResult =
-            Game.getBetResult maxDealerValue
+            Game.getBetResult model.dealer.cards
 
         playerWinnings =
             Array.map getBetResult model.player.hands

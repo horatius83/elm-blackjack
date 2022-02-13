@@ -5548,7 +5548,7 @@ var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
 var $author$project$Hand$Hand = F6(
 	function (cards, bet, insurance, stayed, doubleDown, surrendered) {
-		return {v: bet, P: cards, az: doubleDown, aG: insurance, aU: stayed, aX: surrendered};
+		return {r: bet, P: cards, az: doubleDown, aG: insurance, aU: stayed, aX: surrendered};
 	});
 var $author$project$Hand$create = F2(
 	function (deck, bet) {
@@ -5660,7 +5660,7 @@ var $author$project$Main$changeBet = F2(
 		var betAsInt = A2(sToI, $author$project$Game$default.aJ, betAsString);
 		var newHand = _Utils_update(
 			oldHand,
-			{v: betAsInt});
+			{r: betAsInt});
 		var newPlayer = _Utils_update(
 			oldPlayer,
 			{
@@ -6081,58 +6081,98 @@ var $author$project$Game$getMaximumCardValue = function (deck) {
 	}
 };
 var $elm$core$Basics$round = _Basics_round;
-var $author$project$Game$getSurrenderBet = function (bet) {
-	return function (x) {
-		return x * (-1);
-	}(
-		$elm$core$Basics$round(
-			function (x) {
-				return x / 2;
-			}(bet)));
+var $author$project$Game$getHalfBet = function (bet) {
+	return $elm$core$Basics$round(
+		function (x) {
+			return x / 2;
+		}(bet));
 };
 var $author$project$Game$getBetResult = F2(
-	function (dealerHandValue, hand) {
-		var surrenderBet = $author$project$Game$getSurrenderBet(hand.v);
+	function (dealerHand, hand) {
 		var playerHandValue = $author$project$Game$getMaximumCardValue(hand.P);
-		var _v0 = _Utils_Tuple3(playerHandValue, dealerHandValue, hand.aX);
-		if (_v0.a.$ === 1) {
-			if (_v0.b.$ === 1) {
-				var _v1 = _v0.a;
-				var _v2 = _v0.b;
-				return -hand.v;
+		var halfBet = $author$project$Game$getHalfBet(hand.r);
+		var doesDealerHaveBlackJack = function () {
+			var hasTwoCards = $elm$core$List$length(dealerHand) === 2;
+			var hasAnAce = A3(
+				$elm$core$List$foldl,
+				F2(
+					function (c, x) {
+						return x || (c.J === 12);
+					}),
+				false,
+				dealerHand);
+			var hasATenCard = A3(
+				$elm$core$List$foldl,
+				$elm$core$Basics$or,
+				false,
+				A2(
+					$elm$core$List$map,
+					function (vs) {
+						return A3(
+							$elm$core$List$foldl,
+							F2(
+								function (cardValue, x) {
+									return x || (cardValue === 10);
+								}),
+							false,
+							vs);
+					},
+					A2($elm$core$List$map, $author$project$Card$values, dealerHand)));
+			return hasTwoCards && (hasAnAce && hasATenCard);
+		}();
+		var insuranceBet = function () {
+			var _v6 = _Utils_Tuple2(hand.aG, doesDealerHaveBlackJack);
+			if (!_v6.a) {
+				return 0;
 			} else {
-				var _v3 = _v0.a;
-				var dhv = _v0.b.a;
-				return -hand.v;
-			}
-		} else {
-			if (_v0.b.$ === 1) {
-				if (_v0.c) {
-					var phv = _v0.a.a;
-					var _v4 = _v0.b;
-					return surrenderBet;
+				if (_v6.b) {
+					return hand.r;
 				} else {
-					var phv = _v0.a.a;
-					var _v5 = _v0.b;
-					return hand.v;
+					return -halfBet;
+				}
+			}
+		}();
+		var dealerHandValue = $author$project$Game$getMaximumCardValue(dealerHand);
+		return insuranceBet + function () {
+			var _v0 = _Utils_Tuple3(playerHandValue, dealerHandValue, hand.aX);
+			if (_v0.a.$ === 1) {
+				if (_v0.b.$ === 1) {
+					var _v1 = _v0.a;
+					var _v2 = _v0.b;
+					return -hand.r;
+				} else {
+					var _v3 = _v0.a;
+					var dhv = _v0.b.a;
+					return -hand.r;
 				}
 			} else {
-				if (_v0.c) {
-					var phv = _v0.a.a;
-					var dhv = _v0.b.a;
-					return surrenderBet;
+				if (_v0.b.$ === 1) {
+					if (_v0.c) {
+						var phv = _v0.a.a;
+						var _v4 = _v0.b;
+						return -halfBet;
+					} else {
+						var phv = _v0.a.a;
+						var _v5 = _v0.b;
+						return hand.r;
+					}
 				} else {
-					var phv = _v0.a.a;
-					var dhv = _v0.b.a;
-					return (_Utils_cmp(phv, dhv) > 0) ? hand.v : (_Utils_eq(phv, dhv) ? 0 : (-hand.v));
+					if (_v0.c) {
+						var phv = _v0.a.a;
+						var dhv = _v0.b.a;
+						return -halfBet;
+					} else {
+						var phv = _v0.a.a;
+						var dhv = _v0.b.a;
+						return (_Utils_cmp(phv, dhv) > 0) ? hand.r : (_Utils_eq(phv, dhv) ? 0 : (-hand.r));
+					}
 				}
 			}
-		}
+		}();
 	});
 var $author$project$Main$roundEnd = function (model) {
 	var oldPlayer = model.aQ;
-	var maxDealerValue = $author$project$Game$getMaximumCardValue(model.av.P);
-	var getBetResult = $author$project$Game$getBetResult(maxDealerValue);
+	var getBetResult = $author$project$Game$getBetResult(model.av.P);
 	var playerWinnings = A3(
 		$elm$core$Array$foldl,
 		$elm$core$Basics$add,
@@ -6486,7 +6526,7 @@ var $author$project$Main$doubleDown = F2(
 			function (h) {
 				return _Utils_update(
 					h,
-					{v: h.v * 2, az: true});
+					{r: h.r * 2, az: true});
 			});
 		var _v0 = model.aw;
 		if (!_v0.b) {
@@ -6547,12 +6587,12 @@ var $author$project$Main$split = F2(
 			if (_v3.b) {
 				var card = _v3.a;
 				var cards = _v3.b;
-				var handB = A2($author$project$Hand$create, cards, hand.v);
+				var handB = A2($author$project$Hand$create, cards, hand.r);
 				var handA = A2(
 					$author$project$Hand$create,
 					_List_fromArray(
 						[card]),
-					hand.v);
+					hand.r);
 				return $elm$core$Maybe$Just(
 					_Utils_Tuple2(handA, handB));
 			} else {
@@ -7036,7 +7076,7 @@ var $author$project$Page$Round$cannotDoubleDown = F2(
 		var notEnoughMoney = A2(
 			$elm$core$Maybe$map,
 			function (h) {
-				return _Utils_cmp(h.v * 2, player.B) > 0;
+				return _Utils_cmp(h.r * 2, player.B) > 0;
 			},
 			A2($elm$core$Array$get, handIndex, player.d));
 		var handIsBusted = A2(
@@ -7135,13 +7175,13 @@ var $author$project$Page$Round$cannotInsure = function (model) {
 		return $elm$core$Basics$round(
 			function (bet) {
 				return bet / 2;
-			}(h.v));
+			}(h.r));
 	};
 	var halfBet = A2($elm$core$Maybe$map, getHalfBet, hand);
 	var currentBet = A2(
 		$elm$core$Maybe$map,
 		function (h) {
-			return h.v;
+			return h.r;
 		},
 		hand);
 	var totalBet = A3(
@@ -7640,6 +7680,20 @@ var $elm$core$Basics$abs = function (n) {
 };
 var $author$project$Page$RoundEnd$viewResults = function (model) {
 	var playerMoney = '$' + $elm$core$String$fromInt(model.aQ.B);
+	var handResults = A2(
+		$elm$core$List$indexedMap,
+		F2(
+			function (i, h) {
+				return _Utils_Tuple2(
+					i,
+					A2($author$project$Game$getBetResult, model.av.P, h));
+			}),
+		$elm$core$Array$toList(model.aQ.d));
+	var totalResult = A3(
+		$elm$core$List$foldl,
+		$elm$core$Basics$add,
+		0,
+		A2($elm$core$List$map, $elm$core$Tuple$second, handResults));
 	var getResultClass = function (result) {
 		return (result > 0) ? 'hand-won' : ((!result) ? 'hand-pushed' : 'hand-lost');
 	};
@@ -7648,16 +7702,6 @@ var $author$project$Page$RoundEnd$viewResults = function (model) {
 			$elm$core$Basics$abs(result));
 		return (result > 0) ? ('+$' + resultAsString) : ((!result) ? (' $' + resultAsString) : ('-$' + resultAsString));
 	};
-	var dealerScore = $author$project$Game$getMaximumCardValue(model.av.P);
-	var handResults = A2(
-		$elm$core$List$indexedMap,
-		F2(
-			function (i, h) {
-				return _Utils_Tuple2(
-					i,
-					A2($author$project$Game$getBetResult, dealerScore, h));
-			}),
-		$elm$core$Array$toList(model.aQ.d));
 	var results = function () {
 		if (handResults.b) {
 			if (!handResults.b.b) {
@@ -7707,11 +7751,6 @@ var $author$project$Page$RoundEnd$viewResults = function (model) {
 			return _List_Nil;
 		}
 	}();
-	var totalResult = A3(
-		$elm$core$List$foldl,
-		$elm$core$Basics$add,
-		0,
-		A2($elm$core$List$map, $elm$core$Tuple$second, handResults));
 	var viewTotalResult = A2(
 		$elm$html$Html$span,
 		_List_fromArray(
@@ -7748,7 +7787,7 @@ var $author$project$Page$RoundEnd$view = function (model) {
 		var _v0 = $elm$core$Array$toList(model.aQ.d);
 		if (_v0.b) {
 			var h = _v0.a;
-			return h.v;
+			return h.r;
 		} else {
 			return model.aS.aJ;
 		}
@@ -7949,7 +7988,7 @@ var $author$project$Page$Rules$view = function (model) {
 		if (_v0.b) {
 			var hand = _v0.a;
 			var hands = _v0.b;
-			return hand.v;
+			return hand.r;
 		} else {
 			return model.aS.aJ;
 		}

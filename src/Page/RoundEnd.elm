@@ -72,13 +72,10 @@ viewResults model =
             else
                 "-$" ++ resultAsString
 
-        dealerScore =
-            getMaximumCardValue model.dealer.cards
-
         handResults =
             model.player.hands
                 |> Array.toList
-                |> List.indexedMap (\i h -> ( i, getBetResult dealerScore h ))
+                |> List.indexedMap (\i h -> ( i, getBetResult model.dealer.cards h ))
 
         totalResult =
             List.map second handResults
