@@ -285,7 +285,7 @@ cannotInsure model =
             Maybe.map2 (\c h -> c + h) currentBet halfBet
 
         canBet =
-            Maybe.map (\t -> t >= model.player.money) totalBet
+            Maybe.map (\t -> t <= model.player.money) totalBet
 
         upCard =
             getUpCard model.dealer.cards

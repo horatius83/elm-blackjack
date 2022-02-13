@@ -7155,7 +7155,7 @@ var $author$project$Page$Round$cannotInsure = function (model) {
 	var canBet = A2(
 		$elm$core$Maybe$map,
 		function (t) {
-			return _Utils_cmp(t, model.aQ.B) > -1;
+			return _Utils_cmp(t, model.aQ.B) < 1;
 		},
 		totalBet);
 	var _v0 = _Utils_Tuple2(canBet, upCard);
