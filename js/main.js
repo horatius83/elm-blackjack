@@ -6502,7 +6502,7 @@ var $author$project$Main$doubleDown = F2(
 			return function (newNewModel) {
 				return A2($author$project$Main$stay, newNewModel, hand);
 			}(
-				A2($author$project$Main$hit, model, hand).a);
+				A2($author$project$Main$hit, newModel, hand).a);
 		}
 	});
 var $author$project$Main$insure = function (model) {

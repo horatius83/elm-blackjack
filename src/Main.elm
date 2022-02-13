@@ -364,7 +364,7 @@ doubleDown model hand =
             ( model, DoubleDown hand |> shuffleDiscard model )
 
         card :: cards ->
-            hit model hand
+            hit newModel hand
                 |> Tuple.first
                 |> (\newNewModel -> stay newNewModel hand)
 
