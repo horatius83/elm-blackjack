@@ -21,6 +21,8 @@
     padding-left: 1.75em;
     border-radius: 0.5em;
     color: #1d3557;
+    border-color: #2b2d42;
+    border-style: solid;
 }
 
 .player-area {
@@ -28,6 +30,8 @@
     padding-bottom: 1em;
     padding-left: 1.75em;
     border-radius: 0.5em;
+    border-color: #2b2d42;
+    border-style: solid;
 }
 
 .hand-won {
