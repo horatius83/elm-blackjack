@@ -11,7 +11,6 @@ import Html exposing (..)
 import Html.Attributes exposing (attribute)
 import Html.Events exposing (onClick, onInput)
 import List
-import Page.Bet
 import Page.Round
 import Page.RoundEnd
 import Page.Rules
@@ -39,9 +38,6 @@ view model =
     case model.state of
         Game.Init ->
             Page.Rules.view model
-
-        Game.PlaceBets ->
-            Page.Bet.view model
 
         Game.RoundStart ->
             Page.Round.view model

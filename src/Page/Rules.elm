@@ -60,7 +60,7 @@ view model =
             , div [] [ viewNumericInput "Number of Splits: " "number_of_splits" model.rules.numberOfSplits (Just 1) Nothing Nothing ChangeNumberOfSplits ]
             , div [] [ viewNumericInput "Starting money: " "money" model.player.money stepValue Nothing stepValue ChangePlayerMoney ]
             , viewSelect "surrender-rules" "Surrender" surrenderOptions optionToMsg
-            , div [] [ viewNumericInput "Bet: " "bet" bet minimumBet maximumBet stepValue ChangeBet ]
+            , div [] [ viewNumericInput "Initial Bet: " "bet" bet minimumBet maximumBet stepValue ChangeBet ]
             , div []
                 [ button
                     [ onClick (ChangeGameState Game.RoundStart)

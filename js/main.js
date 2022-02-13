@@ -6859,153 +6859,6 @@ var $elm$html$Html$Events$onClick = function (msg) {
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$html$Html$ul = _VirtualDom_node('ul');
-var $author$project$State$ChangeBet = function (a) {
-	return {$: 10, a: a};
-};
-var $elm$html$Html$h1 = _VirtualDom_node('h1');
-var $elm$html$Html$input = _VirtualDom_node('input');
-var $elm$html$Html$label = _VirtualDom_node('label');
-var $elm$html$Html$Events$alwaysStop = function (x) {
-	return _Utils_Tuple2(x, true);
-};
-var $elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
-	return {$: 1, a: a};
-};
-var $elm$html$Html$Events$stopPropagationOn = F2(
-	function (event, decoder) {
-		return A2(
-			$elm$virtual_dom$VirtualDom$on,
-			event,
-			$elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
-	});
-var $elm$json$Json$Decode$field = _Json_decodeField;
-var $elm$json$Json$Decode$at = F2(
-	function (fields, decoder) {
-		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
-	});
-var $elm$json$Json$Decode$string = _Json_decodeString;
-var $elm$html$Html$Events$targetValue = A2(
-	$elm$json$Json$Decode$at,
-	_List_fromArray(
-		['target', 'value']),
-	$elm$json$Json$Decode$string);
-var $elm$html$Html$Events$onInput = function (tagger) {
-	return A2(
-		$elm$html$Html$Events$stopPropagationOn,
-		'input',
-		A2(
-			$elm$json$Json$Decode$map,
-			$elm$html$Html$Events$alwaysStop,
-			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
-};
-var $elm$html$Html$span = _VirtualDom_node('span');
-var $author$project$Controls$viewNumericInput = F7(
-	function (label_, id_, value_, min_, max_, step_, toMsg) {
-		var toAttributeList = F2(
-			function (attributeName, maybeValue) {
-				if (!maybeValue.$) {
-					var x = maybeValue.a;
-					return _List_fromArray(
-						[
-							A2(
-							$elm$html$Html$Attributes$attribute,
-							attributeName,
-							$elm$core$String$fromInt(x))
-						]);
-				} else {
-					return _List_Nil;
-				}
-			});
-		var stepAttribute = A2(toAttributeList, 'step', step_);
-		var minAttribute = A2(toAttributeList, 'min', min_);
-		var maxAttribute = A2(toAttributeList, 'max', max_);
-		var defaultAttributes = _List_fromArray(
-			[
-				A2(
-				$elm$html$Html$Attributes$attribute,
-				'value',
-				$elm$core$String$fromInt(value_)),
-				A2($elm$html$Html$Attributes$attribute, 'id', id_),
-				A2($elm$html$Html$Attributes$attribute, 'name', id_),
-				A2($elm$html$Html$Attributes$attribute, 'type', 'number'),
-				$elm$html$Html$Events$onInput(toMsg)
-			]);
-		var attributes = _Utils_ap(
-			defaultAttributes,
-			_Utils_ap(
-				minAttribute,
-				_Utils_ap(maxAttribute, stepAttribute)));
-		return A2(
-			$elm$html$Html$span,
-			_List_Nil,
-			_List_fromArray(
-				[
-					A2(
-					$elm$html$Html$label,
-					_List_fromArray(
-						[
-							A2($elm$html$Html$Attributes$attribute, 'for', id_)
-						]),
-					_List_fromArray(
-						[
-							$elm$html$Html$text(label_)
-						])),
-					A2($elm$html$Html$input, attributes, _List_Nil)
-				]));
-	});
-var $author$project$Page$Bet$view = function (model) {
-	var stepValue = $elm$core$Maybe$Just(10);
-	var minimumBet = $elm$core$Maybe$Just(model.aS.aJ);
-	var maximumBet = $elm$core$Maybe$Just(
-		(_Utils_cmp(model.aS.aI, model.aQ.B) < 0) ? model.aS.aI : model.aQ.B);
-	var bet = function () {
-		var _v0 = $elm$core$Array$toList(model.aQ.d);
-		if (_v0.b) {
-			var x = _v0.a;
-			var xs = _v0.b;
-			return x.v;
-		} else {
-			return model.aS.aJ;
-		}
-	}();
-	return A2(
-		$elm$html$Html$div,
-		_List_Nil,
-		_List_fromArray(
-			[
-				A2(
-				$elm$html$Html$h1,
-				_List_Nil,
-				_List_fromArray(
-					[
-						$elm$html$Html$text('Place Bets')
-					])),
-				A2(
-				$elm$html$Html$div,
-				_List_Nil,
-				_List_fromArray(
-					[
-						A7($author$project$Controls$viewNumericInput, 'Bet: ', 'bet', bet, minimumBet, maximumBet, stepValue, $author$project$State$ChangeBet),
-						A2(
-						$elm$html$Html$div,
-						_List_Nil,
-						_List_fromArray(
-							[
-								A2(
-								$elm$html$Html$button,
-								_List_fromArray(
-									[
-										$elm$html$Html$Events$onClick(
-										$author$project$State$ChangeGameState(2))
-									]),
-								_List_fromArray(
-									[
-										$elm$html$Html$text('PlaceBet')
-									]))
-							]))
-					]))
-			]));
-};
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $elm$html$Html$Attributes$stringProperty = F2(
 	function (key, string) {
@@ -7016,6 +6869,7 @@ var $elm$html$Html$Attributes$stringProperty = F2(
 	});
 var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
 var $elm$html$Html$h2 = _VirtualDom_node('h2');
+var $elm$html$Html$span = _VirtualDom_node('span');
 var $author$project$Controls$viewCardBack = A2(
 	$elm$html$Html$span,
 	_List_fromArray(
@@ -7655,6 +7509,9 @@ var $author$project$Page$Round$view = function (model) {
 				$author$project$Page$Round$viewRules(model)
 			]));
 };
+var $author$project$State$ChangeBet = function (a) {
+	return {$: 10, a: a};
+};
 var $author$project$State$NewRound = {$: 22};
 var $author$project$Page$RoundEnd$viewDealer = function (model) {
 	var cards = $author$project$Controls$viewCards(model.av.P);
@@ -7666,6 +7523,95 @@ var $author$project$Page$RoundEnd$viewDealer = function (model) {
 			]),
 		cards);
 };
+var $elm$html$Html$input = _VirtualDom_node('input');
+var $elm$html$Html$label = _VirtualDom_node('label');
+var $elm$html$Html$Events$alwaysStop = function (x) {
+	return _Utils_Tuple2(x, true);
+};
+var $elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
+	return {$: 1, a: a};
+};
+var $elm$html$Html$Events$stopPropagationOn = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
+	});
+var $elm$json$Json$Decode$field = _Json_decodeField;
+var $elm$json$Json$Decode$at = F2(
+	function (fields, decoder) {
+		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
+	});
+var $elm$json$Json$Decode$string = _Json_decodeString;
+var $elm$html$Html$Events$targetValue = A2(
+	$elm$json$Json$Decode$at,
+	_List_fromArray(
+		['target', 'value']),
+	$elm$json$Json$Decode$string);
+var $elm$html$Html$Events$onInput = function (tagger) {
+	return A2(
+		$elm$html$Html$Events$stopPropagationOn,
+		'input',
+		A2(
+			$elm$json$Json$Decode$map,
+			$elm$html$Html$Events$alwaysStop,
+			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
+};
+var $author$project$Controls$viewNumericInput = F7(
+	function (label_, id_, value_, min_, max_, step_, toMsg) {
+		var toAttributeList = F2(
+			function (attributeName, maybeValue) {
+				if (!maybeValue.$) {
+					var x = maybeValue.a;
+					return _List_fromArray(
+						[
+							A2(
+							$elm$html$Html$Attributes$attribute,
+							attributeName,
+							$elm$core$String$fromInt(x))
+						]);
+				} else {
+					return _List_Nil;
+				}
+			});
+		var stepAttribute = A2(toAttributeList, 'step', step_);
+		var minAttribute = A2(toAttributeList, 'min', min_);
+		var maxAttribute = A2(toAttributeList, 'max', max_);
+		var defaultAttributes = _List_fromArray(
+			[
+				A2(
+				$elm$html$Html$Attributes$attribute,
+				'value',
+				$elm$core$String$fromInt(value_)),
+				A2($elm$html$Html$Attributes$attribute, 'id', id_),
+				A2($elm$html$Html$Attributes$attribute, 'name', id_),
+				A2($elm$html$Html$Attributes$attribute, 'type', 'number'),
+				$elm$html$Html$Events$onInput(toMsg)
+			]);
+		var attributes = _Utils_ap(
+			defaultAttributes,
+			_Utils_ap(
+				minAttribute,
+				_Utils_ap(maxAttribute, stepAttribute)));
+		return A2(
+			$elm$html$Html$span,
+			_List_Nil,
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$label,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$attribute, 'for', id_)
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(label_)
+						])),
+					A2($elm$html$Html$input, attributes, _List_Nil)
+				]));
+	});
 var $author$project$Page$RoundEnd$viewPlayerHand = F2(
 	function (dealerScore, _v0) {
 		var index = _v0.a;
@@ -7857,6 +7803,7 @@ var $author$project$State$ChangeSurrenderRules = function (a) {
 };
 var $author$project$Game$Early = 1;
 var $author$project$Game$Late = 2;
+var $elm$html$Html$h1 = _VirtualDom_node('h1');
 var $author$project$Controls$viewInput = F5(
 	function (label_, id_, value_, type_, toMsg) {
 		return A2(
@@ -8111,7 +8058,7 @@ var $author$project$Page$Rules$view = function (model) {
 						_List_Nil,
 						_List_fromArray(
 							[
-								A7($author$project$Controls$viewNumericInput, 'Bet: ', 'bet', bet, minimumBet, maximumBet, stepValue, $author$project$State$ChangeBet)
+								A7($author$project$Controls$viewNumericInput, 'Initial Bet: ', 'bet', bet, minimumBet, maximumBet, stepValue, $author$project$State$ChangeBet)
 							])),
 						A2(
 						$elm$html$Html$div,
@@ -8138,8 +8085,6 @@ var $author$project$Main$view = function (model) {
 	switch (_v0) {
 		case 0:
 			return $author$project$Page$Rules$view(model);
-		case 1:
-			return $author$project$Page$Bet$view(model);
 		case 2:
 			return $author$project$Page$Round$view(model);
 		case 4:
