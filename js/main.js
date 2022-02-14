@@ -7123,18 +7123,12 @@ var $author$project$Page$Round$cannotHit = F2(
 			},
 			hand);
 		var _v0 = _Utils_Tuple2(handIsBusted, handIsStayed);
-		if (_v0.a.$ === 1) {
-			var _v1 = _v0.a;
-			return true;
+		if ((!_v0.a.$) && (!_v0.b.$)) {
+			var x = _v0.a.a;
+			var y = _v0.b.a;
+			return x || y;
 		} else {
-			if (_v0.b.$ === 1) {
-				var _v2 = _v0.b;
-				return true;
-			} else {
-				var x = _v0.a.a;
-				var y = _v0.b.a;
-				return x || y;
-			}
+			return true;
 		}
 	});
 var $elm$core$Maybe$map2 = F3(

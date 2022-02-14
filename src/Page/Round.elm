@@ -161,7 +161,7 @@ cannotSurrender model =
         ( True, Just True, True ) ->
             False
 
-        ( _, _, _ ) ->
+        _ ->
             True
 
 
@@ -202,14 +202,11 @@ cannotHit player handIndex =
             Maybe.map (\h -> h.stayed) hand
     in
     case ( handIsBusted, handIsStayed ) of
-        ( Nothing, _ ) ->
-            True
-
-        ( _, Nothing ) ->
-            True
-
         ( Just x, Just y ) ->
             x || y
+
+        _ ->
+            True
 
 
 cannotStand : Player -> Int -> Bool
