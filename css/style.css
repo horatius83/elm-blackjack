@@ -12,30 +12,31 @@
 }
 
 .red {
-    color: #e63946;
+    color: #d90429;
 }
 
 .play-area {
-    background-color: #a8dadc;
+    background-color: #8d99ae;
     padding-bottom: 1em;
     border-radius: 0.5em;
-    color: #1d3557;
+    color: #2b2d42;
     border-color: #2b2d42;
     border-style: solid;
+    padding: 1em;
 }
 
 .dealer-area {
-    background-color: #a8dadc;
+    background-color: #8d99ae;
     padding-bottom: 1em;
     padding-left: 1.75em;
     border-radius: 0.5em;
-    color: #1d3557;
+    color: #2b2d42;
     border-color: #2b2d42;
     border-style: solid;
 }
 
 .player-area {
-    background-color: #457b9d;
+    background-color: #8d99ae;
     padding-bottom: 1em;
     padding-left: 1.75em;
     border-radius: 0.5em;
@@ -57,14 +58,14 @@ button {
 }
 
 :root {
-    --accent: #e63946;
-    --bg: #a8dadc;
-    --text: #1d3557;
+    --accent: #ef233c;
+    --bg: #edf2f4;
+    --text: #2b2d42;
 }
 
 @media (prefers-color-scheme: dark) {
     :root {
-        --bg: #1d3557;
-        --text: #f1faee;
+        --bg: #2b2d42;
+        --text: #edf2f4;
     }
 }
