@@ -7155,6 +7155,12 @@ var $elm$core$Maybe$map2 = F3(
 var $elm$core$Basics$neq = _Utils_notEqual;
 var $author$project$Page$Round$cannotInsure = function (model) {
 	var hand = A2($elm$core$Array$get, 0, model.bA.f);
+	var hasInsuredBefore = A2(
+		$elm$core$Maybe$map,
+		function (x) {
+			return x.bg;
+		},
+		hand);
 	var getUpCard = function (cards) {
 		if (!cards.b) {
 			return $elm$core$Maybe$Nothing;
@@ -7164,8 +7170,8 @@ var $author$project$Page$Round$cannotInsure = function (model) {
 				return $elm$core$Maybe$Nothing;
 			} else {
 				var x = cards.a;
-				var _v4 = cards.b;
-				var y = _v4.a;
+				var _v2 = cards.b;
+				var y = _v2.a;
 				return $elm$core$Maybe$Just(y);
 			}
 		}
@@ -7198,22 +7204,12 @@ var $author$project$Page$Round$cannotInsure = function (model) {
 			return _Utils_cmp(t, model.bA.I) < 1;
 		},
 		totalBet);
-	var _v0 = _Utils_Tuple2(canBet, upCard);
-	if (_v0.a.$ === 1) {
-		var _v1 = _v0.a;
-		return true;
+	var _v0 = _Utils_Tuple3(canBet, upCard, hasInsuredBefore);
+	if (((((!_v0.a.$) && _v0.a.a) && (!_v0.b.$)) && (!_v0.c.$)) && (!_v0.c.a)) {
+		var card = _v0.b.a;
+		return card.Y !== 12;
 	} else {
-		if (_v0.b.$ === 1) {
-			var _v2 = _v0.b;
-			return true;
-		} else {
-			if (!_v0.a.a) {
-				return true;
-			} else {
-				var card = _v0.b.a;
-				return card.Y !== 12;
-			}
-		}
+		return true;
 	}
 };
 var $elm$core$Basics$not = _Basics_not;
@@ -7995,7 +7991,10 @@ var $author$project$Page$Rules$view = function (model) {
 	}();
 	return A2(
 		$elm$html$Html$div,
-		_List_Nil,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('play-area')
+			]),
 		_List_fromArray(
 			[
 				A2(

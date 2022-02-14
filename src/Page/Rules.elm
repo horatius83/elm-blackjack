@@ -49,7 +49,7 @@ view model =
                 _ ->
                     model.rules.minimumBet
     in
-    div []
+    div [ class "play-area" ]
         [ h1 [] [ text "Game Rules" ]
         , div []
             [ div [] [ viewInput "Player Name: " "player_name" model.player.name "text" ChangePlayerName ]

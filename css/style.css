@@ -15,6 +15,15 @@
     color: #e63946;
 }
 
+.play-area {
+    background-color: #a8dadc;
+    padding-bottom: 1em;
+    border-radius: 0.5em;
+    color: #1d3557;
+    border-color: #2b2d42;
+    border-style: solid;
+}
+
 .dealer-area {
     background-color: #a8dadc;
     padding-bottom: 1em;

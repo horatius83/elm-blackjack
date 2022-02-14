@@ -289,16 +289,13 @@ cannotInsure model =
 
         upCard =
             getUpCard model.dealer.cards
+
+        hasInsuredBefore =
+            Maybe.map (\x -> x.insurance) hand
     in
-    case ( canBet, upCard ) of
-        ( Nothing, _ ) ->
-            True
-
-        ( _, Nothing ) ->
-            True
-
-        ( Just False, _ ) ->
-            True
-
-        ( Just True, Just card ) ->
+    case ( canBet, upCard, hasInsuredBefore ) of
+        ( Just True, Just card, Just False ) ->
             card.rank /= Card.Ace
+
+        _ ->
+            True
