@@ -25,8 +25,7 @@ viewDealer cards =
                     [ viewCardBack ] ++ viewCards xs
     in
     div [ class "dealer-area" ]
-        [ h2 [] [ text "Dealer" ]
-        , span [] cardsAsHtml
+        [ span [] cardsAsHtml
         ]
 
 
@@ -286,12 +285,9 @@ cannotInsure model =
 
         upCard =
             getUpCard model.dealer.cards
-
-        hasInsuredBefore =
-            Maybe.map (\x -> x.insurance) hand
     in
-    case ( canBet, upCard, hasInsuredBefore ) of
-        ( Just True, Just card, Just False ) ->
+    case ( canBet, upCard, model.player.insured ) of
+        ( Just True, Just card, False ) ->
             card.rank /= Card.Ace
 
         _ ->

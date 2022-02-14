@@ -6,7 +6,6 @@ import Deck exposing (Deck)
 type alias Hand =
     { cards : Deck
     , bet : Int
-    , insurance : Bool
     , stayed : Bool
     , doubleDown : Bool
     , surrendered : Bool
@@ -15,4 +14,4 @@ type alias Hand =
 
 create : Deck -> Int -> Hand
 create deck bet =
-    Hand deck bet False False False False
+    Hand deck bet False False False

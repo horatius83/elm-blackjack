@@ -130,8 +130,8 @@ getHalfBet bet =
         |> round
 
 
-getBetResult : Deck -> Hand -> Int
-getBetResult dealerHand hand =
+getBetResult : Deck -> Hand -> Bool -> Int
+getBetResult dealerHand hand hasInsurance =
     let
         dealerHandValue =
             getMaximumCardValue dealerHand
@@ -158,7 +158,7 @@ getBetResult dealerHand hand =
             hasTwoCards && hasAnAce && hasATenCard
 
         insuranceBet =
-            case ( hand.insurance, doesDealerHaveBlackJack ) of
+            case ( hasInsurance, doesDealerHaveBlackJack ) of
                 ( False, _ ) ->
                     0
 

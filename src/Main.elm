@@ -233,7 +233,7 @@ cleanup model =
             model.player
 
         newPlayer =
-            { oldPlayer | hands = Array.fromList [ hand ] }
+            { oldPlayer | hands = Array.fromList [ hand ], insured = False }
 
         oldDealer =
             model.dealer
@@ -247,8 +247,8 @@ cleanup model =
 roundEnd : Model -> ( Model, Cmd Msg )
 roundEnd model =
     let
-        getBetResult =
-            Game.getBetResult model.dealer.cards
+        getBetResult hands =
+            Game.getBetResult model.dealer.cards hands model.player.insured
 
         playerWinnings =
             Array.map getBetResult model.player.hands

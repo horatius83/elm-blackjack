@@ -75,7 +75,7 @@ viewResults model =
         handResults =
             model.player.hands
                 |> Array.toList
-                |> List.indexedMap (\i h -> ( i, getBetResult model.dealer.cards h ))
+                |> List.indexedMap (\i h -> ( i, getBetResult model.dealer.cards h model.player.insured ))
 
         totalResult =
             List.map second handResults
