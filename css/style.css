@@ -40,12 +40,13 @@
     padding-bottom: 1em;
     padding-left: 1.75em;
     border-radius: 0.5em;
+    color: #2b2d42;
     border-color: #2b2d42;
     border-style: solid;
 }
 
 .hand-won {
-    color: #457b9d;
+    color: #edf2f4;
 }
 
 .hand-lost {
