@@ -11,7 +11,6 @@ type alias Model =
 type Msg
     = ShuffleDeck
     | ShuffleDiscard
-    | ChangePlayerName String
     | ChangePlayerMoney String
     | ChangeMinimumBet String
     | ChangeMaximumBet String

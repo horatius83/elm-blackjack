@@ -22,13 +22,6 @@ viewDealer model =
 
 viewPlayerHand : Maybe Int -> ( Int, Hand ) -> Html Msg
 viewPlayerHand dealerScore ( index, hand ) =
-    let
-        maximumPlayerValue =
-            getMaximumCardValue hand.cards
-
-        indexAsString =
-            String.fromInt (index + 1)
-    in
     div [ class "player-area" ] <| viewCards hand.cards
 
 

@@ -51,9 +51,9 @@ default =
     Rules 100 1000 (BlackJackPayout 3 2) 1 2 No
 
 
-defaultPlayer : Player
-defaultPlayer =
-    Player.new "Max" 1000
+defaultPlayer : Int -> Player
+defaultPlayer bet =
+    Player.new 1000 bet
 
 
 new : Player -> Rules -> Game

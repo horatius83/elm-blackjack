@@ -6,16 +6,16 @@ import Hand exposing (Hand)
 
 
 type alias Player =
-    { name : String
-    , hands : Array.Array Hand
+    { hands : Array.Array Hand
     , money : Int
     , insured : Bool
+    , nextBet : Int
     }
 
 
-new : String -> Int -> Player
-new name money =
-    Player name Array.empty money False
+new : Int -> Int -> Player
+new money nextBet =
+    Player Array.empty money False nextBet
 
 
 addCardToHand : Player -> Int -> Card -> Maybe Player

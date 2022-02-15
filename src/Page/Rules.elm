@@ -52,8 +52,7 @@ view model =
     div [ class "play-area" ]
         [ h1 [] [ text "Game Rules" ]
         , div []
-            [ div [] [ viewInput "Player Name: " "player_name" model.player.name "text" ChangePlayerName ]
-            , div [] [ viewNumericInput "Minimum Bet: " "minimum_bet" model.rules.minimumBet stepValue (Just model.rules.maximumBet) stepValue ChangeMinimumBet ]
+            [ div [] [ viewNumericInput "Minimum Bet: " "minimum_bet" model.rules.minimumBet stepValue (Just model.rules.maximumBet) stepValue ChangeMinimumBet ]
             , div [] [ viewNumericInput "Maximum bet: " "maximum_bet" model.rules.maximumBet (Just model.rules.minimumBet) Nothing stepValue ChangeMaximumBet ]
             , div [] [ viewNumericInput "Number of decks: " "number_of_decks" model.rules.numberOfDecks (Just 1) Nothing Nothing ChangeNumberOfDecks ]
             , div [] [ viewPayoutInput model.rules.blackJackPayout.numerator model.rules.blackJackPayout.denominator ]
@@ -63,7 +62,7 @@ view model =
             , div [] [ viewNumericInput "Initial Bet: " "bet" bet minimumBet maximumBet stepValue ChangeBet ]
             , div []
                 [ button
-                    [ onClick (ChangeGameState Game.RoundStart)
+                    [ onClick (ChangeGameState Game.PlaceBets)
                     ]
                     [ text "Start Game" ]
                 ]

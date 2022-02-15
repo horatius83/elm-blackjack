@@ -24,11 +24,14 @@ import State exposing (Model, Msg(..))
 init : () -> ( Model, Cmd Msg )
 init _ =
     let
-        startingMoney =
-            1000
+        rules =
+            default
+
+        player =
+            Player.new 1000 rules.minimumBet
 
         model =
-            Game.new defaultPlayer default
+            Game.new player rules
     in
     ( model, Random.generate NewDeck (Random.List.shuffle model.deck) )
 
@@ -79,18 +82,13 @@ update msg model =
         NewDeck cards ->
             ( { model | deck = cards }, Cmd.none )
 
-        ChangePlayerName name ->
-            ( { model
-                | player =
-                    { player_
-                        | name = name
-                    }
-              }
-            , Cmd.none
-            )
-
         ChangePlayerMoney money ->
-            ( { model | player = { player_ | money = sToI defaultPlayer.money money } }, Cmd.none )
+            case String.toInt money of
+                Just m ->
+                    ( { model | player = { player_ | money = m } }, Cmd.none )
+
+                _ ->
+                    ( model, Cmd.none )
 
         ChangeMinimumBet bet ->
             ( { model | rules = { rules_ | minimumBet = sToI Game.default.minimumBet bet } }, Cmd.none )
@@ -179,17 +177,11 @@ changeBet model betAsString =
         betAsInt =
             sToI Game.default.minimumBet betAsString
 
-        oldHand =
-            Array.get 0 model.player.hands |> Maybe.withDefault (defaultHand model)
-
-        newHand =
-            { oldHand | bet = betAsInt }
-
         oldPlayer =
             model.player
 
         newPlayer =
-            { oldPlayer | hands = Array.fromList [ newHand ] }
+            { oldPlayer | nextBet = betAsInt }
     in
     ( { model | player = newPlayer }, Cmd.none )
 
@@ -227,7 +219,7 @@ cleanup model =
             playerCards ++ model.dealer.cards ++ model.discard
 
         hand =
-            Hand.create [] model.rules.minimumBet
+            Hand.create [] model.player.nextBet
 
         oldPlayer =
             model.player
