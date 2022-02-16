@@ -7663,24 +7663,6 @@ var $elm$core$Basics$abs = function (n) {
 };
 var $author$project$Page$RoundEnd$viewResults = function (model) {
 	var playerMoney = '$' + $elm$core$String$fromInt(model.bA.P);
-	var insuranceResult = A2(
-		$elm$core$Maybe$withDefault,
-		0,
-		A2(
-			$elm$core$Maybe$map,
-			function (b) {
-				return A3($author$project$Game$getInsuranceBetResult, model.a2.ai, b, model.bA.U);
-			},
-			A2(
-				$elm$core$Maybe$map,
-				function (h) {
-					return h.a7 ? $author$project$Game$getHalfBet(h.C) : h.C;
-				},
-				A2($elm$core$Array$get, 0, model.bA.f))));
-	var handResults = A2(
-		$elm$core$List$map,
-		$author$project$Game$getBetResult(model.a2.ai),
-		$elm$core$Array$toList(model.bA.f));
 	var getResultClass = function (result) {
 		return (result > 0) ? 'hand-won' : ((!result) ? 'hand-pushed' : 'hand-lost');
 	};
@@ -7689,13 +7671,45 @@ var $author$project$Page$RoundEnd$viewResults = function (model) {
 			$elm$core$Basics$abs(result));
 		return (result > 0) ? ('+$' + resultAsString) : ((!result) ? (' $' + resultAsString) : ('-$' + resultAsString));
 	};
-	var allResults = _Utils_ap(
-		handResults,
-		_List_fromArray(
-			[insuranceResult]));
-	var results = A2(
+	var handResults = A2(
 		$elm$core$List$map,
 		function (r) {
+			return _Utils_Tuple2(
+				formatResult(r),
+				r);
+		},
+		A2(
+			$elm$core$List$map,
+			$author$project$Game$getBetResult(model.a2.ai),
+			$elm$core$Array$toList(model.bA.f)));
+	var insuranceResult = function (r) {
+		return _Utils_Tuple2(
+			formatResult(r) + ' (Insurance)',
+			r);
+	}(
+		A2(
+			$elm$core$Maybe$withDefault,
+			0,
+			A2(
+				$elm$core$Maybe$map,
+				function (b) {
+					return A3($author$project$Game$getInsuranceBetResult, model.a2.ai, b, model.bA.U);
+				},
+				A2(
+					$elm$core$Maybe$map,
+					function (h) {
+						return h.a7 ? $author$project$Game$getHalfBet(h.C) : h.C;
+					},
+					A2($elm$core$Array$get, 0, model.bA.f)))));
+	var allResults = model.bA.U ? _Utils_ap(
+		handResults,
+		_List_fromArray(
+			[insuranceResult])) : handResults;
+	var results = A2(
+		$elm$core$List$map,
+		function (_v0) {
+			var t = _v0.a;
+			var r = _v0.b;
 			return A2(
 				$elm$html$Html$span,
 				_List_fromArray(
@@ -7705,24 +7719,10 @@ var $author$project$Page$RoundEnd$viewResults = function (model) {
 					]),
 				_List_fromArray(
 					[
-						$elm$html$Html$text(
-						formatResult(r))
+						$elm$html$Html$text(t)
 					]));
 		},
 		allResults);
-	var totalResult = A3($elm$core$List$foldl, $elm$core$Basics$add, 0, allResults);
-	var viewTotalResult = A2(
-		$elm$html$Html$span,
-		_List_fromArray(
-			[
-				$elm$html$Html$Attributes$class(
-				getResultClass(totalResult))
-			]),
-		_List_fromArray(
-			[
-				$elm$html$Html$text(
-				formatResult(totalResult))
-			]));
 	return A2(
 		$elm$html$Html$div,
 		_List_fromArray(

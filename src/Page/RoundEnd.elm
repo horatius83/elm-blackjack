@@ -77,26 +77,26 @@ viewResults model =
                     )
                 |> Maybe.map (\b -> Game.getInsuranceBetResult model.dealer.cards b model.player.insured)
                 |> Maybe.withDefault 0
+                |> (\r -> ( formatResult r ++ " (Insurance)", r ))
 
         handResults =
             model.player.hands
                 |> Array.toList
                 |> List.map (getBetResult model.dealer.cards)
+                |> List.map (\r -> ( formatResult r, r ))
 
         allResults =
-            handResults ++ [ insuranceResult ]
+            if model.player.insured then
+                handResults ++ [ insuranceResult ]
 
-        totalResult =
-            List.foldl (+) 0 allResults
+            else
+                handResults
 
         results =
-            List.map (\r -> span [ class (getResultClass r) ] [ text (formatResult r) ]) allResults
+            List.map (\( t, r ) -> span [ class (getResultClass r) ] [ text t ]) allResults
 
         playerMoney =
             "$" ++ String.fromInt model.player.money
-
-        viewTotalResult =
-            span [ class (getResultClass totalResult) ] [ text (formatResult totalResult) ]
     in
     div [ class "round-results" ]
         ([ text playerMoney ] ++ results)
