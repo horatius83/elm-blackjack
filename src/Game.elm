@@ -130,17 +130,11 @@ getHalfBet bet =
         |> round
 
 
-getBetResult : Deck -> Hand -> Bool -> Int
-getBetResult dealerHand hand hasInsurance =
+getInsuranceBetResult : Deck -> Int -> Bool -> Int
+getInsuranceBetResult dealerHand bet hasInsurance =
     let
-        dealerHandValue =
-            getMaximumCardValue dealerHand
-
-        playerHandValue =
-            getMaximumCardValue hand.cards
-
         halfBet =
-            getHalfBet hand.bet
+            getHalfBet bet
 
         doesDealerHaveBlackJack =
             let
@@ -156,42 +150,52 @@ getBetResult dealerHand hand hasInsurance =
                         |> List.foldl (||) False
             in
             hasTwoCards && hasAnAce && hasATenCard
-
-        insuranceBet =
-            case ( hasInsurance, doesDealerHaveBlackJack ) of
-                ( False, _ ) ->
-                    0
-
-                ( True, True ) ->
-                    hand.bet
-
-                ( True, False ) ->
-                    -halfBet
     in
-    insuranceBet
-        + (case ( playerHandValue, dealerHandValue, hand.surrendered ) of
-            ( Nothing, Nothing, _ ) ->
-                -hand.bet
+    case ( hasInsurance, doesDealerHaveBlackJack ) of
+        ( False, _ ) ->
+            0
 
-            ( Nothing, Just dhv, _ ) ->
-                -hand.bet
+        ( True, True ) ->
+            bet
 
-            ( Just phv, Nothing, True ) ->
-                -halfBet
+        ( True, False ) ->
+            -halfBet
 
-            ( Just phv, Nothing, False ) ->
+
+getBetResult : Deck -> Hand -> Int
+getBetResult dealerHand hand =
+    let
+        dealerHandValue =
+            getMaximumCardValue dealerHand
+
+        playerHandValue =
+            getMaximumCardValue hand.cards
+
+        halfBet =
+            getHalfBet hand.bet
+    in
+    case ( playerHandValue, dealerHandValue, hand.surrendered ) of
+        ( Nothing, Nothing, _ ) ->
+            -hand.bet
+
+        ( Nothing, Just dhv, _ ) ->
+            -hand.bet
+
+        ( Just phv, Nothing, True ) ->
+            -halfBet
+
+        ( Just phv, Nothing, False ) ->
+            hand.bet
+
+        ( Just phv, Just dhv, True ) ->
+            -halfBet
+
+        ( Just phv, Just dhv, False ) ->
+            if phv > dhv then
                 hand.bet
 
-            ( Just phv, Just dhv, True ) ->
-                -halfBet
+            else if phv == dhv then
+                0
 
-            ( Just phv, Just dhv, False ) ->
-                if phv > dhv then
-                    hand.bet
-
-                else if phv == dhv then
-                    0
-
-                else
-                    -hand.bet
-          )
+            else
+                -hand.bet

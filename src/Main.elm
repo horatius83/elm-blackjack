@@ -239,8 +239,21 @@ cleanup model =
 roundEnd : Model -> ( Model, Cmd Msg )
 roundEnd model =
     let
-        getBetResult hands =
-            Game.getBetResult model.dealer.cards hands model.player.insured
+        getBetResult =
+            Game.getBetResult model.dealer.cards
+
+        insuranceResult =
+            Array.get 0 model.player.hands
+                |> Maybe.map
+                    (\h ->
+                        if h.doubleDown then
+                            Game.getHalfBet h.bet
+
+                        else
+                            h.bet
+                    )
+                |> Maybe.map (\b -> Game.getInsuranceBetResult model.dealer.cards b model.player.insured)
+                |> Maybe.withDefault 0
 
         playerWinnings =
             Array.map getBetResult model.player.hands
@@ -250,7 +263,7 @@ roundEnd model =
             model.player
 
         newPlayer =
-            { oldPlayer | money = oldPlayer.money + playerWinnings }
+            { oldPlayer | money = oldPlayer.money + playerWinnings + insuranceResult }
 
         newModel =
             { model | player = newPlayer }

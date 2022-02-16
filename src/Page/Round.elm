@@ -52,11 +52,6 @@ viewHand model ( whichHand, hand ) =
                         ]
                         [ text "Stand" ]
                     , button
-                        [ onClick Insure
-                        , disabled (cannotInsure model)
-                        ]
-                        [ text "Insurance" ]
-                    , button
                         [ onClick (DoubleDown whichHand)
                         , disabled (cannotDoubleDown model.player whichHand)
                         ]
@@ -71,6 +66,11 @@ viewHand model ( whichHand, hand ) =
                         , disabled (cannotSurrender model)
                         ]
                         [ text "Surrender" ]
+                    , button
+                        [ onClick Insure
+                        , disabled (cannotInsure model)
+                        ]
+                        [ text "Insurance" ]
                     , text valuesAsText
                     ]
                 ]
@@ -179,8 +179,11 @@ cannotDoubleDown player handIndex =
 
         alreadyDoubledDown =
             Maybe.map (\h -> h.doubleDown) playerHand
+
+        stayed =
+            Maybe.map (\h -> h.stayed) playerHand
     in
-    case Maybe.map3 (\x y z -> x || y || z) notEnoughMoney handIsBusted alreadyDoubledDown of
+    case Maybe.map4 (\m b d s -> m || b || d || s) notEnoughMoney handIsBusted alreadyDoubledDown stayed of
         Just x ->
             x
 

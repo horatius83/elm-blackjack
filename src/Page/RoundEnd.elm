@@ -65,25 +65,32 @@ viewResults model =
             else
                 "-$" ++ resultAsString
 
+        insuranceResult =
+            Array.get 0 model.player.hands
+                |> Maybe.map
+                    (\h ->
+                        if h.doubleDown then
+                            Game.getHalfBet h.bet
+
+                        else
+                            h.bet
+                    )
+                |> Maybe.map (\b -> Game.getInsuranceBetResult model.dealer.cards b model.player.insured)
+                |> Maybe.withDefault 0
+
         handResults =
             model.player.hands
                 |> Array.toList
-                |> List.indexedMap (\i h -> ( i, getBetResult model.dealer.cards h model.player.insured ))
+                |> List.map (getBetResult model.dealer.cards)
+
+        allResults =
+            handResults ++ [ insuranceResult ]
 
         totalResult =
-            List.map second handResults
-                |> List.foldl (+) 0
+            List.foldl (+) 0 allResults
 
         results =
-            case handResults of
-                ( _, result ) :: [] ->
-                    [ span [ class (getResultClass result) ] [ text (formatResult result) ] ]
-
-                ( index, result ) :: otherResults ->
-                    List.map (\( i, r ) -> span [ class (getResultClass r) ] [ text (formatResult r) ]) handResults
-
-                [] ->
-                    []
+            List.map (\r -> span [ class (getResultClass r) ] [ text (formatResult r) ]) allResults
 
         playerMoney =
             "$" ++ String.fromInt model.player.money
