@@ -6846,8 +6846,10 @@ var $author$project$Main$update = F2(
 					return $author$project$Main$insure(model);
 				case 18:
 					return $author$project$Main$dealDealerCards(model);
-				default:
+				case 21:
 					return $author$project$Main$newRound(model);
+				default:
+					return A2($author$project$Main$changeGameState, model, 0);
 			}
 		}
 	});
@@ -6906,6 +6908,7 @@ var $elm$html$Html$Events$onClick = function (msg) {
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$html$Html$ul = _VirtualDom_node('ul');
+var $author$project$State$NewGame = {$: 22};
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $elm$html$Html$Attributes$stringProperty = F2(
 	function (key, string) {
@@ -6915,6 +6918,35 @@ var $elm$html$Html$Attributes$stringProperty = F2(
 			$elm$json$Json$Encode$string(string));
 	});
 var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
+var $elm$html$Html$h1 = _VirtualDom_node('h1');
+var $author$project$Page$GameOver$view = function (model) {
+	return A2(
+		$elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$h1,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('red')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Game Over')
+					])),
+				A2(
+				$elm$html$Html$button,
+				_List_fromArray(
+					[
+						$elm$html$Html$Events$onClick($author$project$State$NewGame)
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('New Game')
+					]))
+			]));
+};
 var $elm$html$Html$span = _VirtualDom_node('span');
 var $author$project$Controls$viewCardBack = A2(
 	$elm$html$Html$span,
@@ -7799,7 +7831,6 @@ var $author$project$State$ChangeSurrenderRules = function (a) {
 };
 var $author$project$Game$Early = 1;
 var $author$project$Game$Late = 2;
-var $elm$html$Html$h1 = _VirtualDom_node('h1');
 var $author$project$State$ChangePayoutDenominator = function (a) {
 	return {$: 7, a: a};
 };
@@ -8051,6 +8082,8 @@ var $author$project$Main$view = function (model) {
 			return $author$project$Page$Round$view(model);
 		case 4:
 			return $author$project$Page$RoundEnd$view(model);
+		case 5:
+			return $author$project$Page$GameOver$view(model);
 		default:
 			return A2(
 				$elm$html$Html$div,

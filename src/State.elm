@@ -31,3 +31,4 @@ type Msg
     | Split Int
     | Insure
     | NewRound
+    | NewGame

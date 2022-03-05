@@ -11,6 +11,7 @@ import Html exposing (..)
 import Html.Attributes exposing (attribute)
 import Html.Events exposing (onClick, onInput)
 import List
+import Page.GameOver
 import Page.Round
 import Page.RoundEnd
 import Page.Rules
@@ -47,6 +48,9 @@ view model =
 
         Game.RoundEnd ->
             Page.RoundEnd.view model
+
+        Game.GameOver ->
+            Page.GameOver.view model
 
         _ ->
             div []
@@ -151,6 +155,9 @@ update msg model =
 
         NewRound ->
             newRound model
+
+        NewGame ->
+            changeGameState model Game.Init
 
 
 insure : Model -> ( Model, Cmd Msg )
