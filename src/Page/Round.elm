@@ -6,7 +6,7 @@ import Controls exposing (viewCardBack, viewCards)
 import Game exposing (getCardValues)
 import Hand exposing (Hand)
 import Html exposing (Html, button, details, div, h1, h2, span, summary, text)
-import Html.Attributes exposing (attribute, class, disabled)
+import Html.Attributes exposing (attribute, class, disabled, hidden)
 import Html.Events exposing (onClick, onInput)
 import Player exposing (Player)
 import Set
@@ -63,6 +63,7 @@ viewHand model ( whichHand, hand ) =
                         [ text "Split" ]
                     , button
                         [ onClick Surrender
+                        , hidden (hideSurrender model)
                         , disabled (cannotSurrender model)
                         ]
                         [ text "Surrender" ]
@@ -162,6 +163,11 @@ cannotSurrender model =
 
         _ ->
             True
+
+
+hideSurrender : Model -> Bool
+hideSurrender model =
+    model.rules.surrenderRules == Game.No
 
 
 cannotDoubleDown : Player -> Int -> Bool

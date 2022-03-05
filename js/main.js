@@ -7320,6 +7320,10 @@ var $elm$html$Html$Attributes$boolProperty = F2(
 			$elm$json$Json$Encode$bool(bool));
 	});
 var $elm$html$Html$Attributes$disabled = $elm$html$Html$Attributes$boolProperty('disabled');
+var $elm$html$Html$Attributes$hidden = $elm$html$Html$Attributes$boolProperty('hidden');
+var $author$project$Page$Round$hideSurrender = function (model) {
+	return !model.bD.bH;
+};
 var $elm$core$Set$foldl = F3(
 	function (func, initialState, _v0) {
 		var dict = _v0;
@@ -7429,6 +7433,8 @@ var $author$project$Page$Round$viewHand = F2(
 							_List_fromArray(
 								[
 									$elm$html$Html$Events$onClick($author$project$State$Surrender),
+									$elm$html$Html$Attributes$hidden(
+									$author$project$Page$Round$hideSurrender(model)),
 									$elm$html$Html$Attributes$disabled(
 									$author$project$Page$Round$cannotSurrender(model))
 								]),
