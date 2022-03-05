@@ -157,7 +157,7 @@ update msg model =
             newRound model
 
         NewGame ->
-            changeGameState model Game.Init
+            init ()
 
 
 insure : Model -> ( Model, Cmd Msg )

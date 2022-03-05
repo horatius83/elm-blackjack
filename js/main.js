@@ -6849,7 +6849,7 @@ var $author$project$Main$update = F2(
 				case 21:
 					return $author$project$Main$newRound(model);
 				default:
-					return A2($author$project$Main$changeGameState, model, 0);
+					return $author$project$Main$init(0);
 			}
 		}
 	});
