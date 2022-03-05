@@ -3,7 +3,7 @@ module Page.Round exposing (view)
 import Array exposing (Array)
 import Card exposing (Card)
 import Controls exposing (viewCardBack, viewCards)
-import Game exposing (getCardValues)
+import Game exposing (Rules, getCardValues)
 import Hand exposing (Hand)
 import Html exposing (Html, button, details, div, h1, h2, span, summary, text)
 import Html.Attributes exposing (attribute, class, disabled, hidden)
@@ -58,7 +58,7 @@ viewHand model ( whichHand, hand ) =
                         [ text "Double Down" ]
                     , button
                         [ onClick (Split whichHand)
-                        , disabled (cannotSplit model.player whichHand)
+                        , disabled (cannotSplit model.rules model.player whichHand)
                         ]
                         [ text "Split" ]
                     , button
@@ -232,11 +232,14 @@ cannotStand player handIndex =
             True
 
 
-cannotSplit : Player -> Int -> Bool
-cannotSplit player handIndex =
+cannotSplit : Rules -> Player -> Int -> Bool
+cannotSplit rules player handIndex =
     let
         hand =
             Array.get handIndex player.hands
+
+        numberOfHands =
+            Array.length player.hands
 
         cardsAreSameValue cards =
             case cards of
@@ -248,12 +251,15 @@ cannotSplit player handIndex =
 
         hasCardsOfSameValue =
             Maybe.map (\h -> cardsAreSameValue h.cards) hand
+
+        doesNumberOfhandsExceedsNumberOfSplits =
+            numberOfHands > rules.numberOfSplits
     in
-    case hasCardsOfSameValue of
-        Just x ->
+    case ( hasCardsOfSameValue, doesNumberOfhandsExceedsNumberOfSplits ) of
+        ( Just x, False ) ->
             not x
 
-        Nothing ->
+        _ ->
             True
 
 

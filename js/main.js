@@ -7233,10 +7233,16 @@ var $author$project$Page$Round$cannotInsure = function (model) {
 		return true;
 	}
 };
+var $elm$core$Array$length = function (_v0) {
+	var len = _v0.a;
+	return len;
+};
 var $elm$core$Basics$not = _Basics_not;
-var $author$project$Page$Round$cannotSplit = F2(
-	function (player, handIndex) {
+var $author$project$Page$Round$cannotSplit = F3(
+	function (rules, player, handIndex) {
+		var numberOfHands = $elm$core$Array$length(player.f);
 		var hand = A2($elm$core$Array$get, handIndex, player.f);
+		var doesNumberOfhandsExceedsNumberOfSplits = _Utils_cmp(numberOfHands, rules.bu) > 0;
 		var cardsAreSameValue = function (cards) {
 			if ((cards.b && cards.b.b) && (!cards.b.b.b)) {
 				var a = cards.a;
@@ -7253,8 +7259,9 @@ var $author$project$Page$Round$cannotSplit = F2(
 				return cardsAreSameValue(h.ai);
 			},
 			hand);
-		if (!hasCardsOfSameValue.$) {
-			var x = hasCardsOfSameValue.a;
+		var _v0 = _Utils_Tuple2(hasCardsOfSameValue, doesNumberOfhandsExceedsNumberOfSplits);
+		if ((!_v0.a.$) && (!_v0.b)) {
+			var x = _v0.a.a;
 			return !x;
 		} else {
 			return true;
@@ -7283,10 +7290,6 @@ var $elm$core$List$head = function (list) {
 	} else {
 		return $elm$core$Maybe$Nothing;
 	}
-};
-var $elm$core$Array$length = function (_v0) {
-	var len = _v0.a;
-	return len;
 };
 var $author$project$Page$Round$cannotSurrender = function (model) {
 	var isSurrenderAllowed = !(!model.bD.bH);
@@ -7422,7 +7425,7 @@ var $author$project$Page$Round$viewHand = F2(
 									$elm$html$Html$Events$onClick(
 									$author$project$State$Split(whichHand)),
 									$elm$html$Html$Attributes$disabled(
-									A2($author$project$Page$Round$cannotSplit, model.bA, whichHand))
+									A3($author$project$Page$Round$cannotSplit, model.bD, model.bA, whichHand))
 								]),
 							_List_fromArray(
 								[
